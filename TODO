@@ -1,3 +1,7 @@
 - reprendre et factoriser les scripts de conversion (LES/1D et dedans)
 - discuter avec Benoit pour la config LIMA (config REF + sensibilités)
 - déterminer les périodes de spin-up et d'intérêt pour chaque cas
+- réfléchir au forçage en vent : 
+  - à la surface, u* ou z0 ? => plutôt u* pour mieux contraindre les flux 
+  - en volume, coriolis+géostroph ; rappel profil moyen ; chaque colonne ?
+    => plutôt rappel profil moyen puis delta U à chaque colonne

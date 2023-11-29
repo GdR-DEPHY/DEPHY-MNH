@@ -3,12 +3,12 @@ Authors: F. Couvreux (fleur.couvreux@meteo.fr) &
          N. Villefranque (najda.villefranque@lmd.ipsl.fr)
 
 # 1. Cas de convection peu profonde
-ARMCU CASS BOMEX RICO FIRE AYOTTE
+ARMCU CASS BOMEX RICO FIRE AYOTTE IHOP
 
 Domaine       Lx=Ly=25.6km Lz=4km
 Résolutions   dt=1s, dx=dy=dz=25m
 Microphysique LIMA 1 moment
-Turbulence    3D DEARDORFF
+Turbulence    3D DEARDORFF, LRMC01=T
 Condensation  tout ou rien
 
 ## Tests de sensibilités 
