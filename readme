@@ -1,0 +1,12 @@
+Project: dephy-mnh
+Creation: 29/11/2023
+Authors: F. Couvreux (fleur.couvreux@meteo.fr) &
+         N. Villefranque (najda.villefranque@lmd.ipsl.fr)
+
+Contents:
+- COPYING          GNU GPLv3
+- TODO             ongoing work
+- configs          summary of configurations
+- scripts_convert/ from dephy format (see dephy-scm repo) to MNH namelists
+- namelists/       resulting namelists
+- scripts_mnh/     scripts that were used to run Meso-NH

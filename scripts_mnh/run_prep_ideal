@@ -1,0 +1,37 @@
+#!/bin/sh
+#SBATCH -J ideal_armles
+#SBATCH -N 2            # nodes number (=NBP)
+#SBATCH -n 32            # CPUs number (on all nodes) (=NBP*TPN)
+#SBATCH -o ideal_armles.eo%j   #
+#SBATCH -e ideal_armles.eo%j   #
+#SBATCH -t 04:00:00    # time limit
+
+# Echo des commandes
+ulimit -c 0
+ulimit -s unlimited
+# Arrete du job des la premiere erreur
+set -e
+# Nom de la machine
+hostname 
+
+
+. ~/MNH-V5-4-2/conf/profile_mesonh-LXifort-R8I4-MNH-V5-4-2-TRACEUR-MPIINTEL-O3
+
+export MPIRUN="mpirun -np 32"
+
+set -x
+set -e
+
+
+ls -lrt
+
+time ${MPIRUN} PREP_IDEAL_CASE${XYZ}
+mv OUTPUT_LISTING1  OUTPUT_LISTING1_ideal
+ 
+
+rm -f file_for_xtransfer pipe_name
+
+ls -lrt 
+
+sbatch run_mesonh
+ja
