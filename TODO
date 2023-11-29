@@ -5,3 +5,4 @@
   - à la surface, u* ou z0 ? => plutôt u* pour mieux contraindre les flux 
   - en volume, coriolis+géostroph ; rappel profil moyen ; chaque colonne ?
     => plutôt rappel profil moyen puis delta U à chaque colonne
+- vérifier les fichiers formats communs == les papiers de référence

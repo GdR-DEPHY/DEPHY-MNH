@@ -2,16 +2,17 @@ Creation: 29/11/2023
 Authors: F. Couvreux (fleur.couvreux@meteo.fr) &
          N. Villefranque (najda.villefranque@lmd.ipsl.fr)
 
-# 1. Cas de convection peu profonde
-ARMCU CASS BOMEX RICO FIRE AYOTTE IHOP
+# 1. Cas de couche limite convective sèche et cumulus
+AYOTTE IHOP ARMCU CASS BOMEX RICO
 
-Domaine       Lx=Ly=25.6km Lz=4km
+Domaine       Lx=Ly=25.6km, Lz à lire dans le format commun
 Résolutions   dt=1s, dx=dy=dz=25m
 Microphysique LIMA 1 moment
 Turbulence    3D DEARDORFF, LRMC01=T
 Condensation  tout ou rien
+Rayonnement   désactivé
 
-## Tests de sensibilités 
+## Tests de sensibilités envisagés
 1) Lx=Ly=100km  ; dx=dy=100m ; condensation tout ou rien
 2) Lx=Ly=25.6km ; dx=dy=100m ; condensation tout ou rien
 3) Lx=Ly=25.6km ; dx=dy=100m ; condensation sous maille
