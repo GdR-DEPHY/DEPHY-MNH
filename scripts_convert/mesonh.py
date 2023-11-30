@@ -1,18 +1,86 @@
+# specific adaptations of default exseg to LES mode
+preidea_LES = {
+  "NAM_DIMn_PRE" : { "NIMAX" : "1024", 
+                     "NJMAX" : "1024" },
+  "NAM_CONF_PRE" : { "NVERB"    : "10",
+                     "CIDEAL"   : "'RSOU'",
+                     "LFORCING" : ".TRUE.",
+                     "LPERTURB" : ".TRUE.", },
+  "NAM_PERT_PRE" : { "CPERT_KIND" : "'WH'", },
+}
+
+}
+exseg_LES = {
+  "NAM_DYN"    : { "LNUMDIFU"   : ".FALSE.", },
+  "NAM_DYNn"   : { "XTSTEP"     : "1.",
+                   "CPRESOPT"   : "'ZRESI'", },
+  "NAM_PARAMn" : { "CTURB"      : "'TKEL'",
+                   "CCLOUD"     : "'LIMA'", },
+  "NAM_TURBn"  : { "XIMPL"      : "0.",
+                   "XKEMIN"     : "1E-10",
+                   "CTURBLEN"   : "'DEAR'",
+                   "CTURBDIM"   : "'3DIM'",
+                   "LTURB_FLX"  : ".TRUE.",
+                   "LTURB_DIAG" : ".TRUE.", 
+                   "LSIGMAS"    : ".FALSE.",
+                   "LRMC01"     :".TRUE.", },
+  "NAM_PARAM_LIMA" : 
+                 { "NMOM_C"     : "1",
+                   "NMOM_R"     : "1",
+                   "NMOM_I"     : "1",
+                   "NMOD_CCN"   : "0",
+                   "LACTI"      : ".FALSE.",
+                   "NMOD_IFN"   : "0",
+                   "LKESSLERAC" : ".TRUE.", },
+  "NAM_PARAM_C2R2" :
+                 { "HPARAM_CCN" : "'CPB'",
+                   "HINI_CCN"   : "'CCN'",
+                   "XCHEN"      : "0.173E+09",
+                   "XKHEN"      : "1.403",
+                   "XMUHEN"     : "0.834",
+                   "XBETAHEN"   : "25.499",
+                   "LRAIN"      : ".FALSE.",
+                   "LSEDC"      : ".FALSE.", },
+  "NAM_LES" :   { "LLES_MEAN"            : ".TRUE.",
+                  "LLES_SUBGRID"         : ".TRUE.",
+                  "LLES_RESOLVED"        : ".FALSE.",
+                  "XLES_TEMP_SAMPLING"   : "300.",
+                  "XLES_TEMP_MEAN_START" : "0.",
+                  "XLES_TEMP_MEAN_STEP"  : "3600." },
+}
+
+# specific adaptations of default exseg to CRM mode
+preidea_CRM = {}
+exseg_CRM = {
+  "NAM_PARAMn" : {
+    "CTURB"             : "'TKEL'",
+    "CSCONV"            : "'EDKF'",
+  }
+}
+
+# specific adaptations of default exseg to SCM mode
+preidea_SCM = {}
+exseg_SCM = {}
+
+######################################
+## DEFAULT CONFIGS IN MESO-NH 5.6.2 ##
+######################################
+
 MODD_CONFIO__ = { # I/O file type
     "LCDF4"           : ".TRUE.",
     "LLFIOUT"         : ".FALSE.",
     "LLFIREAD"        : ".FALSE.",
 }
 
-MODD_CONFZ__  = { # parallelism
+MODD_CONFZ__  = { # parallelism
   "MPI_BUFFER_SIZE"   : "400",
 }
 
-MODD_BACKUP__ = { # backup files for restarts
+MODD_BACKUP__ = { # backup files for restarts
   "XBAK_TIME_FREQ(1)" : "3600.0",
 }
 
-SURF_IDEAL_FLUX__ = { # surfex default namelist
+SURF_IDEAL_FLUX__ = { # surfex default namelist
   "NFORCF"            : "2",
   "NFORCT"            : "2",
   "XTIMEF"            : "0",
@@ -26,7 +94,7 @@ SURF_IDEAL_FLUX__ = { # surfex default namelist
   "XTSRAD"            : "273.15K",
 }
 
-MODD_CONF__   = { # general config
+MODD_CONF__   = { # general config
   "CCONF"             :"'START'",
   "LTHINSHELL"        : ".FALSE.",
   "L2D"               : ".FALSE.",
@@ -55,8 +123,7 @@ MODD_CONF__   = { # general config
   "LCHECK"            : ".FALSE.",
 }
 
-MODD_CONFn__  = { # config for model n (nesting)
-  "CCLOUD"            : "'NONE'",
+MODD_CONFn__  = { # config for model n (nesting)
   "LUSERV"            : ".TRUE.",
   "LUSERC"            : ".FALSE.",
   "LUSERR"            : ".FALSE.",
@@ -68,7 +135,7 @@ MODD_CONFn__  = { # config for model n (nesting)
   "LUSECI"            : ".FALSE.",
 }
 
-MODD_FRC__    = {   # forcings
+MODD_FRC__    = {   # forcings
   "LGEOST_UV_FRC"     : ".FALSE.",
   "LGEOST_TH_FRC"     : ".FALSE.",
   "LTEND_THRV_FRC"    : ".FALSE.",
@@ -91,7 +158,7 @@ MODD_FRC__    = {   # forcings
   "XRADY_OC"          :  "8000.",
 }
 
-MODD_LBCn__   = {  # boundary conditions for model n
+MODD_LBCn__   = {  # boundary conditions for model n
   "CLBCX(1)"          :"'CYCL'",
   "CLBCX(2)"          :"'CYCL'",
   "CLBCY(1)"          :"'CYCL'",
@@ -117,7 +184,7 @@ MODD_DYN__    = { # general dynamics
   "XALZBAS"           : "0.01",
 }
 
-MODD_DYNn__   = { # dynamics for model n (nesting)
+MODD_DYNn__   = { # dynamics for model n (nesting)
   "XTSTEP"            : "60.",
   "CPRESOPT"          : "'CRESI'",
   "NITR"              : "4",
@@ -132,7 +199,7 @@ MODD_DYNn__   = { # dynamics for model n (nesting)
   "XT4DIFSV"          : "1800.",
 }
 
-MODD_ADVn__   = { # advection for model n
+MODD_ADVn__   = { # advection for model n
   "CUVW_ADV_SCHEME"   : "'CEN4TH'",
   "CMET_ADV_SCHEME"   : "'PPM_01'",
   "CSV_ADV_SCHEME"    : "'PPM_01'",
@@ -145,16 +212,17 @@ MODD_ADVn__   = { # advection for model n
   "LCFL_WRIT"         : ".FALSE.",
 }
 
-MODD_PARAMn__ = { # activate params for model n
+MODD_PARAMn__ = { # activate params for model n
   "CTURB"             : "'NONE'",
   "CRAD"              : "'NONE'",
+  "CCLOUD"            : "'NONE'",
   "CDCONV"            : "'NONE'",
   "CSCONV"            : "'NONE'",
   "CELEC"             : "'NONE'",
   "CACTCCN"           : "'NONE'",
 }
 
-MODD_TURBn__  = { # config turbulence
+MODD_TURBn__  = { # config turbulence
   "XIMPL"             : "1.",
   "XKEMIN"            : "0.01",
   "XCEDIS"            : "0.84",
@@ -181,7 +249,7 @@ MODD_TURBn__  = { # config turbulence
   "XCLDTHOLD"         : "-1.0",
 }
 
-MODD_RADn__   = { # config radiation
+MODD_RADn__   = { # config radiation
   "XDTRAD"            : "XTSTEP",
   "XDTRAD_CLONLY"     : "XTSTEP",
   "LCLEAR_SKY"        :".FALSE.",
@@ -201,7 +269,7 @@ MODD_RADn__   = { # config radiation
   "LFIX_DAT"          :".FALSE.",
 }
 
-MODD_PARAM_ECRAD__ = { # config radiation scheme
+MODD_PARAM_ECRAD__ = { # config radiation scheme
   "NSWSOLVER"         : "0",
   "NLWSOLVER"         : "0",
   "LSPEC_ALB"         : ".FALSE.",
@@ -218,7 +286,7 @@ MODD_PARAM_ECRAD__ = { # config radiation scheme
   "XCLOUD_FRAC_STD"   : "1.0",
 }
 
-MODD_PARAM_LIMA__ = {  # config microphysics scheme
+MODD_PARAM_LIMA__ = {  # config microphysics scheme
    "LPTSPLIT"         : ".TRUE.",
    "L_LFEEDBACKT"     : ".TRUE.",
    "L_NMAXITER"       : "5",
@@ -280,22 +348,22 @@ MODD_PARAM_LIMA__ = {  # config microphysics scheme
    "LRDSF"            : ".FALSE.",
 }
 
-MODD_PARAM_C2R2__ = {  # config cloud scheme ## CHECK DEFAULTS !!
-    "HPARAM_CCN"      : "CPB",
-    "HINI_CCN"        : "CCN",
-    "XCHEN"           : "0.173E+09",
-    "XKHEN"           : "1.403",
-    "XMUHEN"          : "0.834",
-    "XBETAHEN"        : "25.499",
-    "LRAIN"           : ".FALSE.",
-    "LSEDC"           : ".FALSE.",
+MODD_PARAM_C2R2__ = {
+    "HPARAM_CCN"      : "'XXX'",
+    "HINI_CCN"        : "'XXX'",
+    "XCHEN"           : "0.0",
+    "XKHEN"           : "0.0",
+    "XMUHEN"          : "0.0",
+    "XBETAHEN"        : "0.0",
+    "LRAIN"           : ".TRUE.",
+    "LSEDC"           : ".TRUE.",
 }
 
-MODD_BUDGET__  = { # compute budgets
+MODD_BUDGET__  = { # compute budgets
   "CBUTYPE"           : "'NONE'",
   "NBUMOD"            : "1",
-  "XBULEN"            : MODD_CONF__["XSEGLEN"],
-  "XBUWRI"            : MODD_CONF__["XSEGLEN"],
+  "XBULEN"            : MODD_DYN__["XSEGLEN"],
+  "XBUWRI"            : MODD_DYN__["XSEGLEN"],
   "NBUKL"             : "1",
   "NBUKH"             : "0",        
   "LBU_KCP"           : ".TRUE.",
@@ -308,7 +376,7 @@ MODD_BUDGET__  = { # compute budgets
   "NBUMASK"           : "1",
 }
 
-MODD_LES__     = { # compute horizontal statistics 
+MODD_LES__     = { # compute horizontal statistics 
   "LLES_MEAN"           : ".FALSE.",
   "LLES_RESOLVED"       : ".FALSE.",
   "LLES_SUBGRID"        : ".FALSE.",
@@ -325,7 +393,7 @@ MODD_LES__     = { # compute horizontal statistics
   "LLES_CS_MASK"        : ".FALSE.",
 }
 
-MODD_CONDSAMP__ = { # conditional sampling
+MODD_CONDSAMP__ = { # conditional sampling
   "LCONDSAMP"         : ".FALSE.",
   "NCONDSAMP"         : "3",
   "XRADIO(:)"         : "900.",
@@ -339,7 +407,55 @@ MODD_CONDSAMP__ = { # conditional sampling
   "LTPLUS"            : ".TRUE.",
 }
 
-default_config = {
+MODD_DIMn_PRE__ = { # pre_idea dimensions
+  "NIMAX" : "10", 
+  "NJMAX" : "10" 
+}
+
+MODD_CONF_PRE__ = { # pre_idea config
+  "LCARTESIAN" : ".TRUE.", 
+  "LPACK"      : ".TRUE.", 
+  "CEQNSYS"    : "'DUR'",
+  "NVERB"      : "5",
+  "CIDEAL"     : "'CSTN'",
+  "CZS"        : "'FLAT'", 
+  "LBOUSS"     : ".FALSE.", 
+  "LPERTURB"   : ".FALSE.",
+  "LFORCING"   : ".FALSE.",
+  "LSHIFT"     : ".FALSE.",
+  "L2D_ADV_FRC": ".FALSE.",
+  "L2D_REL_FRC": ".FALSE.",
+  "NHALO"      : "1",
+  "JPHEXT"     : "1",
+  "LOCEAN"     : ".FALSE.",
+}
+
+MODD_PERT_PRE__ = { 
+  "CPERT_KIND" : "'TH'",
+  "XAMPLITH"   : "1.5",
+  "XAMPLIRV"   : "0.0",
+  "XAMPLIUV"   : "1.0834",
+  "XAMPLIWH"   : "0.1",
+  "NKWH"       : "2",
+  "LSET_RHU"   : ".TRUE.",
+  "XCENTERZ"   : "2000.",
+  "XRADX"      : "10000.",
+  "XRADY"      : "10000.",
+  "XRADZ"      : "2000.",
+  "LWH_LBXU"   : ".FALSE.",
+  "LWH_LBYV"   : ".FALSE.",
+}
+
+default_preidea = {
+  "NAM_CONFIO": MODD_CONFIO__,
+  "NAM_CONFZ": MODD_CONFZ__,
+  "NAM_DIMn_PRE": MODD_DIMn_PRE__,
+  "NAM_CONF_PRE": MODD_CONF_PRE__,
+  "NAM_PERT_PRE": MODD_PERT_PRE__,
+  "NAM_CONFn": MODD_CONFn__,
+}
+
+default_exseg = {
   "NAM_CONFIO": MODD_CONFIO__,
   "NAM_CONFZ": MODD_CONFZ__,
   "NAM_BACKUP": MODD_BACKUP__,
