@@ -17,3 +17,12 @@ Rayonnement   désactivé
 2) Lx=Ly=25.6km ; dx=dy=100m ; condensation tout ou rien
 3) Lx=Ly=25.6km ; dx=dy=100m ; condensation sous maille
 4+) LIMA (à définir avec Benoit)
+
+## Définition des temps clés pour les différents cas
+
+# ARMCU
+- début du cas à 11:30 UTC, dure 15 heures
+- spin up les 4 premières heures
+- temps clés 
+  4e à 5e heure (formation des premiers nuages)
+  7e à 8e heure (max de couverture nuageuse)

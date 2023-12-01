@@ -9,7 +9,6 @@ preidea_LES = {
   "NAM_PERT_PRE" : { "CPERT_KIND" : "'WH'", },
 }
 
-}
 exseg_LES = {
   "NAM_DYN"    : { "LNUMDIFU"   : ".FALSE.", },
   "NAM_DYNn"   : { "XTSTEP"     : "1.",
@@ -430,7 +429,7 @@ MODD_CONF_PRE__ = { # pre_idea config
   "LOCEAN"     : ".FALSE.",
 }
 
-MODD_PERT_PRE__ = { 
+MODD_PERT_PRE__ = {
   "CPERT_KIND" : "'TH'",
   "XAMPLITH"   : "1.5",
   "XAMPLIRV"   : "0.0",

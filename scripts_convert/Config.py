@@ -71,26 +71,37 @@ def write_namelist(to_write, outfile):
 class Config:
   
   def __init__(self, case, fic, mode="LES"):
-    """ construct config object with field 
-    .type = 0 if preidea, 1 if exseg
-    .config = preidea or exseg dicts of dicts of the form:
-    {"NAM_name":{"key1":"val1", "key2":"val2}, "NAM_other":{"key":"val"}}
+    """ construct Config object 
+    ## inputs:
+    # case = ARMCU, RICO, AYOTTE, ...
+    # fic  = PREIDEA, EXSEG01, ...
+    # mode = None (default MNH), LES, CRM, SCM
+    #
+    ## fields of Config object:
+    # .name = fic (PREIDEA, EXSEG* ...)
+    # .mode = mode [None|LES|CRM|SCM]
+    # .is_exseg = 0 if preidea, 1 if exseg
+    # .config = preidea or exseg dicts of dicts of the form:
+    # {"NAM_name":{"key1":"val1", "key2":"val2}, "NAM_other":{"key":"val"}}
     """
+    self.name = fic  # PREIDEA OR EXSEG ...
+    self.mode = mode # None|LES|CRM|SCM
+
     if "PRE" in fic:
-      self.type=0
+      self.is_exseg=0
       self.config = copy.deepcopy(default_preidea)
     elif "EXS" in fic:
-      self.type=1
+      self.is_exseg=1
       self.config = copy.deepcopy(default_exseg)
     else: print("error: unknown file format %s"%fic); exit()
 
     if mode is None: return # default Meso-NH config
     elif mode == "LES" :    # adapted to LES
-      config_ = preidea_LES  if "PRE" in fic else exseg_LES
+      config_ = exseg_LES if self.is_exseg else preidea_LES
     elif mode == "CRM" : 
-      config_ = preidea_CRM  if "PRE" in fic else exseg_CRM
+      config_ = exseg_CRM if self.is_exseg else preidea_CRM
     elif mode == "SCM" :
-      preidea_ = preidea_SCM if "PRE" in fic else exseg_SCM
+      config_ = exseg_SCM if self.is_exseg else preidea_SCM
     else : print("error: unknown constructor mode %s"%mode); exit()
 
     for nam in config_:
@@ -99,7 +110,7 @@ class Config:
 
   def __str__(self):
     """ print namelist to screen """
-    str="############\n %07s \n############"%("PREIDEA" if not self.type else "EXSEG")
+    str="############\n %s \n############\n"%(self.name)
     for k in self.config:
         str+="===\nNAMELIST : %s\n>> KEYS : %s\n"%(k, self.config[k])
     return str
@@ -123,4 +134,4 @@ class Config:
     self.modify("NAM_PARAM_LIMA", "NMOM_G", "0")
 
   def activate_radiation(self):
-    self.modify("NAM_PARAMn", "CRAD", "ECRA")
+    self.modify("NAM_PARAMn", "CRAD", "'ECRA'")
