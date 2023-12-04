@@ -1,153 +1,107 @@
-Nhoriz = 1024
-Nverti = 160
-deltah = 25.
-deltav = 25.
+## Default grids for LES|CRM|SCM modes
+# Nhoriz == minimum pour avoir des circulations résolues
+# deltav :: pour l'instant on garde la même résolution verticale qu'en LES
 
-# specific adaptations of default exseg to LES mode
+LES_Nhoriz = 1024   # npoints
+LES_Nverti = 160    # npoints
+LES_deltah = 25.    # horizontal resolution in m
+LES_deltav = 25.    # vertical   resolution in m
+
+CRM_Nhoriz = 100    # npoints
+CRM_Nverti = 160    # npoints
+CRM_deltah = 2500.  # horizontal resolution in m
+CRM_deltav = 25     # vertical   resolution in m
+
+SCM_Nhoriz = 1      # npoints
+SCM_Nverti = 160    # npoints
+SCM_deltah = 50000. # horizontal resolution in m
+SCM_deltav = 25.    # vertical   resolution in m
+
+# specific adaptations of default preidea and exseg to LES mode
 preidea_LES = {
-  "NAM_DIMn_PRE" : { "NIMAX" : "%i"%Nhoriz, 
-                     "NJMAX" : "%i"%Nhoriz      },
-  "NAM_VER_GRID" : { "NKMAX" : "%i"%Nverti,
-                     "LTHINSHELL" : ".TRUE."    },# Attention a n'activer que pour la shallow -> peut etre a false partout?
+  "NAM_DIMn_PRE" : { "NIMAX" : "%i"%LES_Nhoriz, 
+                     "NJMAX" : "%i"%LES_Nhoriz  },
+  "NAM_VER_GRID" : { "NKMAX" : "%i"%LES_Nverti  }, 
+  "NAM_GRIDH_PRE": { "XDELTAX"  : "%g"%LES_deltah, 
+                     "XDELTAY"  : "%g"%LES_deltah   },
   "NAM_CONF_PRE" : { "LPERTURB" : ".TRUE.",     },
   "NAM_CONFZ"    : { "MPI_BUFFER_SIZE" : "400", },
-  "NAM_GRIDH_PRE": { "XDELTAX"  : "%g"%deltah, 
-                     "XDELTAY"  : "%g"%deltah   },
 }
-
 exseg_LES = {
-  "NAM_DYN"    : { "LNUMDIFU"   : ".TRUE.",     },
   "NAM_DYNn"   : { "XTSTEP"     : "1.",
                    "XT4DIFU"    : "300.",
                    "CPRESOPT"   : "'ZRESI'",     }, # parallel CRESI
   "NAM_TURBn"  : { "XIMPL"      : "0.",
-                   "XKEMIN"     : "1E-10",
                    "CTURBLEN"   : "'DEAR'",
                    "CTURBDIM"   : "'3DIM'",
-                   "LTURB_FLX"  : ".TRUE.",
-                   "LTURB_DIAG" : ".TRUE.", 
-                   "LSIGMAS"    : ".FALSE.",
-                   "LRMC01"     :".TRUE.",       },
-  "NAM_LES" :   { "LLES_MEAN"      : ".TRUE.",
-                  "LLES_SUBGRID"   : ".TRUE.",
-                  "LLES_RESOLVED"  : ".TRUE.",
-                  "LLES_NEB_MASK"  : ".TRUE.", 
+                   "LSIGMAS"    : ".FALSE.",     },
+  "NAM_LES" :   { "LLES_NEB_MASK"  : ".TRUE.", 
                   "LLES_CORE_MASK" : ".TRUE.", 
                   "LLES_CS_MASK"   : ".TRUE.",
                   "XLES_TEMP_SAMPLING"   : "300.",
                   "XLES_TEMP_MEAN_START" : "0.",
                   "XLES_TEMP_MEAN_STEP"  : "3600."},
-  "NAM_CONDSAMP": { "LCONDSAMP"    : ".TRUE."    },
-  "&NAM_CONFZ"  : { "MPI_BUFFER_SIZE" :"400"  },
-  "NAM_BUDGET"  : { "CBUTYPE"      : "CART",
-                    "NBUIH"        : "%i"%Nhoriz,
-                    "NBUJH"        : "%i"%Nhoriz, 
-                    "NBUKH"        : "%i"%Nverti,
-                    "LBU_JCP"      : ".TRUE.",
-                    "LBU_ICP"      : ".TRUE.",},
-  "NAM_OUTPUT"  : { "COUT_VAR(1,13)" : "'SVT001'",
-                    "COUT_VAR(1,14)" : "'SVT002'",
-                    "COUT_VAR(1,15)" : "'SVT003'", },
+  "NAM_CONDSAMP": { "LCONDSAMP"    : ".TRUE."     },
+  "NAM_CONFZ"   : { "MPI_BUFFER_SIZE" :"400"      },
+  "NAM_BUDGET"  : { "NBUIH"        : "%i"%LES_Nhoriz,
+                    "NBUJH"        : "%i"%LES_Nhoriz, 
+                    "NBUKH"        : "%i"%LES_Nverti,},
+# no need for now: the SVT variables will be output by default
+#  "NAM_OUTPUT"  : { "COUT_VAR(1,13)" : "'SVT001'",
+#                    "COUT_VAR(1,14)" : "'SVT002'",
+#                    "COUT_VAR(1,15)" : "'SVT003'", },
 }
 
-# specific adaptations of default exseg to CRM mode
-#FLEUR
-# peut-etre que Nhoriz, Nverti, deltah, deltav c'est dépendant du mode LES je ne sais pas comment coder ca
-#Nhoriz = 100 # nb minimum pour avoir des circulations résolues 
-#Nverti = 160
-#deltah = 2500.
-#deltav = 25. # pour l'instant on garde la meme résolution verticale que les cas LES
-preidea_CRM = {{
-  "NAM_DIMn_PRE" : { "NIMAX" : "%i"%Nhoriz, 
-                     "NJMAX" : "%i"%Nhoriz      },
-  "NAM_VER_GRID" : { "NKMAX" : "%i"%Nverti,
-                     "LTHINSHELL" : ".TRUE."    },
-  "NAM_CONF_PRE" : { "LPERTURB" : ".TRUE.",     },
-  "NAM_GRIDH_PRE": { "XDELTAX"  : "%g"%deltah, 
-                     "XDELTAY"  : "%g"%deltah   },
+# specific adaptations of default preidea and exseg to CRM mode
+preidea_CRM = {
+  "NAM_DIMn_PRE" : { "NIMAX" : "%i"%CRM_Nhoriz, 
+                     "NJMAX" : "%i"%CRM_Nhoriz      },
+  "NAM_VER_GRID" : { "NKMAX" : "%i"%CRM_Nverti,     },
+  "NAM_GRIDH_PRE": { "XDELTAX"  : "%g"%CRM_deltah, 
+                     "XDELTAY"  : "%g"%CRM_deltah   },
+  "NAM_CONF_PRE" : { "LPERTURB" : ".TRUE.",         },
 }
 exseg_CRM = {
-  "NAM_PARAMn" : { "CSCONV"     : "'EDKF'",      },
-  "NAM_DYN"    : { "LNUMDIFU"   : ".TRUE.",     },
+  "NAM_PARAMn" : { "CSCONV"     : "'EDKF'",      }, # activate shallow conv param
   "NAM_DYNn"   : { "XTSTEP"     : "10.",
                    "CPRESOPT"   : "'ZRESI'",     }, # parallel CRESI
-  "NAM_TURBn"  : { "XIMPL"      : "1.",
-                   "XKEMIN"     : "1E-10",
-                   "CTURBLEN"   : "'BL89'",
-                   "CTURBDIM"   : "'1DIM'",
-                   "LTURB_FLX"  : ".TRUE.",
-                   "LTURB_DIAG" : ".TRUE.", 
-                   "LSIGMAS"    : ".TRUE.",
-                   "LSUBG_COND" : ".TRUE.",
-                   "LRMC01"     :".TRUE.",       },
-  "NAM_PARAM_MFSHALLn" : {"CMF_UPDRAFT"    :"EDKF",
-                          "CMF_CLOUD"      :"DIRE", 
-                          "LMIXUV"         :".TRUE.", 
-                          "LMF_FLX"        : ".TRUE."},
-  "NAM_LES" :   { "LLES_MEAN"      : ".TRUE.",
-                  "LLES_SUBGRID"   : ".TRUE.",
-                  "LLES_RESOLVED"  : ".TRUE.",
-                  "XLES_TEMP_SAMPLING"   : "300.",
-                  "XLES_TEMP_MEAN_START" : "0.",
-                  "XLES_TEMP_MEAN_STEP"  : "3600."},
+  "NAM_TURBn"  : { "LSUBG_COND" : ".TRUE.",      }, # activate subrid condensation
+  "NAM_LES"    : { "XLES_TEMP_SAMPLING"   : "300.",
+                   "XLES_TEMP_MEAN_START" : "0.",
+                   "XLES_TEMP_MEAN_STEP"  : "3600."},
   "NAM_CONDSAMP": { "LCONDSAMP"    : ".TRUE."    },
-  "NAM_BUDGET"  : { "NBUIH"        : "%i"%Nhoriz,
-                    "NBUJH"        : "%i"%Nhoriz, 
-                    "NBUKH"        : "%i"%Nverti,
-                    "LBU_JCP"      : ".TRUE.",
-                    "LBU_ICP"      : ".TRUE."},
-  "NAM_OUTPUT"  : { "COUT_VAR(1,13)" : "'SVT001'",
-                    "COUT_VAR(1,14)" : "'SVT002'",
-                    "COUT_VAR(1,15)" : "'SVT003'", },
+  "NAM_BUDGET"  : { "NBUIH"        : "%i"%CRM_Nhoriz,
+                    "NBUJH"        : "%i"%CRM_Nhoriz, 
+                    "NBUKH"        : "%i"%CRM_Nverti,},
 }
 
 # specific adaptations of default exseg to SCM mode
-#Nhoriz = 1 # nb minimum pour avoir des circulations résolues 
-#Nverti = 160
-#deltah = 50000.
-#deltav = 25. # pour l'instant on garde la meme résolution verticale que les cas LES
 preidea_SCM = {
-  "NAM_DIMn_PRE" : { "NIMAX" : "%i"%Nhoriz, 
-                     "NJMAX" : "%i"%Nhoriz      },
-  "NAM_VER_GRID" : { "NKMAX" : "%i"%Nverti,
-                     "LTHINSHELL" : ".TRUE."    },
-  "NAM_CONF_PRE" : { "LPERTURB" : ".FALSE.",     },
-  "NAM_GRIDH_PRE": { "XDELTAX"  : "%g"%deltah, 
-                     "XDELTAY"  : "%g"%deltah   },
+  "NAM_DIMn_PRE" : { "NIMAX" : "%i"%SCM_Nhoriz, 
+                     "NJMAX" : "%i"%SCM_Nhoriz    },
+  "NAM_VER_GRID" : { "NKMAX" : "%i"%SCM_Nverti,   },
+  "NAM_GRIDH_PRE": { "XDELTAX"  : "%g"%SCM_deltah, 
+                     "XDELTAY"  : "%g"%SCM_deltah },
 }
 exseg_SCM = {
   "NAM_PARAMn" : { "CSCONV"     : "'EDKF'",
-                   "CDCONV"     : "'KAFR'" },
-  "NAM_DYN"    : { "LNUMDIFU"   : ".TRUE.",     },
-  "NAM_DYNn"   : { "XTSTEP"     : "30.", },
-  "NAM_TURBn"  : { "XIMPL"      : "1.",
-                   "XKEMIN"     : "1E-10",
-                   "CTURBLEN"   : "'BL89'",
-                   "CTURBDIM"   : "'1DIM'",
-                   "LTURB_FLX"  : ".TRUE.",
-                   "LTURB_DIAG" : ".TRUE.", 
-                   "LSIGMAS"    : ".TRUE.",
-                   "LSUBG_COND" : ".TRUE.",
-                   "LRMC01"     :".TRUE.",       },
+                   "CDCONV"     : "'KAFR'"      },
+  "NAM_DYNn"   : { "XTSTEP"     : "30.",        },
+  "NAM_TURBn"  : { "LSUBG_COND" : ".TRUE.",     },
   "NAM_PARAM_MFSHALLn" : {"CMF_UPDRAFT"    :"EDKF",
                           "CMF_CLOUD"      :"DIRE", 
                           "LMIXUV"         :".TRUE.", 
                           "LMF_FLX"        : ".TRUE."},
   "NAM_PARAM_KAFRn" : {"XDTCONV"    :"10.",
                           "LDAIGCONV"      :"TRUE"}, 
-  "NAM_LES" :   { "LLES_MEAN"      : ".TRUE.",
-                  "LLES_SUBGRID"   : ".TRUE.",
-                  "LLES_RESOLVED"  : ".FALSE.",
-                  "XLES_TEMP_SAMPLING"   : "300.",
+  "NAM_LES" :   { "XLES_TEMP_SAMPLING"   : "300.",
                   "XLES_TEMP_MEAN_START" : "0.",
                   "XLES_TEMP_MEAN_STEP"  : "3600."},
   "NAM_CONDSAMP": { "LCONDSAMP"    : ".TRUE."    },
-  "NAM_BUDGET"  : { "NBUIH"        : "%i"%Nhoriz,
-                    "NBUJH"        : "%i"%Nhoriz, 
-                    "NBUKH"        : "%i"%Nverti},
-  "NAM_OUTPUT"  : { "COUT_VAR(1,13)" : "'SVT001'",
-                    "COUT_VAR(1,14)" : "'SVT002'",
-                    "COUT_VAR(1,15)" : "'SVT003'", },}
+  "NAM_BUDGET"  : { "NBUIH"        : "%i"%SCM_Nhoriz,
+                    "NBUJH"        : "%i"%SCM_Nhoriz, 
+                    "NBUKH"        : "%i"%SCM_Nverti},
+}
 
 ######################################
 ## DEFAULT CONFIGS IN MESO-NH 5.6.2 ##
@@ -319,25 +273,25 @@ MODD_PARAMn__ = { # activate params for model n
 
 MODD_TURBn__  = { # config turbulence
   "XIMPL"             : "1.",
-  "XKEMIN"            : "0.01",
+  "XKEMIN"            : "1E-10",
   "XCEDIS"            : "0.84",
   "XCADAP"            : "0.5",
   "CTURBLEN"          : "'BL89'",
   "CTURBDIM"          : "'1DIM'",
-  "LTURB_FLX"         :".FALSE.",
-  "LTURB_DIAG"        :".FALSE.",
-  "LSUBG_COND"        :".FALSE.",
-  "CSUBG_AUCV"        :"'NONE'", 
-  "CSUBG_AUCV_RI"     :"'NONE'",
-  "LSIGMAS"           :".TRUE.",
-  "LSIG_CONV"         :".FALSE.",
-  "LRMC01"            :".FALSE.",
-  "CTOM"              :"'NONE'",
-  "VSIGQSAT"          : "0.02",
-  "CCONDENS"          :"'CB02'",
-  "CLAMBDA3"          :"'CB'",
-  "CSUBG_MF_PDF"      :"'TRIANGLE'",
-  "LLEONARD"          :".FALSE.",
+  "LTURB_FLX"         : ".TRUE",    #".FALSE.",
+  "LTURB_DIAG"        : ".TRUE.",   #".FALSE.",
+  "LSUBG_COND"        : ".FALSE.",
+  "CSUBG_AUCV"        : "'NONE'", 
+  "CSUBG_AUCV_RI"     : "'NONE'",
+  "LSIGMAS"           : ".TRUE.",
+  "LSIG_CONV"         : ".FALSE.",
+  "LRMC01"            : ".TRUE.",   #".FALSE.",
+  "CTOM"              : "'NONE'",
+  "VSIGQSAT"          :  "0.02",
+  "CCONDENS"          : "'CB02'",
+  "CLAMBDA3"          : "'CB'",
+  "CSUBG_MF_PDF"      : "'TRIANGLE'",
+  "LLEONARD"          : ".FALSE.",
   "XCOEFHGRADTHL"     : "1.0",
   "XCOEFHGRADRM"      : "1.0",
   "XALTHGRAD"         : "2000.0",
@@ -362,6 +316,13 @@ MODD_RADn__   = { # config radiation
   "XFUDG"             : "1.",
   "LAERO_FT"          :".FALSE.",
   "LFIX_DAT"          :".FALSE.",
+}
+
+MODD_PARAM_MFSHALLn__ = { # config shallow mass flux scheme
+  "CMF_UPDRAFT"       : "EDKF",
+  "CMF_CLOUD"         : "DIRE", 
+  "LMIXUV"            : ".TRUE.", 
+  "LMF_FLX"           : ".TRUE.",   #".FALSE."
 }
 
 MODD_PARAM_ECRAD__ = { # config radiation scheme
@@ -472,9 +433,9 @@ MODD_BUDGET__  = { # compute budgets
 }
 
 MODD_LES__     = { # compute horizontal statistics 
-  "LLES_MEAN"           : ".FALSE.",
-  "LLES_RESOLVED"       : ".FALSE.",
-  "LLES_SUBGRID"        : ".FALSE.",
+  "LLES_MEAN"           : ".TRUE.",  #".FALSE.",
+  "LLES_RESOLVED"       : ".TRUE.",  #".FALSE.",
+  "LLES_SUBGRID"        : ".TRUE.",  #".FALSE.",
   "LLES_UPDRAFT"        : ".FALSE.",
   "LLES_DOWNDRAFT"      : ".FALSE.",
   "LLES_SPECTRA"        : ".FALSE.",
@@ -604,8 +565,8 @@ MODD_VER_GRID__ = { # pre_idea vertical grid
   "LTHINSHELL" : ".FALSE.",
   "NKMAX"      : "10",
   "YZGRID_TYPE": "'FUNCTN'",
-  "ZDZGRD"     : "%g"%deltav, #"300.",
-  "ZDZTOP"     : "%g"%deltav, #"300.",
+  "ZDZGRD"     : "%g"%LES_deltav, #"300.",
+  "ZDZTOP"     : "%g"%LES_deltav, #"300.",
   "ZZMAX_STRGRD" : "0.",
   "ZSTRGRD"    : "0.",
   "ZSTRTOP"    : "0.",
@@ -693,6 +654,7 @@ default_exseg = {
   "NAM_PARAMn" : MODD_PARAMn__,
   "NAM_TURBn" : MODD_TURBn__,
   "NAM_RADn" : MODD_RADn__,
+  "NAM_PARAM_MFSHALLn" : MODD_PARAM_MFSHALLn__,
   "NAM_PARAM_ECRAD" : MODD_PARAM_ECRAD__,
   "NAM_PARAM_LIMA" : MODD_PARAM_LIMA__,
   "NAM_PARAM_C2R2" : MODD_PARAM_C2R2__,
