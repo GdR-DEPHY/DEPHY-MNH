@@ -16,7 +16,10 @@ Rayonnement   désactivé
 1) Lx=Ly=100km  ; dx=dy=100m ; condensation tout ou rien
 2) Lx=Ly=25.6km ; dx=dy=100m ; condensation tout ou rien
 3) Lx=Ly=25.6km ; dx=dy=100m ; condensation sous maille
-4+) LIMA (à définir avec Benoit)
+4) LIMA1 ; activation du mom2 pour eau liquide (NMOM_C=2)
+5) LIMA2 ; activation du mom2 pour eau liquide + pluie (NMOM_C=2+NMOM_R=2)
+6) LIMA3 ; test a l'autoconversion (celle de LIMA, ICE3, KHKO)
+7) LIMA4 ; test au CCN a 100, 300, 1000
 
 ## Définition des temps clés pour les différents cas
 

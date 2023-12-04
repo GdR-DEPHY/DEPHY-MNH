@@ -47,6 +47,7 @@ casname=sys.argv[1]
 subcasname=sys.argv[2]
 NI=512
 NJ=512
+NAM2='TESTX'
 
 zorog=0.
 if casname =='ARMCU':
@@ -218,7 +219,7 @@ elif casname =='RICO':
     flag_q='rv'
 elif casname =='BOMEX':
     # PBM CAS SHORT DEFINI EN TEMP ALORS QUE DANS VANZANTEN C'est en THETA
-    file='DEPHY-SCM/'casname+'/+'subcasname+'/'+casname+'_+'subcasname+'_DEF_driver.nc'
+    file='DEPHY-SCM/'+casname+'/'+subcasname+'/'+casname+'_'+subcasname+'_DEF_driver.nc'
     #provide horizontal & vertical resolution
     DX=25.
     DY=25.
@@ -238,7 +239,7 @@ elif casname =='BOMEX':
     flag_q='qt'
 elif casname =='IHOP':
     # PBM CAS SHORT DEFINI EN TEMP ALORS QUE DANS VANZANTEN C'est en THETA
-    file='DEPHY-SCM/'casname+'/+'subcasname+'/'+casname+'_+'subcasname+'_DEF_driver.nc'
+    file='DEPHY-SCM/'+casname+'/'+subcasname+'/'+casname+'_'+subcasname+'_DEF_driver.nc'
     #provide horizontal & vertical resolution
     DX=25.
     DY=25.
@@ -259,7 +260,7 @@ elif casname =='IHOP':
 elif casname =='AYOTTE':
     shortname=casname[0:1]+subcasname[0:5]
     print('cas AYOTTE=',shortname)
-    file='DEPHY-SCM/'casname+'/+'subcasname+'/'+casname+'_+'subcasname+'_DEF_driver.nc'
+    file='DEPHY-SCM/'+casname+'/'+subcasname+'/'+casname+'_'+subcasname+'_DEF_driver.nc'
     #provide horizontal & vertical resolution
     DX=25.
     DY=25.
@@ -279,7 +280,7 @@ elif casname =='AYOTTE':
     flag_q='rt'    
 elif casname =='GABLS1':
     # PBM CAS SHORT DEFINI EN TEMP ALORS QUE DANS VANZANTEN C'est en THETA
-    file='DEPHY-SCM/'casname+'/+'subcasname+'/'+casname+'_+'subcasname+'_DEF_driver.nc'
+    file='DEPHY-SCM/'+casname+'/'+subcasname+'/'+casname+'_'+subcasname+'_DEF_driver.nc'
     #provide horizontal & vertical resolution
     DX=10.
     DY=10.
@@ -301,7 +302,7 @@ elif casname =='GABLS1':
     flag_t='theta'
     flag_q='rt'
 elif casname =='GABLS4':
-    file='DEPHY-SCM/'casname+'/+'subcasname+'/'+casname+'_+'subcasname+'_DEF_driver.nc'
+    file='DEPHY-SCM/'+casname+'/'+subcasname+'/'+casname+'_'+subcasname+'_DEF_driver.nc'
     #provide horizontal & vertical resolution
     DX=1.
     DY=1.

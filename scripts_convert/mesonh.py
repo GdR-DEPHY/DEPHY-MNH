@@ -42,11 +42,55 @@ exseg_LES = {
                    "LSEDC"      : ".FALSE.", },
   "NAM_LES" :   { "LLES_MEAN"            : ".TRUE.",
                   "LLES_SUBGRID"         : ".TRUE.",
-                  "LLES_RESOLVED"        : ".FALSE.",
+                  "LLES_RESOLVED"        : ".TRUE.",
+                  "LLES_NEB_MASK"        : ".TRUE.", 
+                  "LLES_CORE_MASK"       : ".TRUE.", 
+                  "LLES_CS_MASK"         : ".TRUE.",
                   "XLES_TEMP_SAMPLING"   : "300.",
                   "XLES_TEMP_MEAN_START" : "0.",
                   "XLES_TEMP_MEAN_STEP"  : "3600." },
-}
+  "NAM_CONDSAMP": { "LCONDSAMP"          : ".TRUE.", 
+                    "NCONDSAMP"          : "3"},
+  # "NAM_BUDGET" :
+#        CBUTYPE='CART',
+#        NBUIL=1, NBUIH=512,
+#        NBUJL=1, NBUJH=512,
+#        NBUKL=1, NBUKH=118,
+#        LBU_KCP=.FALSE.,
+#        LBU_JCP=.TRUE.,
+#        LBU_ICP=.TRUE.,
+#        XBUWRI=1800.,
+#        XBULEN=1800. /
+
+#&NAM_BU_RTH LBU_RTH=.TRUE., CBULIST_RTH(1)='FRC', CBULIST_RTH(2)='ADV', 
+#            CBULIST_RTH(3)='VTURB+HTURB',
+#            CBULIST_RTH(4)='ADJU', 
+#            CBULIST_RTH(5)='REVA+HENU+HON+SFR+DEPS+DEPG+IMLT+BERFI+RIM+ACC+CFRZ+WETG+DRYG+GMLT+DEPI+CORR+NECON+NEADV+NETUR+NEGA',
+#            CBULIST_RTH(6)='INIF', CBULIST_RTH(7)='ENDF', CBULIST_RTH(8)='AVEF'/
+#
+#&NAM_BU_RRV LBU_RRV=.TRUE., CBULIST_RRV(1)='FRC', CBULIST_RRV(2)='ADV', CBULIST_RRV(3)='VTURB+HTURB',
+#            CBULIST_RRV(4)='ADJU', 
+#            CBULIST_RRV(5)='REVA+DEPS+DEPG+DEPI+HENU+CORR+NECON+NEADV+NETUR+NEGA', 
+#            CBULIST_RRV(6)='INIF', CBULIST_RRV(7)='ENDF', CBULIST_RRV(8)='AVEF'/
+#&NAM_BU_RU LBU_RU=.TRUE., CBULIST_RU(1)='FRC', CBULIST_RU(2)='COR', 
+#            CBULIST_RU(3)='ADV', CBULIST_RU(4)='VTURB+HTURB',
+#            CBULIST_RU(5)='PRES', 
+#            CBULIST_RU(6)='INIF', CBULIST_RU(7)='ENDF', CBULIST_RU(8)='AVEF'/
+#&NAM_BU_RV LBU_RV=.TRUE., CBULIST_RV(1)='FRC', CBULIST_RV(2)='COR', 
+#            CBULIST_RV(3)='ADV', CBULIST_RV(4)='VTURB+HTURB',
+#            CBULIST_RV(5)='PRES', 
+#            CBULIST_RV(6)='INIF', CBULIST_RV(7)='ENDF', CBULIST_RV(8)='AVEF'/
+#  "NAM_OUTPUT"     :
+#                { "COUT_VAR(1,1)='UT'", COUT_VAR(1,2) = 'VT',
+#            COUT_VAR(1,3) = 'WT', COUT_VAR(1,4) = 'THT',
+#            COUT_VAR(1,5) = 'RVT', COUT_VAR(1,6)='RCT',
+#            COUT_VAR(1,7)='RRT', COUT_VAR(1,8)='TKET',
+#            COUT_VAR(1,9)='PABST',
+#            COUT_VAR(1,10)='RIT', COUT_VAR(1,11)='RST',
+#            COUT_VAR(1,12)='RGT',
+#            XOUT_TIME_FREQ(1) = 3600.,
+#            XOUT_TIME_FREQ_FIRST(1) = 3600. },
+  }
 
 # specific adaptations of default exseg to CRM mode
 preidea_CRM = {}

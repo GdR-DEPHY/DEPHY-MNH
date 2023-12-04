@@ -1,8 +1,31 @@
 - reprendre et factoriser les scripts de conversion (LES/1D et dedans)
+
 - discuter avec Benoit pour la config LIMA (config REF + sensibilités)
+=> DONE
+Besoin d'inclure le 'mode_lima_tendencies.f90' envoyé par email le 30 Nov 2023
+et la namelist suivante:
+&NAM_PARAM_LIMA
+        NMOM_C=1,
+        NMOM_R=1,
+        NMOM_I=1,
+        NMOM_S=1,
+        NMOM_G=1,
+        NMOD_CCN=0,
+        LACTI=F,
+        NMOD_IFN=0,
+        LKESSLERAC=T /
+        # si les cas sont chauds, possibilité de mettre NMOM_I=0, NMOM_S=0, NMOM_G=0
+
+Tests de sensibilité conseillés: 
+activation NMOM_C=2 (juste eau liquide)
+activation NMOM_C=2 & NMOM_R=2 (eau liquide + rain)
+autoconversion en testant celle de ICE3, celle de LIMA et celle de KHKO
+Faire varier CCN a 100, 300, 1000
+
 - déterminer les périodes de spin-up et d'intérêt pour chaque cas
 - réfléchir au forçage en vent : 
   - à la surface, u* ou z0 ? => plutôt u* pour mieux contraindre les flux 
   - en volume, coriolis+géostroph ; rappel profil moyen ; chaque colonne ?
     => plutôt rappel profil moyen puis delta U à chaque colonne
+
 - vérifier les fichiers formats communs == les papiers de référence
