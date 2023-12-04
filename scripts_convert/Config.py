@@ -40,12 +40,36 @@ from mesonh import preidea_SCM, exseg_SCM
 #------------ HELPER FUNCTIONS ------------#
 #------------------------------------------#
 def copy_config(copy_to, copy_from, namelist, key):
-  """ either full copy or only one namelist or only one key of one namelist """
+  """ either full copy or only one namelist or only one key of one namelist 
+  # copy_to   intent inout
+  # copy_from intent in
+  # namelist  intent in
+  # key       intent in
+  """
   if namelist=="all": # copy all
     copy_to = copy.deepcopy(copy_from)
   else:
     if key=="all":
       copy_to[namelist] = copy_from[namelist].copy()
+    else:
+      copy_to[namelist][key] = copy_from[namelist][key]
+  return copy_to
+
+def replace_config(copy_to, copy_from, namelist, key):
+  """ either full config or only one namelist or only one key of one namelist 
+  # copy_to   intent inout
+  # copy_from intent in
+  # namelist  intent in
+  # key       intent in
+  """
+  if namelist=="all": # copy all
+    for nam in copy_from:
+      for k in copy_from[nam]:
+        copy_to[nam][k] = copy_from[nam][k]
+  else:
+    if key=="all":
+      for k in copy_from[namelist]:
+        copy_to[namelist][k] = copy_from[namelist][k]
     else:
       copy_to[namelist][key] = copy_from[namelist][key]
   return copy_to
@@ -78,12 +102,14 @@ class Config:
     # mode = None (default MNH), LES, CRM, SCM
     #
     ## fields of Config object:
-    # .name = fic (PREIDEA, EXSEG* ...)
+    # .case = case
+    # .name = fic
     # .mode = mode [None|LES|CRM|SCM]
     # .is_exseg = 0 if preidea, 1 if exseg
     # .config = preidea or exseg dicts of dicts of the form:
     # {"NAM_name":{"key1":"val1", "key2":"val2}, "NAM_other":{"key":"val"}}
     """
+    self.case = case # ARMCU...
     self.name = fic  # PREIDEA OR EXSEG ...
     self.mode = mode # None|LES|CRM|SCM
 
@@ -104,9 +130,7 @@ class Config:
       config_ = exseg_SCM if self.is_exseg else preidea_SCM
     else : print("error: unknown constructor mode %s"%mode); exit()
 
-    for nam in config_:
-      for key in config_[nam]:
-        self.config[nam][key] = config_[nam][key]
+    self.config = replace_config(self.config, config_, "all", "all")
 
   def __str__(self):
     """ print namelist to screen """
@@ -118,7 +142,12 @@ class Config:
   def write(self, outfile):
     write_namelist(self.config, outfile)
 
-  def copy(self, copy_from, namelist="all", key="all"):
+  def duplicate_config(self, name=None):
+    new_conf = Config(self.case, self.name if name is None else name, self.mode)
+    new_conf.config = copy_config(new_conf.config, self.config, "all", "all")
+    return new_conf
+
+  def copy_config_from(self, copy_from, namelist="all", key="all"):
     self.config = copy_config(self.config, copy_from.config, namelist, key)
 
   def modify(self, namelist, key, value):

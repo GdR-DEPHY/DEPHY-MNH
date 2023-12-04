@@ -12,6 +12,14 @@ config.activate_radiation()
 config.modify("NAM_PARAM_ECRAD", "NSWSOLVER", "1")
 config.write('cumulus_with_radiation_LES_namelist.nam')
 
+exseg1 = config.duplicate_config(name="EXSEG01")
+exseg1.modify("NAM_DYN", "XSEGLEN", "%i"%(4*3600))
+exseg1.write('exseg01_cumulus_with_radiation_LES_namelist.nam')
+
+exseg2 = config.duplicate_config(name="EXSEG02")
+exseg2.modify("NAM_DYN", "XSEGLEN", "%i"%(1*3600))
+exseg2.write('exseg02_cumulus_with_radiation_LES_namelist.nam')
+
 exit()
 
 ## Scénario du script de conversion au format commun
