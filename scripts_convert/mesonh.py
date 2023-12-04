@@ -8,7 +8,7 @@ preidea_LES = {
   "NAM_DIMn_PRE" : { "NIMAX" : "%i"%Nhoriz, 
                      "NJMAX" : "%i"%Nhoriz      },
   "NAM_VER_GRID" : { "NKMAX" : "%i"%Nverti,
-                     "LTHINSHELL" : ".TRUE."    },
+                     "LTHINSHELL" : ".TRUE."    },# Attention a n'activer que pour la shallow -> peut etre a false partout?
   "NAM_CONF_PRE" : { "LPERTURB" : ".TRUE.",     },
   "NAM_CONFZ"    : { "MPI_BUFFER_SIZE" : "400", },
   "NAM_GRIDH_PRE": { "XDELTAX"  : "%g"%deltah, 
@@ -16,8 +16,9 @@ preidea_LES = {
 }
 
 exseg_LES = {
-  "NAM_DYN"    : { "LNUMDIFU"   : ".FALSE.",     },
+  "NAM_DYN"    : { "LNUMDIFU"   : ".TRUE.",     },
   "NAM_DYNn"   : { "XTSTEP"     : "1.",
+                   "XT4DIFU"    : "300.",
                    "CPRESOPT"   : "'ZRESI'",     }, # parallel CRESI
   "NAM_TURBn"  : { "XIMPL"      : "0.",
                    "XKEMIN"     : "1E-10",
@@ -37,25 +38,116 @@ exseg_LES = {
                   "XLES_TEMP_MEAN_START" : "0.",
                   "XLES_TEMP_MEAN_STEP"  : "3600."},
   "NAM_CONDSAMP": { "LCONDSAMP"    : ".TRUE."    },
-  "NAM_BUDGET"  : { "NBUIH"        : "%i"%Nhoriz,
+  "&NAM_CONFZ"  : { "MPI_BUFFER_SIZE" :"400"  },
+  "NAM_BUDGET"  : { "CBUTYPE"      : "CART",
+                    "NBUIH"        : "%i"%Nhoriz,
                     "NBUJH"        : "%i"%Nhoriz, 
-                    "NBUKH"        : "%i"%Nverti,},
+                    "NBUKH"        : "%i"%Nverti,
+                    "LBU_JCP"      : ".TRUE.",
+                    "LBU_ICP"      : ".TRUE.",},
   "NAM_OUTPUT"  : { "COUT_VAR(1,13)" : "'SVT001'",
                     "COUT_VAR(1,14)" : "'SVT002'",
                     "COUT_VAR(1,15)" : "'SVT003'", },
 }
 
 # specific adaptations of default exseg to CRM mode
-preidea_CRM = {}
+#FLEUR
+# peut-etre que Nhoriz, Nverti, deltah, deltav c'est dépendant du mode LES je ne sais pas comment coder ca
+#Nhoriz = 100 # nb minimum pour avoir des circulations résolues 
+#Nverti = 160
+#deltah = 2500.
+#deltav = 25. # pour l'instant on garde la meme résolution verticale que les cas LES
+preidea_CRM = {{
+  "NAM_DIMn_PRE" : { "NIMAX" : "%i"%Nhoriz, 
+                     "NJMAX" : "%i"%Nhoriz      },
+  "NAM_VER_GRID" : { "NKMAX" : "%i"%Nverti,
+                     "LTHINSHELL" : ".TRUE."    },
+  "NAM_CONF_PRE" : { "LPERTURB" : ".TRUE.",     },
+  "NAM_GRIDH_PRE": { "XDELTAX"  : "%g"%deltah, 
+                     "XDELTAY"  : "%g"%deltah   },
+}
 exseg_CRM = {
-  "NAM_PARAMn" : {
-    "CSCONV"            : "'EDKF'",
-  }
+  "NAM_PARAMn" : { "CSCONV"     : "'EDKF'",      },
+  "NAM_DYN"    : { "LNUMDIFU"   : ".TRUE.",     },
+  "NAM_DYNn"   : { "XTSTEP"     : "10.",
+                   "CPRESOPT"   : "'ZRESI'",     }, # parallel CRESI
+  "NAM_TURBn"  : { "XIMPL"      : "1.",
+                   "XKEMIN"     : "1E-10",
+                   "CTURBLEN"   : "'BL89'",
+                   "CTURBDIM"   : "'1DIM'",
+                   "LTURB_FLX"  : ".TRUE.",
+                   "LTURB_DIAG" : ".TRUE.", 
+                   "LSIGMAS"    : ".TRUE.",
+                   "LSUBG_COND" : ".TRUE.",
+                   "LRMC01"     :".TRUE.",       },
+  "NAM_PARAM_MFSHALLn" : {"CMF_UPDRAFT"    :"EDKF",
+                          "CMF_CLOUD"      :"DIRE", 
+                          "LMIXUV"         :".TRUE.", 
+                          "LMF_FLX"        : ".TRUE."},
+  "NAM_LES" :   { "LLES_MEAN"      : ".TRUE.",
+                  "LLES_SUBGRID"   : ".TRUE.",
+                  "LLES_RESOLVED"  : ".TRUE.",
+                  "XLES_TEMP_SAMPLING"   : "300.",
+                  "XLES_TEMP_MEAN_START" : "0.",
+                  "XLES_TEMP_MEAN_STEP"  : "3600."},
+  "NAM_CONDSAMP": { "LCONDSAMP"    : ".TRUE."    },
+  "NAM_BUDGET"  : { "NBUIH"        : "%i"%Nhoriz,
+                    "NBUJH"        : "%i"%Nhoriz, 
+                    "NBUKH"        : "%i"%Nverti,
+                    "LBU_JCP"      : ".TRUE.",
+                    "LBU_ICP"      : ".TRUE."},
+  "NAM_OUTPUT"  : { "COUT_VAR(1,13)" : "'SVT001'",
+                    "COUT_VAR(1,14)" : "'SVT002'",
+                    "COUT_VAR(1,15)" : "'SVT003'", },
 }
 
 # specific adaptations of default exseg to SCM mode
-preidea_SCM = {}
-exseg_SCM = {}
+#Nhoriz = 1 # nb minimum pour avoir des circulations résolues 
+#Nverti = 160
+#deltah = 50000.
+#deltav = 25. # pour l'instant on garde la meme résolution verticale que les cas LES
+preidea_SCM = {
+  "NAM_DIMn_PRE" : { "NIMAX" : "%i"%Nhoriz, 
+                     "NJMAX" : "%i"%Nhoriz      },
+  "NAM_VER_GRID" : { "NKMAX" : "%i"%Nverti,
+                     "LTHINSHELL" : ".TRUE."    },
+  "NAM_CONF_PRE" : { "LPERTURB" : ".FALSE.",     },
+  "NAM_GRIDH_PRE": { "XDELTAX"  : "%g"%deltah, 
+                     "XDELTAY"  : "%g"%deltah   },
+}
+exseg_SCM = {
+  "NAM_PARAMn" : { "CSCONV"     : "'EDKF'",
+                   "CDCONV"     : "'KAFR'" },
+  "NAM_DYN"    : { "LNUMDIFU"   : ".TRUE.",     },
+  "NAM_DYNn"   : { "XTSTEP"     : "30.", },
+  "NAM_TURBn"  : { "XIMPL"      : "1.",
+                   "XKEMIN"     : "1E-10",
+                   "CTURBLEN"   : "'BL89'",
+                   "CTURBDIM"   : "'1DIM'",
+                   "LTURB_FLX"  : ".TRUE.",
+                   "LTURB_DIAG" : ".TRUE.", 
+                   "LSIGMAS"    : ".TRUE.",
+                   "LSUBG_COND" : ".TRUE.",
+                   "LRMC01"     :".TRUE.",       },
+  "NAM_PARAM_MFSHALLn" : {"CMF_UPDRAFT"    :"EDKF",
+                          "CMF_CLOUD"      :"DIRE", 
+                          "LMIXUV"         :".TRUE.", 
+                          "LMF_FLX"        : ".TRUE."},
+  "NAM_PARAM_KAFRn" : {"XDTCONV"    :"10.",
+                          "LDAIGCONV"      :"TRUE"}, 
+  "NAM_LES" :   { "LLES_MEAN"      : ".TRUE.",
+                  "LLES_SUBGRID"   : ".TRUE.",
+                  "LLES_RESOLVED"  : ".FALSE.",
+                  "XLES_TEMP_SAMPLING"   : "300.",
+                  "XLES_TEMP_MEAN_START" : "0.",
+                  "XLES_TEMP_MEAN_STEP"  : "3600."},
+  "NAM_CONDSAMP": { "LCONDSAMP"    : ".TRUE."    },
+  "NAM_BUDGET"  : { "NBUIH"        : "%i"%Nhoriz,
+                    "NBUJH"        : "%i"%Nhoriz, 
+                    "NBUKH"        : "%i"%Nverti},
+  "NAM_OUTPUT"  : { "COUT_VAR(1,13)" : "'SVT001'",
+                    "COUT_VAR(1,14)" : "'SVT002'",
+                    "COUT_VAR(1,15)" : "'SVT003'", },}
 
 ######################################
 ## DEFAULT CONFIGS IN MESO-NH 5.6.2 ##
@@ -100,7 +192,6 @@ SURF_IDEAL_FLUX__ = { # surfex default namelist
 
 MODD_CONF__   = { # general config
   "CCONF"             :"'START'",
-  "LTHINSHELL"        : ".FALSE.",
   "L2D"               : ".FALSE.",
   "L1D"               : ".FALSE.",
   "LFLAT"             : ".TRUE.", #".FALSE.",
@@ -371,7 +462,6 @@ MODD_BUDGET__  = { # compute budgets
   "NBUMOD"            : "1",
   "NBUKL"             : "1",
   "NBUKH"             : "0",        
-  "LBU_KCP"           : ".TRUE.",
   "NBUIL"             : "1",
   "NBUIH"             : "0",      
   "NBUJL"             : "1",
