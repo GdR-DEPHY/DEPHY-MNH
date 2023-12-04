@@ -4,6 +4,9 @@ default = Config("ARMCU", "EXSEG01", None)
 default.write('default_namelist.nam')
 #print(default)
 
+config = Config("ARMCU", "PREIDEA", "LES")
+config.write('default_LES_preidea.nam')
+
 config = Config("ARMCU", "EXS", "LES")
 config.write('default_LES_namelist.nam')
 

@@ -162,5 +162,12 @@ class Config:
     self.modify("NAM_PARAM_LIMA", "NMOM_S", "0")
     self.modify("NAM_PARAM_LIMA", "NMOM_G", "0")
 
+  def deactivate_radiation(self):
+    self.modify("NAM_PARAMn", "CRAD", "'NONE'")
   def activate_radiation(self):
     self.modify("NAM_PARAMn", "CRAD", "'ECRA'")
+
+  def deactivate_budgets(self):
+    self.modify("NAM_BUDGET", "CBUTYPE", "'NONE'")
+  def activate_budgets(self):
+    self.modify("NAM_BUDGET", "CBUTYPE", "'CART'")

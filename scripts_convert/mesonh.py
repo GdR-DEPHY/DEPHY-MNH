@@ -1,20 +1,24 @@
+Nhoriz = 1024
+Nverti = 160
+deltah = 25.
+deltav = 25.
+
 # specific adaptations of default exseg to LES mode
 preidea_LES = {
-  "NAM_DIMn_PRE" : { "NIMAX" : "1024", 
-                     "NJMAX" : "1024" },
-  "NAM_CONF_PRE" : { "NVERB"    : "10",
-                     "CIDEAL"   : "'RSOU'",
-                     "LFORCING" : ".TRUE.",
-                     "LPERTURB" : ".TRUE.", },
-  "NAM_PERT_PRE" : { "CPERT_KIND" : "'WH'", },
+  "NAM_DIMn_PRE" : { "NIMAX" : "%i"%Nhoriz, 
+                     "NJMAX" : "%i"%Nhoriz      },
+  "NAM_VER_GRID" : { "NKMAX" : "%i"%Nverti,
+                     "LTHINSHELL" : ".TRUE."    },
+  "NAM_CONF_PRE" : { "LPERTURB" : ".TRUE.",     },
+  "NAM_CONFZ"    : { "MPI_BUFFER_SIZE" : "400", },
+  "NAM_GRIDH_PRE": { "XDELTAX"  : "%g"%deltah, 
+                     "XDELTAY"  : "%g"%deltah   },
 }
 
 exseg_LES = {
-  "NAM_DYN"    : { "LNUMDIFU"   : ".FALSE.", },
+  "NAM_DYN"    : { "LNUMDIFU"   : ".FALSE.",     },
   "NAM_DYNn"   : { "XTSTEP"     : "1.",
-                   "CPRESOPT"   : "'ZRESI'", },
-  "NAM_PARAMn" : { "CTURB"      : "'TKEL'",
-                   "CCLOUD"     : "'LIMA'", },
+                   "CPRESOPT"   : "'ZRESI'",     }, # parallel CRESI
   "NAM_TURBn"  : { "XIMPL"      : "0.",
                    "XKEMIN"     : "1E-10",
                    "CTURBLEN"   : "'DEAR'",
@@ -22,81 +26,29 @@ exseg_LES = {
                    "LTURB_FLX"  : ".TRUE.",
                    "LTURB_DIAG" : ".TRUE.", 
                    "LSIGMAS"    : ".FALSE.",
-                   "LRMC01"     :".TRUE.", },
-  "NAM_PARAM_LIMA" : 
-                 { "NMOM_C"     : "1",
-                   "NMOM_R"     : "1",
-                   "NMOM_I"     : "1",
-                   "NMOD_CCN"   : "0",
-                   "LACTI"      : ".FALSE.",
-                   "NMOD_IFN"   : "0",
-                   "LKESSLERAC" : ".TRUE.", },
-  "NAM_PARAM_C2R2" :
-                 { "HPARAM_CCN" : "'CPB'",
-                   "HINI_CCN"   : "'CCN'",
-                   "XCHEN"      : "0.173E+09",
-                   "XKHEN"      : "1.403",
-                   "XMUHEN"     : "0.834",
-                   "XBETAHEN"   : "25.499",
-                   "LRAIN"      : ".FALSE.",
-                   "LSEDC"      : ".FALSE.", },
-  "NAM_LES" :   { "LLES_MEAN"            : ".TRUE.",
-                  "LLES_SUBGRID"         : ".TRUE.",
-                  "LLES_RESOLVED"        : ".TRUE.",
-                  "LLES_NEB_MASK"        : ".TRUE.", 
-                  "LLES_CORE_MASK"       : ".TRUE.", 
-                  "LLES_CS_MASK"         : ".TRUE.",
+                   "LRMC01"     :".TRUE.",       },
+  "NAM_LES" :   { "LLES_MEAN"      : ".TRUE.",
+                  "LLES_SUBGRID"   : ".TRUE.",
+                  "LLES_RESOLVED"  : ".TRUE.",
+                  "LLES_NEB_MASK"  : ".TRUE.", 
+                  "LLES_CORE_MASK" : ".TRUE.", 
+                  "LLES_CS_MASK"   : ".TRUE.",
                   "XLES_TEMP_SAMPLING"   : "300.",
                   "XLES_TEMP_MEAN_START" : "0.",
-                  "XLES_TEMP_MEAN_STEP"  : "3600." },
-  "NAM_CONDSAMP": { "LCONDSAMP"          : ".TRUE.", 
-                    "NCONDSAMP"          : "3"},
-  # "NAM_BUDGET" :
-#        CBUTYPE='CART',
-#        NBUIL=1, NBUIH=512,
-#        NBUJL=1, NBUJH=512,
-#        NBUKL=1, NBUKH=118,
-#        LBU_KCP=.FALSE.,
-#        LBU_JCP=.TRUE.,
-#        LBU_ICP=.TRUE.,
-#        XBUWRI=1800.,
-#        XBULEN=1800. /
-
-#&NAM_BU_RTH LBU_RTH=.TRUE., CBULIST_RTH(1)='FRC', CBULIST_RTH(2)='ADV', 
-#            CBULIST_RTH(3)='VTURB+HTURB',
-#            CBULIST_RTH(4)='ADJU', 
-#            CBULIST_RTH(5)='REVA+HENU+HON+SFR+DEPS+DEPG+IMLT+BERFI+RIM+ACC+CFRZ+WETG+DRYG+GMLT+DEPI+CORR+NECON+NEADV+NETUR+NEGA',
-#            CBULIST_RTH(6)='INIF', CBULIST_RTH(7)='ENDF', CBULIST_RTH(8)='AVEF'/
-#
-#&NAM_BU_RRV LBU_RRV=.TRUE., CBULIST_RRV(1)='FRC', CBULIST_RRV(2)='ADV', CBULIST_RRV(3)='VTURB+HTURB',
-#            CBULIST_RRV(4)='ADJU', 
-#            CBULIST_RRV(5)='REVA+DEPS+DEPG+DEPI+HENU+CORR+NECON+NEADV+NETUR+NEGA', 
-#            CBULIST_RRV(6)='INIF', CBULIST_RRV(7)='ENDF', CBULIST_RRV(8)='AVEF'/
-#&NAM_BU_RU LBU_RU=.TRUE., CBULIST_RU(1)='FRC', CBULIST_RU(2)='COR', 
-#            CBULIST_RU(3)='ADV', CBULIST_RU(4)='VTURB+HTURB',
-#            CBULIST_RU(5)='PRES', 
-#            CBULIST_RU(6)='INIF', CBULIST_RU(7)='ENDF', CBULIST_RU(8)='AVEF'/
-#&NAM_BU_RV LBU_RV=.TRUE., CBULIST_RV(1)='FRC', CBULIST_RV(2)='COR', 
-#            CBULIST_RV(3)='ADV', CBULIST_RV(4)='VTURB+HTURB',
-#            CBULIST_RV(5)='PRES', 
-#            CBULIST_RV(6)='INIF', CBULIST_RV(7)='ENDF', CBULIST_RV(8)='AVEF'/
-#  "NAM_OUTPUT"     :
-#                { "COUT_VAR(1,1)='UT'", COUT_VAR(1,2) = 'VT',
-#            COUT_VAR(1,3) = 'WT', COUT_VAR(1,4) = 'THT',
-#            COUT_VAR(1,5) = 'RVT', COUT_VAR(1,6)='RCT',
-#            COUT_VAR(1,7)='RRT', COUT_VAR(1,8)='TKET',
-#            COUT_VAR(1,9)='PABST',
-#            COUT_VAR(1,10)='RIT', COUT_VAR(1,11)='RST',
-#            COUT_VAR(1,12)='RGT',
-#            XOUT_TIME_FREQ(1) = 3600.,
-#            XOUT_TIME_FREQ_FIRST(1) = 3600. },
-  }
+                  "XLES_TEMP_MEAN_STEP"  : "3600."},
+  "NAM_CONDSAMP": { "LCONDSAMP"    : ".TRUE."    },
+  "NAM_BUDGET"  : { "NBUIH"        : "%i"%Nhoriz,
+                    "NBUJH"        : "%i"%Nhoriz, 
+                    "NBUKH"        : "%i"%Nverti,},
+  "NAM_OUTPUT"  : { "COUT_VAR(1,13)" : "'SVT001'",
+                    "COUT_VAR(1,14)" : "'SVT002'",
+                    "COUT_VAR(1,15)" : "'SVT003'", },
+}
 
 # specific adaptations of default exseg to CRM mode
 preidea_CRM = {}
 exseg_CRM = {
   "NAM_PARAMn" : {
-    "CTURB"             : "'TKEL'",
     "CSCONV"            : "'EDKF'",
   }
 }
@@ -107,6 +59,8 @@ exseg_SCM = {}
 
 ######################################
 ## DEFAULT CONFIGS IN MESO-NH 5.6.2 ##
+# modified to match default config  ##
+# in DEPHY project                  ##
 ######################################
 
 MODD_CONFIO__ = { # I/O file type
@@ -116,7 +70,14 @@ MODD_CONFIO__ = { # I/O file type
 }
 
 MODD_CONFZ__  = { # parallelism
-  "MPI_BUFFER_SIZE"   : "400",
+  "NZ_VERB"         : "0",
+  "NZ_PROC"         : "0",
+  "NB_PROCIO_R"     : "1",
+  "NB_PROCIO_W"     : "1",
+  "MPI_BUFFER_SIZE" : "40",
+  "LMNH_MPI_BSEND"  : ".TRUE.",
+  "LMNH_MPI_ALLTOALLV_REMAP" : ".FALSE.",
+  "NZ_SPLITTING"    : "10",
 }
 
 MODD_BACKUP__ = { # backup files for restarts
@@ -129,7 +90,7 @@ SURF_IDEAL_FLUX__ = { # surfex default namelist
   "XTIMEF"            : "0",
   "XTIMET"            : "0",
   "XSFTH"             : "0.",
-  "CSFTQ"             : "'kg/m2/s'",
+  "CSFTQ"             : "'W/m2'", #'kg/m2/s'",
   "XSFTQ"             : "0.",
   "CUSTARTYPE"        : "Z0",
   "XUSTAR"            : "0.",
@@ -142,13 +103,13 @@ MODD_CONF__   = { # general config
   "LTHINSHELL"        : ".FALSE.",
   "L2D"               : ".FALSE.",
   "L1D"               : ".FALSE.",
-  "LFLAT"             : ".FALSE.",
+  "LFLAT"             : ".TRUE.", #".FALSE.",
   "NMODEL"            : "1",
   "CEQNSYS"           : "'DUR'",
-  "NVERB"             : "5",
+  "NVERB"             : "6",      # "5", 
   "CEXP"              : "'EXP01'",
   "CSEG"              : "'SEG01'",
-  "LFORCING"          : ".FALSE.",
+  "LFORCING"          : ".TRUE",  #".FALSE.",
   "L2D_ADV_FRC"       : ".FALSE.",
   "L2D_REL_FRC"       : ".FALSE. ",
   "XRELAX_HEIGHT_BOT" : "0.",
@@ -256,9 +217,9 @@ MODD_ADVn__   = { # advection for model n
 }
 
 MODD_PARAMn__ = { # activate params for model n
-  "CTURB"             : "'NONE'",
+  "CTURB"             : "'TKEL'", # "'NONE'"
   "CRAD"              : "'NONE'",
-  "CCLOUD"            : "'NONE'",
+  "CCLOUD"            : "'LIMA'", # "'NONE'"
   "CDCONV"            : "'NONE'",
   "CSCONV"            : "'NONE'",
   "CELEC"             : "'NONE'",
@@ -339,7 +300,7 @@ MODD_PARAM_LIMA__ = {  # config microphysics scheme
    "YALPHAC"          : "3.0",
    "YNUR"             : "2.0",
    "YALPHAR"          : "1.0",
-   "LACTI"            : ".TRUE.",
+   "LACTI"            : ".FALSE.",#".TRUE.",
    "OSEDC"            : ".TRUE.",
    "OACTIT"           : ".FALSE.",
    "LADJ"             : ".TRUE.",
@@ -348,9 +309,9 @@ MODD_PARAM_LIMA__ = {  # config microphysics scheme
    "ODEPOC"           : ".TRUE.",
    "LBOUND"           : ".FALSE.",
    "OACTTKE"          : ".TRUE.",
-   "LKESSLERAC"       : ".FALSE.",
-   "NMOM_C"           : "2",
-   "NMOM_R"           : "2",
+   "LKESSLERAC"       : ".TRUE.", #".FALSE.",
+   "NMOM_C"           : "1",      #"2",
+   "NMOM_R"           : "1",      #"2",
    "OVDEPOC"          : "0.02",
    "CINI_CCN"         : "'AER'",
    "CTYPE_CCN(:)"     : "'M'",
@@ -358,7 +319,7 @@ MODD_PARAM_LIMA__ = {  # config microphysics scheme
    "YAERHEIGHT"       : "2000.",
    "YFSOLUB_CCN"      : "1.0",
    "YACTEMP_CCN"      : "280.",
-   "NMOD_CCN"         : "1",
+   "NMOD_CCN"         : "0",      #"1",
    "LSCAV"            : ".FALSE.",
    "LAERO_MASS"       : ".FALSE.",
    "LCCN_HOM"         : ".TRUE.",
@@ -373,11 +334,11 @@ MODD_PARAM_LIMA__ = {  # config microphysics scheme
    "CHEVRIMED_ICE_LIMA": "'GRAU'",
    "XFACTNUC_DEP"     : "1.0",  
    "XFACTNUC_CON"     : "1.0",
-   "NMOM_I"           : "2",
+   "NMOM_I"           : "1",      #"2",
    "NMOM_S"           : "1",
    "NMOM_G"           : "1",
    "NMOM_H"           : "0",
-   "NMOD_IFN"         : "1",
+   "NMOD_IFN"         : "0",      #"1",
    "NIND_SPECIE"      : "1",
    "LMEYERS"          : ".FALSE.",
    "LIFN_HOM"         : ".TRUE.",
@@ -391,22 +352,23 @@ MODD_PARAM_LIMA__ = {  # config microphysics scheme
    "LRDSF"            : ".FALSE.",
 }
 
-MODD_PARAM_C2R2__ = {
-    "HPARAM_CCN"      : "'XXX'",
-    "HINI_CCN"        : "'XXX'",
-    "XCHEN"           : "0.0",
-    "XKHEN"           : "0.0",
-    "XMUHEN"          : "0.0",
-    "XBETAHEN"        : "0.0",
-    "LRAIN"           : ".TRUE.",
-    "LSEDC"           : ".TRUE.",
+MODD_PARAM_C2R2__ = {               # default MNH
+    "HPARAM_CCN"      : "'CPB'",    #"'XXX'",
+    "HINI_CCN"        : "'CCN'",    #"'XXX'",
+    "XCHEN"           : "0.173E+09",#"0.0",
+    "XKHEN"           : "1.403",    #"0.0",
+    "XMUHEN"          : "0.834",    #"0.0",
+    "XBETAHEN"        : "25.499",   #"0.0",
+    "LRAIN"           : ".FALSE.",  #".TRUE.",
+    "LSEDC"           : ".FALSE.",  #".TRUE.",
 }
 
 MODD_BUDGET__  = { # compute budgets
-  "CBUTYPE"           : "'NONE'",
+  "CBUTYPE"           : "'CART'",   #"'NONE'",
+  "LBU_KCP"           : ".FALSE.",  #".TRUE",
+  "XBUWRI"            : "3600.",    #MODD_DYN__["XSEGLEN"],
+  "XBULEN"            : "3600.",    #MODD_DYN__["XSEGLEN"],
   "NBUMOD"            : "1",
-  "XBULEN"            : MODD_DYN__["XSEGLEN"],
-  "XBUWRI"            : MODD_DYN__["XSEGLEN"],
   "NBUKL"             : "1",
   "NBUKH"             : "0",        
   "LBU_KCP"           : ".TRUE.",
@@ -450,21 +412,128 @@ MODD_CONDSAMP__ = { # conditional sampling
   "LTPLUS"            : ".TRUE.",
 }
 
+MODD_OUTPUT__  = {
+  #"XOUT_TIME"              : "%i"%8*999*-999.,
+  #"NOUT_STEP"              : "%i"%8*999*-999 ,
+  "XOUT_TIME_FREQ(1)"      : "3600", # "-999.",
+  "XOUT_TIME_FREQ_FIRST(1)": "3600", # "0.",
+  #"NOUT_STEP_FREQ"         : "-999",
+  #"NOUT_STEP_FREQ_FIRST"   : "1",
+  "LOUT_BEG"               : ".FALSE.",
+  "LOUT_END"               : ".FALSE.",
+  "LOUT_REDUCE_FLOAT_PRECISION(1)" : ".FALSE.", 
+  "LOUT_COMPRESS(1)"       : ".FALSE.",
+  "NOUT_COMPRESS_LEVEL(1)" : "4",
+  "COUT_DIR"               : "''", 
+  #"COUT_VAR"             : "''",
+  "COUT_VAR(1,1)"          : "'UT'",
+  "COUT_VAR(1,2)"          : "'VT'",
+  "COUT_VAR(1,3)"          : "'WT'",
+  "COUT_VAR(1,4)"          : "'THT'",
+  "COUT_VAR(1,5)"          : "'RVT'", 
+  "COUT_VAR(1,6)"          : "'RCT'",
+  "COUT_VAR(1,7)"          : "'RRT'",
+  "COUT_VAR(1,8)"          : "'TKET'",
+  "COUT_VAR(1,9)"          : "'PABST'",
+  "COUT_VAR(1,10)"         : "'RIT'",
+  "COUT_VAR(1,11)"         : "'RST'",
+  "COUT_VAR(1,12)"         : "'RGT'",
+}
+
+MODD_BU_RTH__ = { 
+  "LBU_RTH"        : ".TRUE.",
+  "CBULIST_RTH(1)" : "'FRC'",
+  "CBULIST_RTH(2)" : "'ADV'",
+  "CBULIST_RTH(3)" : "'VTURB+HTURB'",
+  "CBULIST_RTH(4)" : "'ADJU'", 
+  "CBULIST_RTH(5)" : "'REVA+HENU+HON+SFR+DEPS+DEPG+IMLT+BERFI+RIM+ACC+CFRZ+WETG+DRYG+GMLT+DEPI+CORR+NECON+NEADV+NETUR+NEGA'",
+  "CBULIST_RTH(6)" : "'INIF'",
+  "CBULIST_RTH(7)" : "'ENDF'",
+  "CBULIST_RTH(8)" : "'AVEF'",
+}
+
+MODD_BU_RRV__ = {
+  "LBU_RRV"         : ".TRUE.",
+  "CBULIST_RRV(1)"  : "'FRC'",
+  "CBULIST_RRV(2)"  : "'ADV'",
+  "CBULIST_RRV(3)"  : "'VTURB+HTURB'",
+  "CBULIST_RRV(4)"  : "'ADJU'",
+  "CBULIST_RRV(5)"  : "'REVA+DEPS+DEPG+DEPI+HENU+CORR+NECON+NEADV+NETUR+NEGA'",
+  "CBULIST_RRV(6)"  : "'INIF'",
+  "CBULIST_RRV(7)"  : "'ENDF'",
+  "CBULIST_RRV(8)"  : "'AVEF'",
+}
+
+MODD_BU_RU__ = {
+  "LBU_RU"          : ".TRUE.",
+  "CBULIST_RU(1)"   : "'FRC'",
+  "CBULIST_RU(2)"   : "'COR'",
+  "CBULIST_RU(3)"   : "'ADV'",
+  "CBULIST_RU(4)"   : "'VTURB+HTURB'",
+  "CBULIST_RU(5)"   : "'PRES'", 
+  "CBULIST_RU(6)"   : "'INIF'",
+  "CBULIST_RU(7)"   : "'ENDF'",
+  "CBULIST_RU(8)"   : "'AVEF'",
+}
+
+MODD_BU_RV__ = {
+  "LBU_RV"          : ".TRUE.",
+  "CBULIST_RV(1)"   : "'FRC'",
+  "CBULIST_RV(2)"   : "'COR'",
+  "CBULIST_RV(3)"   : "'ADV'",
+  "CBULIST_RV(4)"   : "'VTURB+HTURB'",
+  "CBULIST_RV(5)"   : "'PRES'", 
+  "CBULIST_RV(6)"   : "'INIF'",
+  "CBULIST_RV(7)"   : "'ENDF'",
+  "CBULIST_RV(8)"   : "'AVEF'",
+}
+
 MODD_DIMn_PRE__ = { # pre_idea dimensions
   "NIMAX" : "10", 
   "NJMAX" : "10" 
+}
+
+MODD_DYNn_PRE__ = { # pressure solver
+  "CPRESOPT"          : "'CRESI'",
+  "NITR"              : "4",
+  "XRELAX"            : "1.",
+  "LRES"              : ".FALSE.",
+  "XRES"              : "1.E-07",
+}
+
+MODD_GRID_PRE__ = {
+  "XLON0"   : "0.",
+  "XLAT0"   : "60.",
+  "XBETA"   : "0.",
+  "XRPK"    : "1.",
+  "XLONORI" : "350.",
+  "XLATORI" : "37.",
+}
+
+MODD_VER_GRID__ = { # pre_idea vertical grid
+  "LTHINSHELL" : ".FALSE.",
+  "NKMAX"      : "10",
+  "YZGRID_TYPE": "'FUNCTN'",
+  "ZDZGRD"     : "%g"%deltav, #"300.",
+  "ZDZTOP"     : "%g"%deltav, #"300.",
+  "ZZMAX_STRGRD" : "0.",
+  "ZSTRGRD"    : "0.",
+  "ZSTRTOP"    : "0.",
+  "LSLEVE"     : ".FALSE.",
+  "XLEN1"      : "7500.",
+  "XLEN2"      : "2500.",
 }
 
 MODD_CONF_PRE__ = { # pre_idea config
   "LCARTESIAN" : ".TRUE.", 
   "LPACK"      : ".TRUE.", 
   "CEQNSYS"    : "'DUR'",
-  "NVERB"      : "5",
-  "CIDEAL"     : "'CSTN'",
+  "NVERB"      : "10",       #"5", 
+  "CIDEAL"     : "'RSOU'",   #"'CSTN'",
   "CZS"        : "'FLAT'", 
   "LBOUSS"     : ".FALSE.", 
   "LPERTURB"   : ".FALSE.",
-  "LFORCING"   : ".FALSE.",
+  "LFORCING"   : ".TRUE.",   # ".FALSE."
   "LSHIFT"     : ".FALSE.",
   "L2D_ADV_FRC": ".FALSE.",
   "L2D_REL_FRC": ".FALSE.",
@@ -474,7 +543,7 @@ MODD_CONF_PRE__ = { # pre_idea config
 }
 
 MODD_PERT_PRE__ = {
-  "CPERT_KIND" : "'TH'",
+  "CPERT_KIND" : "'WH'",
   "XAMPLITH"   : "1.5",
   "XAMPLIRV"   : "0.0",
   "XAMPLIUV"   : "1.0834",
@@ -489,12 +558,33 @@ MODD_PERT_PRE__ = {
   "LWH_LBYV"   : ".FALSE.",
 }
 
+MODD_GRIDH_PRE__ = { 
+  "XDELTAX"    : "5000.",
+  "XDELTAY"    : "5000.",
+  "XHMAX"      : "300.",
+  "NEXPX"      : "3",
+  "NEXPY"      : "1",
+  "XAX"        : "10000.",
+  "XAY"        : "10000.",
+  "NIZS"       : "5",
+  "NJZS"       : "5",
+}
+
+MODD_GRn_PRE__ =  {
+  "CSURF" : "'EXTE'", #"NONE",
+}
+
 default_preidea = {
   "NAM_CONFIO": MODD_CONFIO__,
   "NAM_CONFZ": MODD_CONFZ__,
   "NAM_DIMn_PRE": MODD_DIMn_PRE__,
+  "NAM_DYNn_PRE": MODD_DYNn_PRE__,
+  "NAM_GRID_PRE": MODD_GRID_PRE__,
+  "NAM_VER_GRID": MODD_VER_GRID__,
   "NAM_CONF_PRE": MODD_CONF_PRE__,
   "NAM_PERT_PRE": MODD_PERT_PRE__,
+  "NAM_GRIDH_PRE": MODD_GRIDH_PRE__,
+  "NAM_GRn_PRE": MODD_GRn_PRE__,
   "NAM_CONFn": MODD_CONFn__,
 }
 
@@ -519,4 +609,9 @@ default_exseg = {
   "NAM_BUDGET" : MODD_BUDGET__,
   "NAM_LES" : MODD_LES__,
   "NAM_CONDSAMP" : MODD_CONDSAMP__,
+  "NAM_OUTPUT" : MODD_OUTPUT__,
+  "NAM_BU_RTH" : MODD_BU_RTH__,
+  "NAM_BU_RRV" : MODD_BU_RRV__,
+  "NAM_BU_RU" : MODD_BU_RU__,
+  "NAM_BU_RV" : MODD_BU_RV__,
 }
