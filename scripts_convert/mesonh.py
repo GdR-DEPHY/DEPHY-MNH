@@ -64,6 +64,7 @@ preidea_CRM = {
 exseg_CRM = {
   "NAM_PARAMn" : { "CSCONV"     : "'EDKF'",      }, # activate shallow conv param
   "NAM_DYNn"   : { "XTSTEP"     : "10.",
+                   "XT4DIFU"    : "3000.",          # convention 300xtime_step
                    "CPRESOPT"   : "'ZRESI'",     }, # parallel CRESI
   "NAM_TURBn"  : { "LSUBG_COND" : ".TRUE.",      }, # activate subrid condensation
   "NAM_LES"    : { "XLES_TEMP_SAMPLING"   : "300.",
@@ -86,7 +87,8 @@ preidea_SCM = {
 exseg_SCM = {
   "NAM_PARAMn" : { "CSCONV"     : "'EDKF'",
                    "CDCONV"     : "'KAFR'"      },
-  "NAM_DYNn"   : { "XTSTEP"     : "30.",        },
+  "NAM_DYNn"   : { "XTSTEP"     : "30.",
+                   "XT4DIFU"    : "9000."        },# convention 300xtime_step
   "NAM_TURBn"  : { "LSUBG_COND" : ".TRUE.",     },
   "NAM_PARAM_MFSHALLn" : {"CMF_UPDRAFT"    :"EDKF",
                           "CMF_CLOUD"      :"DIRE", 
