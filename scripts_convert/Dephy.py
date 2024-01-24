@@ -44,6 +44,7 @@ class Case:
     .subcasename
     .shortname
     .type ["moistshcv", "dryshcv", "stable", "dcv"]
+    .var_t, var_q, var_u, var_v = {}
     """
     self.casename    = casename
     self.subcasename = subcasename
@@ -57,24 +58,48 @@ class Case:
     elif casename in listCaseStable    : self.type = "stable"
     elif casename in listCaseDryShCv   : self.type = "dryshcv"
 
-  def set_flags_and_keyword(self, FC_attributes):
-    """ set the type of variables that define initial profiles and advections
-    from global attributes read in common format file """
-    if FC_attributes["adv_ta"] == 1       : self.flag_t = "ta"
-    elif FC_attributes["adv_theta"] == 1  : self.flag_t = "theta"
-    elif FC_attributes["adv_thetal"] == 1 : self.flag_t = "thetal"
-    else : self.flag_t = "none"
-    if FC_attributes["adv_qv"] == 1       : self.flag_q = "qv"
-    elif FC_attributes["adv_qt"] == 1     : self.flag_q = "qt"
-    elif FC_attributes["adv_rv"] == 1     : self.flag_q = "rv" 
-    elif FC_attributes["adv_rt"] == 1     : self.flag_q = "rt"
-    else : self.flag_q = "none"
-    if self.flag_t == "thetal" : self.keyword = "ZUVTHLMR"
-    else: self.keyword = "ZUVTHDMR"
+    # name of variable use for initialisation, advection and nudging
+    # e.g. for temperature : var_t["ini"] = "ta" var_t["adv"] = "theta"
+    self.var_t={} # temperature: ta | theta | thetal
+    self.var_q={} # humidity: rv | qv | rt | qt
+    self.var_u={} # zonal wind : ug | ua_nud
+    self.var_v={} # meridional wind : vg | va_nud
+
+  def set_init_and_forcing_types(self, FC_attributes):
+    """ set the type of variables that define initial profiles, advection and
+    nudging from global attributes read in common format file """
+
+    for key in "ini","adv","nudging":
+      if FC_attributes[key+"_ta"] > 0        : self.var_t[key] = "ta"
+      elif FC_attributes[key+"_theta"] > 0   : self.var_t[key] = "theta"
+      elif FC_attributes[key+"_thetal"] > 0  : self.var_t[key] = "thetal"
+      else : self.var_t[key] = "none"
+      if FC_attributes[key+"_qv"] > 0        : self.var_q[key] = "qv"
+      elif FC_attributes[key+"_qt"] > 0      : self.var_q[key] = "qt"
+      elif FC_attributes[key+"_rv"] > 0      : self.var_q[key] = "rv" 
+      elif FC_attributes[key+"_rt"] > 0      : self.var_q[key] = "rt"
+      else : self.var_q[key] = "none"
+
+    # ini wind is always ua,va ; no wind advection ; 
+    # forcing can be either geostrophic or nudging or none
+    self.var_u["ini"]   = "ua"
+    self.var_v["ini"]   = "va"
+    if FC_attributes["forc_geo"]: 
+      self.var_u["frc"] = "ug"
+      self.var_v["frc"] = "vg"
+    elif FC_attributes["nudging_ua"]:
+      if FC_attributes["nudging_va"]==0: 
+          print("error: nudging u but not v ?"); exit()
+      self.var_u["frc"] = "ua_nud"
+      self.var_v["frc"] = "va_nud"
+    else:
+      self.var_u["frc"] = "none"
+      self.var_v["frc"] = "none"
 
   def set_times(self, FC_attributes):
     y,m,d,hh,mm,ss = parse_time(FC_attributes["start_date"])
     self.start_date = datetime(y,m,d,hh,mm,ss)
+    self.start_seconds = 3600*hh+60*mm+ss
     y,m,d,hh,mm,ss = parse_time(FC_attributes["end_date"])
     self.end_date = datetime(y,m,d,hh,mm,ss)
     self.duration = self.end_date-self.start_date
@@ -84,7 +109,8 @@ class Case:
     if self.type == "dcv":
       fil="%s/grille_%s.txt"%(inp_dir, self.casename)
       if os.path.isfile(fil):
-        self.zgrid = np.genfromtxt(fil, dtype=None,skip_header=1,usecols=0)
+        import numpy as np
+        self.zgrid = np.genfromtxt(fil, dtype=None,skip_header=0,usecols=0)
         self.nz    = len(self.zgrid)
       else: print("error: vertical grid file %s not found for case %s/%s"%(
           fil, self.casename, self.subcasename)); exit()

@@ -21,7 +21,7 @@ INFO=2
 DEBUG=3
 
 def log(lev, msg, verb):
-  if verb>=lev: print("%s"%msg)
+  if verb>=lev: print("%s %s"%(">"*(lev-1), msg))
 
 def error(where,msg):
   print("> error in %s: %s"%(where,msg))

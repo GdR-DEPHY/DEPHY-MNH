@@ -627,6 +627,20 @@ MODD_GRn_PRE__ =  {
   "CSURF" : "'EXTE'", #"NONE",
 }
 
+MODD_PGD_SCHEMES__ =  {
+  "CSEA"    : "'FLUX'", #"'SEAFLUX'"
+  "CNATURE" : "'TSZ0'",
+}
+
+MODD_COVER__ =  {
+  "XUNIF_COVER(1)"    : 0., # (fraction of ocean)
+  "XUNIF_COVER(6)"    : 1., # (fraction of land)
+}
+
+MODD_SEABATHY__ =  {
+  "XUNIF_SEABATHY"    : 5.,
+}
+
 default_preidea = {
   "NAM_CONFIO": MODD_CONFIO__,
   "NAM_CONFZ": MODD_CONFZ__,
@@ -639,6 +653,20 @@ default_preidea = {
   "NAM_GRIDH_PRE": MODD_GRIDH_PRE__,
   "NAM_GRn_PRE": MODD_GRn_PRE__,
   "NAM_CONFn": MODD_CONFn__,
+  "NAM_LBCn" : MODD_LBCn__,
+  "NAM_PGD_SCHEMES": MODD_PGD_SCHEMES__,
+  "NAM_COVER": MODD_COVER__,
+  "NAM_SEABATHY": MODD_SEABATHY__,
+  ### A PARTIR DE LA : LES MODD NE SONT PAS ENCORE DEFINIS ###
+  "NAM_PREP_SEAFLUX": MODD_PREP_SEAFLUX__,
+  "NAM_DATA_SEAFLUX": MODD_DATA_SEAFLUX__,
+  "NAM_FRAC": MODD_FRAC__,
+  "NAM_DATA_TSZ0": MODD_DATA_TSZ0__,
+  "NAM_DATA_ISBA": MODD_DATA_ISBA__,
+  "NAM_ISBA": MODD_ISBA__,
+  "NAM_PREP_SURF_ATM": MODD_PREP_SURF_ATM__,
+  "NAM_PREP_ISBA": MODD_PREP_ISBA__,
+  "NAM_DEEPSOIL": MODD_DEEPSOIL__,
 }
 
 default_exseg = {
