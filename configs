@@ -22,6 +22,7 @@ Rayonnement   désactivé
 7) LIMA4 ; test au CCN a 100, 300, 1000
 
 ## Définition des temps clés pour les différents cas
+# sortie toutes les minutes
 
 # ARMCU
 - début du cas à 11:30 UTC, dure 15 heures
@@ -29,3 +30,17 @@ Rayonnement   désactivé
 - temps clés 
   4e à 5e heure (formation des premiers nuages)
   7e à 8e heure (max de couverture nuageuse)
+
+# 2. Cas de transition vers la convection profonde
+AMMA LBA KB2006 EUROCS
+
+Domaine       Lx=Ly=204.8km, Lz à lire dans le format commun
+Résolutions   dt=1s, dx=dy=dz=200m
+Microphysique LIMA 1 moment
+Turbulence    3D DEARDORFF, LRMC01=T
+Condensation  tout ou rien
+Rayonnement   désactivé (SAUF EUROCS ?)
+
+## Tests de sensibilité envisagés
+1) avec rayonnement interactif en volume
+2) + avec rayonnement interactif en surface

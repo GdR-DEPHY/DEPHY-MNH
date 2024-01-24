@@ -1,3 +1,10 @@
+- lire qt/rv .. / theta/ta dans le format commun et en déduire THUVTHDMR
+
+- initialiser les dictionnaires de config en fonction du type de cas
+=> pour les cas de transition, dx = 200 m et lire la grille verticale
+
+- cas de transiiton "dcv" : AMMA LBA KB et EUROCS
+
 - reprendre et factoriser les scripts de conversion (LES/1D et dedans)
 
 - discuter avec Benoit pour la config LIMA (config REF + sensibilités)
@@ -23,9 +30,12 @@ autoconversion en testant celle de ICE3, celle de LIMA et celle de KHKO
 Faire varier CCN a 100, 300, 1000
 
 - déterminer les périodes de spin-up et d'intérêt pour chaque cas
-- réfléchir au forçage en vent : 
-  - à la surface, u* ou z0 ? => plutôt u* pour mieux contraindre les flux 
-  - en volume, coriolis+géostroph ; rappel profil moyen ; chaque colonne ?
-    => plutôt rappel profil moyen puis delta U à chaque colonne
+
+- réfléchir au forçage en vent à la surface, u* ou z0 ?
+=> plutôt u* pour mieux contraindre les flux ?
+=> pas une priorité. On reste sur les setups des papiers de ref. ATELIER ?
+
+Forçage vent en volume 
+=> rappel profil moyen puis delta U à chaque colonne
 
 - vérifier les fichiers formats communs == les papiers de référence

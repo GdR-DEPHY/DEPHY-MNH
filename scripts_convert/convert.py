@@ -17,11 +17,10 @@
 import numpy as np
 import netCDF4 as nc
 import sys, os
-from datetime import timedelta, datetime
 import argparse
 
 from Config import Config
-from Utils import arg_error, log, parse_time, T_to_theta
+from Utils import arg_error, log, T_to_theta
 from Utils import ERROR, WARNING, INFO, DEBUG
 from Dephy import FC_filename, listCases, Case
 
@@ -40,7 +39,7 @@ add_opt_arg("-s", "Subcase name",          "subcasename", "REF")
 add_opt_arg("-m", "Simulation mode",       "sim_mode",    "LES")
 add_opt_arg("-i", "Input files directory", "input_dir",   "./")
 add_opt_arg("-o", "Output directory",      "output_dir",  "./")
-add_opt_arg("-v", "Verbosity level",       "verbosity",   0)
+add_opt_arg("-v", "Verbosity level [0-3]", "verbosity",   0)
 
 ## parse command line arguments
 args = parser.parse_args()
@@ -99,24 +98,29 @@ log(DEBUG, listAttributes, verbosity)
 attributes = {}
 for attr in listAttributes:
   attributes[attr] = getattr(ds, attr)
+  log(DEBUG, "> Attribute '%s' = %s"%(attr, attributes[attr]), verbosity)
 
-## DATES
+### set case keyword and flags  
+# flag_t="theta|thetal|ta"
+# flag_q="rv|rt|qv"
+# keyword = ZUVTH[D|L]MR
+cas.set_flags_and_keyword(attributes)
 
-y,m,d,hh,mm,ss = parse_time(attributes["start_date"])
-start_date = datetime(y,m,d,hh,mm,ss)
-y,m,d,hh,mm,ss = parse_time(attributes["end_date"])
-end_date = datetime(y,m,d,hh,mm,ss)
-duration = end_date-start_date
-duration_secs = duration.total_seconds()
+### set start_date, end_date and durations
+cas.set_times(attributes)
 
-log(INFO, "> start_date: %s UTC    "%start_date, verbosity)
-log(INFO, "> end_date:   %s UTC    "%end_date,   verbosity)
-log(INFO, "> duration:   %s == %s seconds"%(duration, duration_secs),   verbosity)
+log(INFO, "> start_date: %s UTC    "%cas.start_date, verbosity)
+log(INFO, "> end_date:   %s UTC    "%cas.end_date,   verbosity)
+log(INFO, "> duration:   %s == %s seconds"%(cas.duration, cas.duration_secs),   verbosity)
 
 ## SCALAIRES
 
 lat = ds.variables["lat"][0]
 lon = ds.variables["lon"][0]
+
+## GRILLE VERTICALE 
+cas.set_vertical_grid(input_dir)
+log(INFO, "> vertical grid: "+str(cas.zgrid), verbosity)
 
 ## CHAMPS INITIAUX T,q,ps,u,v
 
@@ -151,9 +155,9 @@ if (lev_v.size != lev_u.size):
   log(WARNING, 'ERROR!! DIFFERENT VERTICAL GRIDS FOR U & V to be dealt separately', verbosity)
   var_v = 0.*var_u+var_v[0][0]
 
-## FORCAGES
+## FORCAGES advection, nudging
 
-
+### 
 
 
 exit()
@@ -188,6 +192,8 @@ exit()
 
 # Lire les variables du fichier format commun
 # Modifier la namelist en fonction du format commun
+# # en fonction du type de cas (moistshcv|dcv|stable|dryshcv)
+# # en fonction des types de forçages (flag_t/flag_q, )
 # => on obtient preidea et exseg mère
 
 # Lire le fichier de config spécifique du cas
