@@ -117,6 +117,11 @@ MODD_CONFIO__ = { # I/O file type
     "LLFIREAD"        : ".FALSE.",
 }
 
+MODD_LUNITn__ = { # Init file names
+    "CINIFILE"        : "'init'",
+    "CINIFILEPGD"     : "'init_pgd'", 
+}
+
 MODD_CONFZ__  = { # parallelism
   "NZ_VERB"         : "0",
   "NZ_PROC"         : "0",
@@ -633,17 +638,78 @@ MODD_PGD_SCHEMES__ =  {
 }
 
 MODD_COVER__ =  {
-  "XUNIF_COVER(1)"    : 0., # (fraction of ocean)
-  "XUNIF_COVER(6)"    : 1., # (fraction of land)
+  "XUNIF_COVER(1)"    : "0.", # (fraction of ocean)
+  "XUNIF_COVER(6)"    : "1.", # (fraction of land)
 }
 
 MODD_SEABATHY__ =  {
-  "XUNIF_SEABATHY"    : 5.,
+  "XUNIF_SEABATHY"    : "5.",
+}
+
+MODD_PREP_SEAFLUX__ =  {
+  "XSST_UNIF"         : "280.", # random default
+}
+MODD_DATA_SEAFLUX__ =  {
+  "LSST_DATA"         : ".FALSE.", # 
+  "NTIME_SST"         : "0",         #
+  "NYEAR_SST(1)"      : "1980", # random default
+  "NMONTH_SST(1)"     : "1",    # random default
+  "NDAY_SST(1)"       : "1",    # random default
+  "XTIME_SST(1)"      : "0.",   # random default
+  "XUNIF_SST(1)"      : "280.", # random default
+}
+MODD_FRAC__ =  {
+  "LECOCLIMAP"        : ".TRUE.",
+  "XUNIF_NATURE"      : "1.",
+}
+MODD_DATA_TSZ0__ =  {
+  "NTIME"             : "0",
+  "XUNIF_DTS(1)"      : "-0.250", # SFX default 
+}
+MODD_DATA_ISBA__ =  {
+  "NTIME"             : "0",
+  "XUNIF_Z0(1,1)"     : "0", # depends on the veg type and time
+}
+MODD_ISBA__ =  {
+  "XUNIF_CLAY"        : "1.",
+  "XUNIF_SAND"        : "0.",
+  "XUNIF_RUNOFFB"     : "0.5",
+  "CISBA"             : "'2-L'",
+  "CPHOTO"            : "'NON'",
+  "NPATCH"            : "1",
+  "NGROUND_LAYER"     : "2",
+}
+MODD_PREP_SURF_ATM__ =  {
+  "NYEAR"             : "1980",
+  "NMONTH"            : "1",
+  "NDAY"              : "1",
+  "XTIME"             : "0.",
+}
+MODD_PREP_ISBA__ =  {
+  "XHUG_SURF"         : "0.",
+  "XHUG_ROOT"         : "0.",
+  "XHUG_DEEP"         : "0.",
+  "XHUGI_SURF"        : "1.",
+  "XHUGI_ROOT"        : "1.",
+  "XHUGI_DEEP"        : "1.",
+  "XTG_SURF"          : "280", # random default
+  "XTG_ROOT"          : "280", # random default 
+  "XTG_DEEP"          : "280", # random default 
+  "LISBA_CANOPY"      : ".FALSE.",
+  "NYEAR"             : "1980",
+  "NMONTH"            : "1",
+  "NDAY"              : "1",
+  "XTIME"             : "0.",
+}
+MODD_DEEPSOIL__ =  {
+  "LPHYSDOMC"         : ".FALSE.",
+  "LDEEPSOIL"         : ".FALSE.",
 }
 
 default_preidea = {
   "NAM_CONFIO": MODD_CONFIO__,
   "NAM_CONFZ": MODD_CONFZ__,
+  "NAM_LUNITn": MODD_LUNITn__,
   "NAM_DIMn_PRE": MODD_DIMn_PRE__,
   "NAM_DYNn_PRE": MODD_DYNn_PRE__,
   "NAM_GRID_PRE": MODD_GRID_PRE__,
@@ -657,7 +723,6 @@ default_preidea = {
   "NAM_PGD_SCHEMES": MODD_PGD_SCHEMES__,
   "NAM_COVER": MODD_COVER__,
   "NAM_SEABATHY": MODD_SEABATHY__,
-  ### A PARTIR DE LA : LES MODD NE SONT PAS ENCORE DEFINIS ###
   "NAM_PREP_SEAFLUX": MODD_PREP_SEAFLUX__,
   "NAM_DATA_SEAFLUX": MODD_DATA_SEAFLUX__,
   "NAM_FRAC": MODD_FRAC__,
@@ -667,6 +732,7 @@ default_preidea = {
   "NAM_PREP_SURF_ATM": MODD_PREP_SURF_ATM__,
   "NAM_PREP_ISBA": MODD_PREP_ISBA__,
   "NAM_DEEPSOIL": MODD_DEEPSOIL__,
+  "freeformat": {},
 }
 
 default_exseg = {

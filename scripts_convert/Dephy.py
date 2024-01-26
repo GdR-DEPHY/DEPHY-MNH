@@ -14,15 +14,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from Utils import parse_time
+from Utils import parse_time, log, T_to_theta
+from Utils import ERROR, WARNING, INFO, DEBUG
 from datetime import timedelta, datetime
+import numpy as np
 import os
 
 # missing cases in prep_nam_from_FFCOM_DEF_to_MNHLES
 # KB2006, DYNAMO, MAGIC, FIRE, ISDAC, MPACE
 
 # To add a case to the database, add its name to one of the lists:
-listCaseMoistShCv = ["ARMCU", "BOMEX", "SANDU", "RICO", "SCMS"] # moist shallow conv
+listCaseMoistShCv = ["ARMCU", "BOMEX", "SANDU", "RICO", "SCMS", "FIRE"] # moist shallow conv
 listCaseDCv       = ["LBA", "AMMA", "KB2006", "EUROCS"]         # deep conv
 listCaseStable    = ["GABLS1", "GABLS4"]                        # stable
 listCaseDryShCv   = ["AYOTTE", "IHOP", "BLLAST"]                # dry shallow conv
@@ -30,14 +32,18 @@ listCaseDryShCv   = ["AYOTTE", "IHOP", "BLLAST"]                # dry shallow c
 # this is the list of all defined cases
 listCases = listCaseMoistShCv+listCaseDryShCv+listCaseStable+listCaseDCv
 
+# should this be defined in mesonh rather than here?
+cas_type = {"moistshcv" : {"dx" : 25,  "dy" : 25,  "dz" : 25}, 
+            "dcv"       : {"dx" : 200, "dy" : 200, "dz" : None},
+            "stable"    : {"dx" : 5,   "dy" : 5,   "dz" : None},
+            "dryshcv"   : {"dx" : 25,  "dy" : 25,  "dz" : 25},
+            }
+
 def FC_filename(dir, cas, subcas):
   fil="/".join([dir, cas, subcas, cas+"_"+subcas+"_DEF_driver.nc"])
-  if cas=="RICO":
-    fil=dir+'/RICO/MESONH/RICO_MESONH_DEF_driver.nc'
   return fil
 
 class Case:
-
   def __init__(self, casename, subcasename):
     """ Initialize case specific config
     .casename 
@@ -65,30 +71,45 @@ class Case:
     self.var_u={} # zonal wind : ug | ua_nud
     self.var_v={} # meridional wind : vg | va_nud
 
-  def set_init_and_forcing_types(self, FC_attributes):
+    # default grid as a function of case type 
+    self.dx = cas_type[self.type]["dx"]
+    self.dy = cas_type[self.type]["dy"]
+    self.dz = cas_type[self.type]["dz"]
+    # case dependent settings...
+    if casename == "GABLS1": 
+        self.dzmin = 2    ; self.dzmax = 6
+        self.zzmax = 250. ; self.zztop = 20
+    elif casename == "GABLS4":
+        self.dzmin = 0.2  ; self.dzmax = 2
+        self.zzmax = 50.  ; self.zztop = 20
+    else: 
+        self.dzmin = self.dz ; self.dzmax = self.dz 
+        self.zzmax = 1000    ; self.zztop = 0
+
+  def set_init_and_forcing_types(self, attributes):
     """ set the type of variables that define initial profiles, advection and
     nudging from global attributes read in common format file """
 
     for key in "ini","adv","nudging":
-      if FC_attributes[key+"_ta"] > 0        : self.var_t[key] = "ta"
-      elif FC_attributes[key+"_theta"] > 0   : self.var_t[key] = "theta"
-      elif FC_attributes[key+"_thetal"] > 0  : self.var_t[key] = "thetal"
+      if attributes[key+"_ta"] > 0        : self.var_t[key] = "ta"
+      elif attributes[key+"_theta"] > 0   : self.var_t[key] = "theta"
+      elif attributes[key+"_thetal"] > 0  : self.var_t[key] = "thetal"
       else : self.var_t[key] = "none"
-      if FC_attributes[key+"_qv"] > 0        : self.var_q[key] = "qv"
-      elif FC_attributes[key+"_qt"] > 0      : self.var_q[key] = "qt"
-      elif FC_attributes[key+"_rv"] > 0      : self.var_q[key] = "rv" 
-      elif FC_attributes[key+"_rt"] > 0      : self.var_q[key] = "rt"
+      if attributes[key+"_qv"] > 0        : self.var_q[key] = "qv"
+      elif attributes[key+"_qt"] > 0      : self.var_q[key] = "qt"
+      elif attributes[key+"_rv"] > 0      : self.var_q[key] = "rv" 
+      elif attributes[key+"_rt"] > 0      : self.var_q[key] = "rt"
       else : self.var_q[key] = "none"
 
     # ini wind is always ua,va ; no wind advection ; 
     # forcing can be either geostrophic or nudging or none
     self.var_u["ini"]   = "ua"
     self.var_v["ini"]   = "va"
-    if FC_attributes["forc_geo"]: 
+    if attributes["forc_geo"]: 
       self.var_u["frc"] = "ug"
       self.var_v["frc"] = "vg"
-    elif FC_attributes["nudging_ua"]:
-      if FC_attributes["nudging_va"]==0: 
+    elif attributes["nudging_ua"]:
+      if attributes["nudging_va"]==0: 
           print("error: nudging u but not v ?"); exit()
       self.var_u["frc"] = "ua_nud"
       self.var_v["frc"] = "va_nud"
@@ -96,25 +117,233 @@ class Case:
       self.var_u["frc"] = "none"
       self.var_v["frc"] = "none"
 
-  def set_times(self, FC_attributes):
-    y,m,d,hh,mm,ss = parse_time(FC_attributes["start_date"])
+    # oceants or oceanflux or landflux or landz0
+    self.surface_forcing = attributes["surface_type"]+attributes["surface_forcing_temp"]
+
+  def set_lonlat(self, ds):
+    self.lat = ds.variables["lat"][0]
+    self.lon = ds.variables["lon"][0]
+
+  def set_times(self, attributes):
+    y,m,d,hh,mm,ss = parse_time(attributes["start_date"])
     self.start_date = datetime(y,m,d,hh,mm,ss)
     self.start_seconds = 3600*hh+60*mm+ss
-    y,m,d,hh,mm,ss = parse_time(FC_attributes["end_date"])
+    y,m,d,hh,mm,ss = parse_time(attributes["end_date"])
     self.end_date = datetime(y,m,d,hh,mm,ss)
     self.duration = self.end_date-self.start_date
     self.duration_secs = self.duration.total_seconds()
 
   def set_vertical_grid(self, inp_dir):
     if self.type == "dcv":
-      fil="%s/grille_%s.txt"%(inp_dir, self.casename)
+      fil="%s/grille_dcv.txt"%(inp_dir)
       if os.path.isfile(fil):
-        import numpy as np
         self.zgrid = np.genfromtxt(fil, dtype=None,skip_header=0,usecols=0)
         self.nz    = len(self.zgrid)
       else: print("error: vertical grid file %s not found for case %s/%s"%(
           fil, self.casename, self.subcasename)); exit()
-    else: self.zgrid = None ; self.nz = 0
+    else: self.zgrid = None
+
+  def read_initial_profiles_and_forcings(self, attributes, ds, verbosity, read_zorog=0):
+    # local helper function to read 2D, z-dependent and t-dependent variables
+    def getzvar(name_var): 
+      lev = "lev_"+name_var
+      if not lev in ds.variables: lev="lev"
+      return ds.variables[name_var][:], ds.variables[lev]
+    def gettvar(name_var): 
+      tim = "time_"+name_var 
+      if not tim in ds.variables: tim="time"
+      return ds.variables[name_var][:], ds.variables[tim]
+    def get2dvar(name_var):
+      lev = "lev_"+name_var
+      if not lev in ds.variables: lev="lev"
+      tim = "time_"+name_var 
+      if not tim in ds.variables: tim="time"
+      return ds.variables[name_var][:], ds.variables[lev], ds.variables[tim]
+
+    ## champs initiaux T,q,ps,u,v,zorog
+    name_var_t = self.var_t["ini"]
+    name_var_q = self.var_q["ini"]
+    name_var_u = self.var_u["ini"]
+    name_var_v = self.var_v["ini"]
+    
+    ### initialize with theta_dry or theta_liquid
+    mnh_init_keyword = "ZUVTHLMR" if name_var_t == "thetal" else "ZUVTHDMR"
+    
+    ### get initial profiles 
+    ps    = ds.variables['ps'][:]      # surface pressure
+    zs    = ds.variables['orog'][:] if read_zorog else ps*0
+    var_u, lev_u = getzvar(name_var_u)           # ua: zonal wind profile
+    var_v, lev_v = getzvar(name_var_v)           # va: merid wind profile
+    var_t, lev_t = getzvar(name_var_t)           # theta, thetal or ta
+    var_q, lev_q = getzvar(name_var_q)           # rv, rt or qv 
+    
+    nlev_init_uv = len(lev_u)
+    nlev_init_tq = len(lev_t)
+    
+    log(DEBUG, "Original lev_t (%s) %s"%(name_var_t, lev_t), verbosity)
+    log(DEBUG, "Original lev_q (%s) %s"%(name_var_q, lev_q), verbosity)
+    log(DEBUG, "Original var_t (%s) %s"%(name_var_t, var_t), verbosity)
+    log(DEBUG, "Original var_q (%s) %s"%(name_var_q, var_q), verbosity)
+    
+    ### convert T to theta and q to mixing ratio if needed
+    
+    if name_var_t == "ta" :
+      # convert T to theta
+      press = ds.variables["pa"][:]
+      var_t = T_to_theta(var_t, press)
+    
+    if "q" in name_var_q: 
+      # convert content to mixing ratio
+      var_q = var_q/(1-var_q)
+    
+    log(DEBUG, "Converted var_t (%s) %s"%(name_var_t, var_t), verbosity)
+    log(DEBUG, "Converted var_q (%s) %s"%(name_var_q, var_q), verbosity)
+    
+    if (lev_v.size != lev_u.size):
+      log(WARNING, 'ERROR!! DIFFERENT VERTICAL GRIDS FOR U & V to be dealt \
+              separately', verbosity)
+      var_v = 0.*var_u+var_v[0][0]
+    if len(lev_t) != len(lev_q):
+      log(ERROR, "T and q not initialized on the same grid", verbosity)
+    
+    ### get forcings
+    
+    # horizontal winds : frc = geostrophic or nudging ; tendencies = 0
+    ## zonal
+    name_var_u = self.var_u["frc"]
+    name_var_v = self.var_v["frc"]
+    if name_var_u != "none": 
+      var_u_frc, lev_u_frc, tim_u_frc = get2dvar(name_var_u)
+      var_v_frc, lev_v_frc, tim_v_frc = get2dvar(name_var_v)
+    else:
+      var_u_frc = None
+      var_v_frc = None
+    
+    # thermodynamics : frc = nudging | none ; tend = adv | rad | none
+    ## T
+    if self.var_t["nudging"] != "none":
+      name_var_t = self.var_t["nudging"]+"_nud"
+      var_t_frc, lev_t_frc, tim_t_frc = get2dvar(name_var_t)
+    else:
+      var_t_frc = None
+    ## q
+    if self.var_q["nudging"] != "none":
+      name_var_q = self.var_q["nudging"]+"_nud"
+      var_q_frc, lev_q_frc, tim_q_frc = get2dvar(name_var_q)
+    else:
+      var_q_frc = None
+    
+    # thermodynamics : advection 
+    ## T
+    if self.var_t["adv"] != "none":
+      name_var_t = "tn"+self.var_t["adv"]+"_adv"
+      var_t_ten, lev_t_ten, tim_t_ten = get2dvar(name_var_t)
+    else:
+      var_t_ten = None
+    ## q
+    if self.var_q["adv"] != "none":
+      name_var_q = "tn"+self.var_q["adv"]+"_adv"
+      var_q_ten, lev_q_ten, tim_q_ten = get2dvar(name_var_q)
+    else:
+      var_q_ten = None
+    
+    ## radiation tendency 
+    if attributes["radiation"] == "tend":
+      if self.var_t["adv"]!="none":
+        name_var_t = "tn"+self.var_t["adv"]+"_rad"
+        var_t_ten += ds.variables[name_var_t][:]
+      else:
+        name_var_t = "tn"+self.var_t["ini"]+"_rad"
+        var_t_ten = ds.variables[name_var_t][:]
+    
+    # subsidence, either in w or omega
+    if attributes['forc_wa'] == 1:
+      var_w_frc, lev_w_frc, time_w_frc = get2dvar("wa")
+    elif attributes['forc_wap'] == 1: 
+      var_w_frc, lev_w_frc, time_w_frc = get2dvar("wap")
+      var_w_frc /= -1.*288*ds.variables['ta'][:]*9.81
+    else:
+      var_w_frc = None
+    
+    # surface forcings
+    var_ts   = None; var_hfls = None; var_hfss = None; var_z0h  = None
+    var_ustar= None; var_z0   = None
+
+    ## prescribed SST or turbulent fluxes
+    if attributes['surface_forcing_temp'] == 'ts':
+      var_ts, tim_sst = gettvar("ts_forc")
+      var_ts = np.array([int(s*100)/100. for s in var_ts])
+      tim_forc_ts = tim_sst
+    elif attributes['surface_forcing_temp'] == 'surface_flux':
+      var_hfls, tim_hfls = gettvar('hfls')
+      var_hfss, tim_hfss = gettvar('hfss')
+      tim_forc_ts = tim_hfls
+    elif attributes['surface_forcing_temp'] == 'none':
+      var_z0h, tim_z0h = gettvar('z0h') # ?
+      tim_forc_ts = tim_z0h
+    else: log(ERROR, "No surface condition for temperature?", verbosity)
+    
+    ## prescribed momentum flux or roughness length
+    if attributes['surface_forcing_wind'] == 'ustar':
+      var_ustar, tim_ustar = gettvar('ustar')
+      tim_forc_uv = tim_ustar
+    elif attributes['surface_forcing_wind'] == 'z0':
+      var_z0, tim_z0 = gettvar('z0')
+      var_z0 = np.array([int(z0*1000)/1000. for z0 in var_z0])
+      tim_forc_uv = tim_z0
+    else:
+      tim_forc_uv = None
+      log(WARNING, "No surface condition for momentum?", verbosity)
+    
+    ## chose forcing time x lev grid (priority to advection)
+    tim_forcings = tim_t_ten if self.var_t["adv"]!="none" else \
+            tim_q_ten if self.var_q["adv"]!="none" else \
+            tim_u_frc if attributes["forc_geo"] else None
+    lev_forcings = lev_t_ten if self.var_t["adv"]!="none" else \
+            tim_q_ten if self.var_q["adv"]!="none" else \
+            lev_u_frc if attributes["forc_geo"] else None
+    ntime_forcings = len(tim_forcings)
+    nlevs_forcings = len(lev_forcings)
+
+    # set case variables
+    ## init
+    self.mnh_init_keyword = mnh_init_keyword
+    self.nlev_init_uv     = nlev_init_uv
+    self.nlev_init_tq     = nlev_init_tq
+    self.zs    = zs    ; self.ps    = ps 
+    self.lev_u = lev_u ; self.lev_t = lev_t
+    self.var_u = var_u ; self.var_v = var_v
+    self.var_t = var_t ; self.var_q = var_q
+    # forcings atm
+    self.tim_forcings = tim_forcings
+    self.lev_forcings = lev_forcings
+    self.ntime_forcings = ntime_forcings
+    self.nlevs_forcings = nlevs_forcings
+    self.var_u_frc = self.set_none_to_zero(var_u_frc, verbosity)
+    self.var_v_frc = self.set_none_to_zero(var_v_frc, verbosity)
+    self.var_w_frc = self.set_none_to_zero(var_w_frc, verbosity)
+    self.var_t_frc = self.set_none_to_zero(var_t_frc, verbosity)
+    self.var_q_frc = self.set_none_to_zero(var_q_frc, verbosity)
+    self.var_t_ten = self.set_none_to_zero(var_t_ten, verbosity)
+    self.var_q_ten = self.set_none_to_zero(var_q_ten, verbosity)
+    # forcings surf
+    self.tim_forc_ts = tim_forc_ts
+    self.tim_forc_uv = tim_forc_uv
+    self.var_ts    = var_ts
+    self.var_hfls  = var_hfls
+    self.var_hfss  = var_hfss
+    self.var_z0h   = var_z0h
+    self.var_z0   = var_z0
+    self.var_ustar   = var_ustar
+
+  def set_none_to_zero(self,var, verbosity): 
+    if var is None: var = np.zeros((self.ntime_forcings, self.nlevs_forcings))
+    if var.shape != (self.ntime_forcings, self.nlevs_forcings):
+      # if not the right grid, will be broadcasted to the right grid
+      log(DEBUG, "var shape "+str(var.shape)+"\n shape frc %i\
+              %i"%(self.ntime_forcings, self.nlevs_forcings), verbosity)
+      var = np.broadcast_to(var, (self.ntime_forcings, self.nlevs_forcings))
+    return var
 
   def __str__(self):
     return "<Case %s/%s (%s) of type %s>"%(

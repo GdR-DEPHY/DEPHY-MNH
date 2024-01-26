@@ -29,12 +29,13 @@ import time
 import copy
 import netCDF4 as nc
 import numpy as np
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from mesonh import default_preidea, default_exseg
 from mesonh import preidea_LES, exseg_LES
 from mesonh import preidea_CRM, exseg_CRM
 from mesonh import preidea_SCM, exseg_SCM
+from Utils import str_time, time_to_secs
 
 #------------------------------------------#
 #------------ HELPER FUNCTIONS ------------#
@@ -81,10 +82,15 @@ def write_namelist(to_write, outfile):
   """
   str=""
   for k in to_write:
+    if "freeformat" in k: continue
     str+="&%s\n"%k
     for kk in to_write[k]:
       str+="  {:s} = {:s},\n".format(kk, to_write[k][kk])
     str+="/ \n\n"
+  if "freeformat" in to_write:
+    for k in to_write["freeformat"]:
+      str+=to_write["freeformat"][k]
+      str+="\n"
   with open(outfile, "w") as f:
     f.write(str)
 
@@ -153,9 +159,124 @@ class Config:
   def modify(self, namelist, key, value):
     if namelist not in self.config:
         print("cannot modify namelist %s"%namelist); exit()
-    if key not in self.config[namelist]: 
-        print("cannot modify key %s in namelist %s"%(key, namelist)); exit()
     self.config[namelist][key] = value
+
+  def freeformat_zhat(self, cas):
+    if cas.zgrid is None : str_zhat=""
+    else:
+      str_zhat = "ZHAT\n"
+      for z in cas.zgrid: str_zhat+="%i\n"%z 
+    self.config["freeformat"]["ZHAT"] = str_zhat
+
+  def freeformat_rsou(self, cas):
+    str_init = "RSOU\n"
+    str_init += str_time(cas.start_date)
+    str_init += "%s   \n"%cas.mnh_init_keyword
+    str_init += "%.2f \n"%cas.zs[0]
+    str_init += "%.2f \n"%cas.ps[0]
+    str_init += "%.2f \n"%cas.var_t[0][0]
+    str_init += "%.8f \n"%cas.var_q[0][0]
+    str_init += "%i   \n"%cas.nlev_init_uv
+    for (z,u,v) in zip(cas.lev_u, cas.var_u[0], cas.var_v[0]):
+      str_init += "%14.1f %14.2f %14.2f\n"%(z,u,v)
+    str_init += "%i   \n"%cas.nlev_init_tq
+    for (z,t,q) in zip(cas.lev_t, cas.var_t[0], cas.var_q[0]):
+      str_init += "%14.1f %14.2f %14.8f\n"%(z,t,q)
+    self.config["freeformat"]["RSOU"] = str_init
+
+  def freeformat_zfrc(self, cas):
+    str_zfrc = "ZFRC\n"
+    str_zfrc += "%i\n"%cas.ntime_forcings
+    for it in range(cas.ntime_forcings):
+      date = cas.start_date + timedelta(seconds = int(cas.tim_forcings[it]))
+      str_zfrc += str_time(date)
+      str_zfrc += "%.2f \n"%cas.zs[0]
+      str_zfrc += "%.2f \n"%cas.ps[0]
+      str_zfrc += "%.2f \n"%cas.var_t[0][0]
+      str_zfrc += "%.8f \n"%cas.var_q[0][0]
+      str_zfrc += "%i   \n"%cas.nlevs_forcings
+      for ik in range(cas.nlevs_forcings):
+        str_zfrc += "%14.1f %14.2f %14.2f %14.2f %14.5f %14.5f %14.10f %14.10f %4.1f %4.1f\n"%(
+        cas.lev_forcings[ik], cas.var_u_frc[it,ik], cas.var_v_frc[it,ik],
+        cas.var_t_frc[it,ik], cas.var_q_frc[it,ik], cas.var_w_frc[it,ik],
+        cas.var_t_ten[it,ik], cas.var_q_ten[it,ik], 0., 0.)
+    self.config["freeformat"]["ZFRC"] = str_zfrc
+
+  def set_domain_grid(self, cas):
+    self.modify("NAM_GRIDH_PRE", "XDELTAX", "%f"%cas.dx)
+    self.modify("NAM_GRIDH_PRE", "XDELTAY", "%f"%cas.dy)
+    self.modify("NAM_VER_GRID", "LTHINSHELL", ".TRUE.")
+    if cas.zgrid is not None: # manual z grid, ZHAT will be dumped in PRE_IDEA
+      self.modify("NAM_VER_GRID", "NKMAX", "%i"%cas.nz)
+      self.modify("NAM_VER_GRID", "YZGRID_TYPE", "MANUAL")
+    else:  # automatically stretched (or constant) z grid
+      self.modify("NAM_VER_GRID", "YZGRID_TYPE", "FUNCTN")
+      self.modify("NAM_VER_GRID", "ZDZGRD", "%f"%cas.dzmin)
+      self.modify("NAM_VER_GRID", "ZDZTOP", "%f"%cas.dzmax)
+      self.modify("NAM_VER_GRID", "ZSTRTOP", "%f"%cas.zztop)
+      self.modify("NAM_VER_GRID", "ZZMAX_STRGRD", "%f"%cas.zzmax)
+      self.modify("NAM_VER_GRID", "ZSTRGRD", "0")
+
+  def set_ini_filenames(self, cas):
+    inifile = "init_"+cas.shortname
+    self.modify("NAM_LUNITn", "CINIFILE", "'%s'"%inifile)
+    self.modify("NAM_LUNITn", "CINIFILEPGD", "'%s_PGD'"%inifile)
+
+  def set_lonlat(self, cas):
+    self.modify("NAM_GRID_PRE", "XLAT0", str(int(cas.lat*100)/100.))
+    self.modify("NAM_GRID_PRE", "XLON0", str(int(cas.lon*100)/100.))
+
+  def set_luser(self, cas):
+    self.modify("NAM_CONFn", "LUSERV", ".TRUE.")
+    if cas.mnh_init_keyword == "ZUVTHLMR":
+      self.modify("NAM_CONFn", "LUSERC", ".TRUE.")
+
+  def set_surface_forcings(self, cas):
+    sf = cas.surface_forcing
+    nts = len(cas.tim_forc_ts)
+    # continental with prescribed flux ==== ocean.f90 in mesonh!
+    if "ocean" in sf or sf == "landsurface_flux":
+      self.modify("NAM_PGD_SCHEMES", "CSEA", "'SEAFLX'" if "ts" in sf else "'FLUX'")
+      self.modify("NAM_COVER", "XUNIF_COVER(1)", "1.")
+      self.modify("NAM_COVER", "XUNIF_COVER(6)", "0.")
+      if "ts" in sf:
+        self.modify("NAM_SEABATHY", "XUNIF_SEABATHY", "5")
+        self.modify("NAM_PREP_SEAFLUX", "XSST_UNIF", "%f"%cas.var_ts[0])
+        self.modify("NAM_DATA_SEAFLUX", "LSST_DATA", ".TRUE.")
+        self.modify("NAM_DATA_SEAFLUX", "NTIME_SST", "%i"%nts)
+        for it in range(nts):
+          date = cas.start_date + timedelta(seconds = int(cas.tim_forc_ts[it]))
+          date_secs = time_to_secs(date)
+          self.modify("NAM_DATA_SEAFLUX", "NYEAR_SST(%i)"%(it+1), date.strftime("%Y"))
+          self.modify("NAM_DATA_SEAFLUX", "NMONTH_SST(%i)"%(it+1), date.strftime("%m"))
+          self.modify("NAM_DATA_SEAFLUX", "NDAY_SST(%i)"%(it+1), date.strftime("%d"))
+          self.modify("NAM_DATA_SEAFLUX", "XTIME_SST(%i)"%(it+1), "%f"%date_secs)
+          self.modify("NAM_DATA_SEAFLUX", "XUNIF_SST(%i)"%(it+1), "%f"%cas.var_ts[it])
+    elif "land" in sf:
+      self.modify("NAM_PGD_SCHEMES", "CNATURE", "'TSZ0'")
+      self.modify("NAM_COVER", "XUNIF_COVER(1)", "0.")
+      self.modify("NAM_COVER", "XUNIF_COVER(6)", "1.")
+      self.modify("NAM_FRAC", "LECOCLIMAP", ".TRUE.") 
+      self.modify("NAM_FRAC", "XUNIF_NATURE", "1.")
+      self.modify("NAM_DATA_TSZ0", "NTIME", "%i"%nts)
+      for it in range(nts-1):
+        dts = cas.var_ts[it+1] - cas.var_ts[it]
+        self.modify("NAM_DATA_TSZ0", "XUNIF_DTS(%i)"%(it+1), "%f"%dts)
+      self.modify("NAM_DATA_TSZ0", "XUNIF_DTS(%i)"%(nts), "0.")
+      self.modify("NAM_DATA_ISBA", "NTIME", "1")
+      for i in range(1,13):
+        self.modify("NAM_DATA_ISBA", "XUNIF_Z0(1,%i)"%i, "%f"%cas.var_z0[0])
+      self.modify("NAM_PREP_SURF_ATM", "NYEAR", cas.start_date.strftime("%Y"))
+      self.modify("NAM_PREP_SURF_ATM", "NMONTH", cas.start_date.strftime("%m"))
+      self.modify("NAM_PREP_SURF_ATM", "NDAY", cas.start_date.strftime("%d"))
+      self.modify("NAM_PREP_SURF_ATM", "XTIME", "%f"%time_to_secs(cas.start_date))
+      self.modify("NAM_PREP_ISBA", "XTG_SURF", "%f"%cas.var_ts[0])
+      self.modify("NAM_PREP_ISBA", "XTG_ROOT", "%f"%cas.var_ts[0])
+      self.modify("NAM_PREP_ISBA", "XTG_DEEP", "%f"%cas.var_ts[0])
+      self.modify("NAM_PREP_ISBA", "NYEAR", cas.start_date.strftime("%Y"))
+      self.modify("NAM_PREP_ISBA", "NMONTH", cas.start_date.strftime("%m"))
+      self.modify("NAM_PREP_ISBA", "NDAY", cas.start_date.strftime("%d"))
+      self.modify("NAM_PREP_ISBA", "XTIME", "%f"%time_to_secs(cas.start_date))
 
   def set_warm_microphysics(self):
     self.modify("NAM_PARAM_LIMA", "NMOM_I", "0")

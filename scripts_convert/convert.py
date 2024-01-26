@@ -14,13 +14,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import numpy as np
 import netCDF4 as nc
 import sys, os
 import argparse
 
 from Config import Config
-from Utils import arg_error, log, T_to_theta
+from Utils import arg_error, log
 from Utils import ERROR, WARNING, INFO, DEBUG
 from Dephy import FC_filename, listCases, Case
 
@@ -107,15 +106,6 @@ for attr in listAttributes:
   attributes[attr] = getattr(ds, attr)
   log(DEBUG, "Attribute '%s' = %s"%(attr, attributes[attr]), verbosity)
 
-### set case init and forcing types
-cas.set_init_and_forcing_types(attributes)
-# var_t["ini"]="theta|thetal|ta"
-# var_q["ini"]="rv|rt|qv"
-# var_t["adv"]="theta|thetal|ta"
-# var_q["adv"]="rv|rt|qv"
-# ...
-log(DEBUG, "init and forcings\n\tT:" + str(cas.var_t) + "\n\tq:"+str(cas.var_q), verbosity)
-
 ### set start_date, end_date and durations
 cas.set_times(attributes)
 
@@ -123,196 +113,53 @@ log(INFO, "start_date: %s UTC    "%cas.start_date, verbosity)
 log(INFO, "end_date:   %s UTC    "%cas.end_date,   verbosity)
 log(INFO, "duration:   %s == %s seconds"%(cas.duration, cas.duration_secs),   verbosity)
 
+### set case init and forcing types
+cas.set_init_and_forcing_types(attributes)
+# var_t["ini"]="theta|thetal|ta"
+# var_q["adv"]="rv|rt|qv"
+# ...
+log(DEBUG, "init and forcings\n\tT:" + str(cas.var_t) + "\n\tq:"+str(cas.var_q), verbosity)
+
 ##################
 # READ VARIABLES THAT DESCRIBE THE CASE
 
-## scalaires
-
-lat = ds.variables["lat"][0]
-lon = ds.variables["lon"][0]
+## longitude latitude
+cas.set_lonlat(ds)
 
 ## grille verticale 
 cas.set_vertical_grid(grids_dir)
 log(INFO, "vertical grid: "+str(cas.zgrid), verbosity)
 
-## champs initiaux T,q,ps,u,v,zorog
+## initial profiles and forcings
+cas.read_initial_profiles_and_forcings(attributes, ds, verbosity, read_zorog=read_zorog)
+log(INFO, "forcings and initial profiles have been read", verbosity)
 
-name_var_t = cas.var_t["ini"]
-name_var_q = cas.var_q["ini"]
-name_var_u = cas.var_u["ini"]
-name_var_v = cas.var_v["ini"]
+####################
+# WRITE DATA INTO NAMELISTS
 
-### initialize with theta_dry or theta_liquid
-mnh_init_keyword = "ZUVTHLMR" if name_var_t == "thetal" else "ZUVTHDMR"
+## initialize namelist PRE_IDEA
+preid = Config(casename, "PRE", sim_mode)
 
-### get initial profiles 
-ps    = ds.variables['ps'][:]      # surface pressure
-zs    = ds.variables['orog'][:] if read_zorog else ps*0
-var_u = ds.variables[name_var_u][:]          # ua, zonal wind profile
-lev_u = ds.variables['lev_'+name_var_u][:]   # associated vertical grid
-var_v = ds.variables[name_var_v][:]          # va, merid. wind profile
-lev_v = ds.variables['lev_'+name_var_v][:]   # associated vertical grid
-var_t = ds.variables[name_var_t][:]          # theta, thetal or ta
-lev_t = ds.variables["lev_"+name_var_t][:]   # associated vertical grid
-var_q = ds.variables[name_var_q][:]          # rv, rt or qv 
-lev_q = ds.variables["lev_"+name_var_q][:]   # associated vertical grid
+preid.freeformat_zhat(cas)
+preid.freeformat_rsou(cas)
+preid.freeformat_zfrc(cas)
 
-nlev_init_uv = len(lev_u)
-nlev_init_tq = len(lev_t)
+log(DEBUG, "free format variables\n"+ preid.config["freeformat"]["ZHAT"]+"\n"+\
+preid.config["freeformat"]["RSOU"]+"\n"+ preid.config["freeformat"]["ZFRC"], verbosity)
 
-log(DEBUG, "Original lev_t (%s) %s"%(name_var_t, lev_t), verbosity)
-log(DEBUG, "Original lev_q (%s) %s"%(name_var_q, lev_q), verbosity)
-log(DEBUG, "Original var_t (%s) %s"%(name_var_t, var_t), verbosity)
-log(DEBUG, "Original var_q (%s) %s"%(name_var_q, var_q), verbosity)
+preid.set_domain_grid(cas)
+preid.set_ini_filenames(cas)
+preid.set_lonlat(cas)
+preid.set_luser(cas)
+preid.set_surface_forcings(cas)
 
-### convert T to theta and q to mixing ratio if needed
-
-if name_var_t == "ta" :
-  # convert T to theta
-  press = ds.variables["pa"][:]
-  var_t = T_to_theta(var_t, press)
-
-if "q" in name_var_q: 
-  # convert content to mixing ratio
-  var_q = var_q/(1-var_q)
-
-log(DEBUG, "Converted var_t (%s) %s"%(name_var_t, var_t), verbosity)
-log(DEBUG, "Converted var_q (%s) %s"%(name_var_q, var_q), verbosity)
-
-if (lev_v.size != lev_u.size):
-  log(WARNING, 'ERROR!! DIFFERENT VERTICAL GRIDS FOR U & V to be dealt separately', verbosity)
-  var_v = 0.*var_u+var_v[0][0]
-
-### store initialisation in the right format in str_init
-str_init = "RSOU\n"
-str_init += "%s %i\n"%(cas.start_date.strftime("%Y %m %d"), cas.start_seconds)
-str_init += "%s   \n"%mnh_init_keyword # ZUVTHDMR or ZUVTHLMR
-str_init += "%.2f \n"%zs[0]
-str_init += "%.2f \n"%ps[0]
-str_init += "%.2f \n"%var_t[0][0]
-str_init += "%.8f \n"%var_q[0][0]
-str_init += "%i   \n"%nlev_init_uv
-for (z,u,v) in zip(lev_u, var_u[0], var_v[0]):
-  str_init += "%14.1f %14.2f %14.2f\n"%(z,u,v)
-str_init += "%i   \n"%nlev_init_tq
-for (z,t,q) in zip(lev_t, var_t[0], var_q[0]):
-  str_init += "%14.1f %14.2f %14.8f\n"%(z,t,q)
-
-############################
-
-
-## forçages advection, nudging
-# vents : geo ou nudging sinon 0
-# vertical : wa (vitesse vert) ou wap (omega) ou 0
-# T,q : nudging ? sinon 0 ; adv ? sinon 0 
-
-### get forcings
-
-def getzvar(name_var):
-    return ds.variables[name_var][:],      \
-           ds.variables["lev_"+name_var]
-def gettvar(name_var):
-    return ds.variables[name_var][:],      \
-           ds.variables["time_"+name_var]
-def get2dvar(name_var):
-    return ds.variables[name_var][:],      \
-           ds.variables["lev_"+name_var], \
-           ds.variables["time_"+name_var]
-
-# horizontal winds : geostrophic or nudging ; tendencies = 0
-## zonal
-name_var_u = cas.var_u["frc"]
-name_var_v = cas.var_v["frc"]
-if name_var_u != "none": 
-  var_u_frc, lev_u_frc, tim_u_frc = get2dvar(name_var_u)
-  var_v_frc, lev_v_frc, tim_v_frc = get2dvar(name_var_v)
-else:
-  var_u_frc = None
-  var_v_frc = None
-
-# thermodynamics : nudging 
-## T
-if cas.var_t["nud"] != "none":
-  name_var_t = cas.var_t["nud"]+"_nud"
-  var_t_nud, lev_t_nud, tim_t_nud = get2dvar(name_var_t)
-else:
-  var_t_nud = None
-## q
-if cas.var_q["nud"] != "none":
-  name_var_q = cas.var_q["nud"]+"_nud"
-  var_q_nud, lev_q_nud, tim_q_nud = get2dvar(name_var_q)
-else:
-  var_q_nud = None
-
-# thermodynamics : advection 
-## T
-if cas.var_t["adv"] != "none":
-  name_var_t = "tn"+cas.var_t["adv"]+"_adv"
-  var_t_adv, lev_t_adv, tim_t_adv = get2dvar(name_var_t)
-else:
-  var_t_adv = None
-## q
-if cas.var_q["adv"] != "none":
-  name_var_q = "tn"+cas.var_q["adv"]+"_adv"
-  var_q_adv, lev_q_adv, tim_q_adv = get2dvar(name_var_q)
-else:
-  var_q_adv = None
-
-## radiation tendency is added to temperature advection
-if attributes["radiation"] == "tend":
-  name_var_t = "tn"+cas.var_t["adv"]+"_rad"
-  var_t_adv += ds.variables[name_var_t][:]
-
-# subsidence, either in w or omega
-if attributes['forc_wa'] == 1:
-  var_w_frc, lev_w_frc, time_w_frc = get2dvar("wa")
-elif attributes['forc_wap'] == 1: 
-  var_w_frc, lev_w_frc, time_w_frc = get2dvar("wap")
-  var_w_frc /= -1.*288*ds.variables['ta'][:]*9.81
-else:
-  var_w_frc = None
-
-# surface forcings
-## prescribed SST or turbulent fluxes
-if attributes['surface_forcing_temp'] == 'ts':
-  var_sst, tim_sst = gettvar("ts_forc")
-  var_sst = np.array([int(s*100)/100. for s in var_sst]
-elif attributes['surface_forcing_temp'] == 'surface_flux':
-  var_hfls, tim_hfls = gettvar('hfls')
-  var_hfss, tim_hfss = gettvar('hfss')
-elif attributes['surface_forcing_temp'] == 'none':
-  var_z0h, tim_z0h = gettvar('z0h') # ?
-
-## prescribed momentum flux or roughness length
-if attributes['surface_forcing_wind'] == 'ustar':
-  var_ustar, tim_ustar = gettvar('ustar')
-elif attributes['surface_forcing_wind'] == 'z0':
-  var_z0, tim_z0 = gettvar('z0')
-  var_z0 = np.array([int(z0*1000)/1000. for z0 in var_z0])
-
-############
-# au final,
-# pour PRE_IDEA, écrire pour chaque pas de temps it de forçage :
-# date \n zs \n ps \n th_zs \n rv_zs \n nlev_frc \n 
-# puis pour chaque niveau ik de nlev_frc forçages :
-#('%.1f %.2f %.2f %.1f %.5f %.5f %.6f %.10f %.1f %.1f\n' % (lev_frc[ik],
-#    ufrc[it][ik],vfrc[it][ik],thfrc[it][ik],qfrc[it][ik],wfrc[it][ik],
-#    tadv[it][ik],qadv[it][ik],uadv[it][ik],vadv[it][ik]))
-# sachant que uadv,vadv = 0, que ufrc,vfrc soit geo soit nudg
-#
-# pour EXSEG, écrire pour chaque pas de temps it de forçage :
-# 
-############################
-
-### 
-
-
+preid.write("test_PRE_IDEA_%s.nam"%cas.shortname)
 exit()
+
 ########
 
-default = Config("ARMCU", "EXSEG01", sim_mode)
-default.write('default_namelist.nam')
-#print(default)
+## initialize namelist EXSEG
+exseg = Config(casename, "EXS", sim_mode)
 
 config = Config("ARMCU", "EXS", "LES")
 config.write('default_LES_namelist.nam')
