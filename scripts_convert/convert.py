@@ -118,7 +118,7 @@ cas.set_init_and_forcing_types(attributes)
 # var_t["ini"]="theta|thetal|ta"
 # var_q["adv"]="rv|rt|qv"
 # ...
-log(DEBUG, "init and forcings\n\tT:" + str(cas.var_t) + "\n\tq:"+str(cas.var_q), verbosity)
+log(DEBUG, "init and forcings\n\tT:" + str(cas.name_var_t) + "\n\tq:"+str(cas.name_var_q), verbosity)
 
 ##################
 # READ VARIABLES THAT DESCRIBE THE CASE
@@ -134,67 +134,44 @@ log(INFO, "vertical grid: "+str(cas.zgrid), verbosity)
 cas.read_initial_profiles_and_forcings(attributes, ds, verbosity, read_zorog=read_zorog)
 log(INFO, "forcings and initial profiles have been read", verbosity)
 
+## output files
+cas.setup_outputs()
+
 ####################
 # WRITE DATA INTO NAMELISTS
 
 ## initialize namelist PRE_IDEA
 preid = Config(casename, "PRE", sim_mode)
-
-preid.freeformat_zhat(cas)
-preid.freeformat_rsou(cas)
-preid.freeformat_zfrc(cas)
-
-log(DEBUG, "free format variables\n"+ preid.config["freeformat"]["ZHAT"]+"\n"+\
-preid.config["freeformat"]["RSOU"]+"\n"+ preid.config["freeformat"]["ZFRC"], verbosity)
-
 preid.set_domain_grid(cas)
 preid.set_ini_filenames(cas)
 preid.set_lonlat(cas)
 preid.set_luser(cas)
 preid.set_surface_forcings(cas)
-
-preid.write("test_PRE_IDEA_%s.nam"%cas.shortname)
-exit()
-
-########
+preid.freeformat_zhat(cas)
+preid.freeformat_rsou(cas)
+preid.freeformat_zfrc(cas)
+preid.write("%s/test_PRE_IDEA_%s.nam"%(output_dir,cas.shortname))
 
 ## initialize namelist EXSEG
 exseg = Config(casename, "EXS", sim_mode)
+exseg.set_name(cas)
+exseg.set_ini_filenames(cas)
+exseg.set_forcing_flags(cas)
+exseg.set_buffer_layer(cas)
 
-config = Config("ARMCU", "EXS", "LES")
-config.write('default_LES_namelist.nam')
+if "shcv" in cas.type: # condition pour être warm == shallow conv ?
+  exseg.set_warm_microphysics()
 
-config.set_warm_microphysics()
-config.activate_radiation()
+if attributes["radiation"] == "on":
+  exseg.activate_radiation()
+else:
+  exseg.deactivate_radiation()
 
-config.modify("NAM_PARAM_ECRAD", "NSWSOLVER", "1")
-config.write('cumulus_with_radiation_LES_namelist.nam')
-
-exseg1 = config.duplicate_config(name="EXSEG01")
-exseg1.modify("NAM_DYN", "XSEGLEN", "%i"%(4*3600))
-exseg1.write('exseg01_cumulus_with_radiation_LES_namelist.nam')
-
-exseg2 = config.duplicate_config(name="EXSEG02")
-exseg2.modify("NAM_DYN", "XSEGLEN", "%i"%(1*3600))
-exseg2.write('exseg02_cumulus_with_radiation_LES_namelist.nam')
+for i in range(cas.nseg+1):
+  exseg.set_outputs(cas, i)
+  log(INFO, "iseg %i from hour %02i to %02i ; is hf ? %1i"%(i,
+      exseg.seg_beg/3600, exseg.seg_end/3600, exseg.is_hf), verbosity)
+  exseg.reset_seg_surface_forcings(cas, i)
+  exseg.write("%s/test_EXSEG%02i_%s.nam"%(output_dir, i, cas.shortname))
 
 exit()
-
-## Scénario du script de conversion au format commun
-
-# Créer une namelist par défaut en mode LES|CRM|SCM
-
-# Lire les variables du fichier format commun
-# Modifier la namelist en fonction du format commun
-# # en fonction du type de cas (moistshcv|dcv|stable|dryshcv)
-# # en fonction des types de forçages (flag_t/flag_q, )
-# => on obtient preidea et exseg mère
-
-# Lire le fichier de config spécifique du cas
-# contenant les temps clés et durée du spinup
-# En déduire le nombre de EXSEG à créer,
-# Copier autant de fois la config exseg mère
-# Modifier les configs filles en fonction
-#   fichier init, restart, durée ...
-#   flux sur le segment simulé...
-#   fréquence des xout ...

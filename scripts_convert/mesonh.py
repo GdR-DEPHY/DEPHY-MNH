@@ -138,17 +138,10 @@ MODD_BACKUP__ = { # backup files for restarts
 }
 
 SURF_IDEAL_FLUX__ = { # surfex default namelist
-  "NFORCF"            : "2",
-  "NFORCT"            : "2",
-  "XTIMEF"            : "0",
-  "XTIMET"            : "0",
-  "XSFTH"             : "0.",
+  "NFORCF"            : "0",
+  "NFORCT"            : "0",
   "CSFTQ"             : "'W/m2'", #'kg/m2/s'",
-  "XSFTQ"             : "0.",
   "CUSTARTYPE"        : "Z0",
-  "XUSTAR"            : "0.",
-  "XZ0"               : "0.01",
-  "XTSRAD"            : "273.15K",
 }
 
 MODD_CONF__   = { # general config
@@ -471,19 +464,13 @@ MODD_CONDSAMP__ = { # conditional sampling
 }
 
 MODD_OUTPUT__  = {
-  #"XOUT_TIME"              : "%i"%8*999*-999.,
-  #"NOUT_STEP"              : "%i"%8*999*-999 ,
   "XOUT_TIME_FREQ(1)"      : "3600", # "-999.",
   "XOUT_TIME_FREQ_FIRST(1)": "3600", # "0.",
-  #"NOUT_STEP_FREQ"         : "-999",
-  #"NOUT_STEP_FREQ_FIRST"   : "1",
   "LOUT_BEG"               : ".FALSE.",
   "LOUT_END"               : ".FALSE.",
   "LOUT_REDUCE_FLOAT_PRECISION(1)" : ".FALSE.", 
   "LOUT_COMPRESS(1)"       : ".FALSE.",
   "NOUT_COMPRESS_LEVEL(1)" : "4",
-  "COUT_DIR"               : "''", 
-  #"COUT_VAR"             : "''",
   "COUT_VAR(1,1)"          : "'UT'",
   "COUT_VAR(1,2)"          : "'VT'",
   "COUT_VAR(1,3)"          : "'WT'",
@@ -738,6 +725,7 @@ default_preidea = {
 default_exseg = {
   "NAM_CONFIO": MODD_CONFIO__,
   "NAM_CONFZ": MODD_CONFZ__,
+  "NAM_LUNITn": MODD_LUNITn__,
   "NAM_BACKUP": MODD_BACKUP__,
   "NAM_IDEAL_FLUX": SURF_IDEAL_FLUX__,
   "NAM_CONF": MODD_CONF__,
