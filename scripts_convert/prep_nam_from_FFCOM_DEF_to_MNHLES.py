@@ -923,4 +923,4 @@ if attributes['surface_forcing_temp'] == 'surface_flux':
    # for it in range(0,nt):
    #     g.write('XTSRAD('+str(it+1)+') = '+str(float(ts[it]))+',\n')
     g.write('/\n')
-g.close()  
+g.close()

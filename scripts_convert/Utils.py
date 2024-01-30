@@ -21,7 +21,8 @@ INFO=2
 DEBUG=3
 
 def log(lev, msg, verb):
-  if verb>=lev: print("%s"%msg)
+  if verb>=lev: print("%s %s"%(">"*(lev), msg))
+  if lev==0:exit(1)
 
 def error(where,msg):
   print("> error in %s: %s"%(where,msg))
@@ -37,6 +38,13 @@ def parse_time(date):
   minute = int(date[14:16])
   second = int(date[17:19])
   return year, month, day, hour, minute, second
+
+def time_to_secs(date):
+  return 3600*date.hour + 60*date.minute + date.second
+def str_time(date):
+  """ format YYYY MM DD seconds """
+  ts = time_to_secs(date)
+  return "%s %i\n"%(date.strftime("%Y %m %d"), ts)
 
 def T_to_theta(t,p):
   kappa=2./7.

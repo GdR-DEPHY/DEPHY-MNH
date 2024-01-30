@@ -121,6 +121,11 @@ MODD_CONFIO__ = { # I/O file type
     "LLFIREAD"        : ".FALSE.",
 }
 
+MODD_LUNITn__ = { # Init file names
+    "CINIFILE"        : "'init'",
+    "CINIFILEPGD"     : "'init_pgd'", 
+}
+
 MODD_CONFZ__  = { # parallelism
   "NZ_VERB"         : "0",
   "NZ_PROC"         : "0",
@@ -137,17 +142,10 @@ MODD_BACKUP__ = { # backup files for restarts
 }
 
 SURF_IDEAL_FLUX__ = { # surfex default namelist
-  "NFORCF"            : "2",
-  "NFORCT"            : "2",
-  "XTIMEF"            : "0",
-  "XTIMET"            : "0",
-  "XSFTH"             : "0.",
+  "NFORCF"            : "0",
+  "NFORCT"            : "0",
   "CSFTQ"             : "'W/m2'", #'kg/m2/s'",
-  "XSFTQ"             : "0.",
   "CUSTARTYPE"        : "Z0",
-  "XUSTAR"            : "0.",
-  "XZ0"               : "0.01",
-  "XTSRAD"            : "273.15K",
 }
 
 MODD_CONF__   = { # general config
@@ -470,19 +468,13 @@ MODD_CONDSAMP__ = { # conditional sampling
 }
 
 MODD_OUTPUT__  = {
-  #"XOUT_TIME"              : "%i"%8*999*-999.,
-  #"NOUT_STEP"              : "%i"%8*999*-999 ,
   "XOUT_TIME_FREQ(1)"      : "3600", # "-999.",
   "XOUT_TIME_FREQ_FIRST(1)": "3600", # "0.",
-  #"NOUT_STEP_FREQ"         : "-999",
-  #"NOUT_STEP_FREQ_FIRST"   : "1",
   "LOUT_BEG"               : ".FALSE.",
   "LOUT_END"               : ".FALSE.",
   "LOUT_REDUCE_FLOAT_PRECISION(1)" : ".FALSE.", 
   "LOUT_COMPRESS(1)"       : ".FALSE.",
   "NOUT_COMPRESS_LEVEL(1)" : "4",
-  "COUT_DIR"               : "''", 
-  #"COUT_VAR"             : "''",
   "COUT_VAR(1,1)"          : "'UT'",
   "COUT_VAR(1,2)"          : "'VT'",
   "COUT_VAR(1,3)"          : "'WT'",
@@ -631,9 +623,84 @@ MODD_GRn_PRE__ =  {
   "CSURF" : "'EXTE'", #"NONE",
 }
 
+MODD_PGD_SCHEMES__ =  {
+  "CSEA"    : "'FLUX'", #"'SEAFLUX'"
+  "CNATURE" : "'TSZ0'",
+}
+
+MODD_COVER__ =  {
+  "XUNIF_COVER(1)"    : "0.", # (fraction of ocean)
+  "XUNIF_COVER(6)"    : "1.", # (fraction of land)
+}
+
+MODD_SEABATHY__ =  {
+  "XUNIF_SEABATHY"    : "5.",
+}
+
+MODD_PREP_SEAFLUX__ =  {
+  "XSST_UNIF"         : "280.", # random default
+}
+MODD_DATA_SEAFLUX__ =  {
+  "LSST_DATA"         : ".FALSE.", # 
+  "NTIME_SST"         : "0",         #
+  "NYEAR_SST(1)"      : "1980", # random default
+  "NMONTH_SST(1)"     : "1",    # random default
+  "NDAY_SST(1)"       : "1",    # random default
+  "XTIME_SST(1)"      : "0.",   # random default
+  "XUNIF_SST(1)"      : "280.", # random default
+}
+MODD_FRAC__ =  {
+  "LECOCLIMAP"        : ".TRUE.",
+  "XUNIF_NATURE"      : "1.",
+}
+MODD_DATA_TSZ0__ =  {
+  "NTIME"             : "0",
+  "XUNIF_DTS(1)"      : "-0.250", # SFX default 
+}
+MODD_DATA_ISBA__ =  {
+  "NTIME"             : "0",
+  "XUNIF_Z0(1,1)"     : "0", # depends on the veg type and time
+}
+MODD_ISBA__ =  {
+  "XUNIF_CLAY"        : "1.",
+  "XUNIF_SAND"        : "0.",
+  "XUNIF_RUNOFFB"     : "0.5",
+  "CISBA"             : "'2-L'",
+  "CPHOTO"            : "'NON'",
+  "NPATCH"            : "1",
+  "NGROUND_LAYER"     : "2",
+}
+MODD_PREP_SURF_ATM__ =  {
+  "NYEAR"             : "1980",
+  "NMONTH"            : "1",
+  "NDAY"              : "1",
+  "XTIME"             : "0.",
+}
+MODD_PREP_ISBA__ =  {
+  "XHUG_SURF"         : "0.",
+  "XHUG_ROOT"         : "0.",
+  "XHUG_DEEP"         : "0.",
+  "XHUGI_SURF"        : "1.",
+  "XHUGI_ROOT"        : "1.",
+  "XHUGI_DEEP"        : "1.",
+  "XTG_SURF"          : "280", # random default
+  "XTG_ROOT"          : "280", # random default 
+  "XTG_DEEP"          : "280", # random default 
+  "LISBA_CANOPY"      : ".FALSE.",
+  "NYEAR"             : "1980",
+  "NMONTH"            : "1",
+  "NDAY"              : "1",
+  "XTIME"             : "0.",
+}
+MODD_DEEPSOIL__ =  {
+  "LPHYSDOMC"         : ".FALSE.",
+  "LDEEPSOIL"         : ".FALSE.",
+}
+
 default_preidea = {
   "NAM_CONFIO": MODD_CONFIO__,
   "NAM_CONFZ": MODD_CONFZ__,
+  "NAM_LUNITn": MODD_LUNITn__,
   "NAM_DIMn_PRE": MODD_DIMn_PRE__,
   "NAM_DYNn_PRE": MODD_DYNn_PRE__,
   "NAM_GRID_PRE": MODD_GRID_PRE__,
@@ -643,11 +710,26 @@ default_preidea = {
   "NAM_GRIDH_PRE": MODD_GRIDH_PRE__,
   "NAM_GRn_PRE": MODD_GRn_PRE__,
   "NAM_CONFn": MODD_CONFn__,
+  "NAM_LBCn" : MODD_LBCn__,
+  "NAM_PGD_SCHEMES": MODD_PGD_SCHEMES__,
+  "NAM_COVER": MODD_COVER__,
+  "NAM_SEABATHY": MODD_SEABATHY__,
+  "NAM_PREP_SEAFLUX": MODD_PREP_SEAFLUX__,
+  "NAM_DATA_SEAFLUX": MODD_DATA_SEAFLUX__,
+  "NAM_FRAC": MODD_FRAC__,
+  "NAM_DATA_TSZ0": MODD_DATA_TSZ0__,
+  "NAM_DATA_ISBA": MODD_DATA_ISBA__,
+  "NAM_ISBA": MODD_ISBA__,
+  "NAM_PREP_SURF_ATM": MODD_PREP_SURF_ATM__,
+  "NAM_PREP_ISBA": MODD_PREP_ISBA__,
+  "NAM_DEEPSOIL": MODD_DEEPSOIL__,
+  "freeformat": {},
 }
 
 default_exseg = {
   "NAM_CONFIO": MODD_CONFIO__,
   "NAM_CONFZ": MODD_CONFZ__,
+  "NAM_LUNITn": MODD_LUNITn__,
   "NAM_BACKUP": MODD_BACKUP__,
   "NAM_IDEAL_FLUX": SURF_IDEAL_FLUX__,
   "NAM_CONF": MODD_CONF__,
