@@ -6,16 +6,20 @@ LES_Nhoriz = 1024   # npoints
 LES_Nverti = 160    # npoints
 LES_deltah = 25.    # horizontal resolution in m
 LES_deltav = 25.    # vertical   resolution in m
+#pour les cas de transition on va adapter la grille horizontale => 200m
+# et adapter la grille verticale
 
 CRM_Nhoriz = 100    # npoints
 CRM_Nverti = 160    # npoints
 CRM_deltah = 2500.  # horizontal resolution in m
 CRM_deltav = 25     # vertical   resolution in m
+# pour les cas de transition on veut adapter la grille verticale
 
 SCM_Nhoriz = 1      # npoints
 SCM_Nverti = 160    # npoints
 SCM_deltah = 50000. # horizontal resolution in m
 SCM_deltav = 25.    # vertical   resolution in m
+# pour les cas de transition on veut adapter la grille verticale
 
 # specific adaptations of default preidea and exseg to LES mode
 preidea_LES = {
