@@ -439,7 +439,6 @@ class Config:
         if key == "USTAR": self.modify("NAM_IDEAL_FLUX", "CUSTARTYPE", "USTAR")
         if key == "XTSRAD": self.modify("NAM_IDEAL_FLUX", "NFORCT", "%i"%nf)
         for i,f in enumerate(forc(var)):
-          print(i,f)
           self.modify("NAM_IDEAL_FLUX", key+"(%i)"%(i+1), "%f"%f)
 
     self.modify("NAM_IDEAL_FLUX", "NFORCF", "%i"%nf)

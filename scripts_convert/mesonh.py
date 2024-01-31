@@ -117,18 +117,18 @@ exseg_SCM = {
 # in DEPHY project                  ##
 ######################################
 
-MODD_CONFIO__ = { # I/O file type
+NAM_CONFIO = { # I/O file type
     "LCDF4"           : ".TRUE.",
     "LLFIOUT"         : ".FALSE.",
     "LLFIREAD"        : ".FALSE.",
 }
 
-MODD_LUNITn__ = { # Init file names
+NAM_LUNITn = { # Init file names
     "CINIFILE"        : "'init'",
     "CINIFILEPGD"     : "'init_pgd'", 
 }
 
-MODD_CONFZ__  = { # parallelism
+NAM_CONFZ  = { # parallelism
   "NZ_VERB"         : "0",
   "NZ_PROC"         : "0",
   "NB_PROCIO_R"     : "1",
@@ -139,18 +139,18 @@ MODD_CONFZ__  = { # parallelism
   "NZ_SPLITTING"    : "10",
 }
 
-MODD_BACKUP__ = { # backup files for restarts
+NAM_BACKUP = { # backup files for restarts
   "XBAK_TIME_FREQ(1)" : "3600.0",
 }
 
-SURF_IDEAL_FLUX__ = { # surfex default namelist
+SURF_IDEAL_FLUX = { # surfex default namelist
   "NFORCF"            : "0",
   "NFORCT"            : "0",
   "CSFTQ"             : "'W/m2'", #'kg/m2/s'",
   "CUSTARTYPE"        : "Z0",
 }
 
-MODD_CONF__   = { # general config
+NAM_CONF   = { # general config
   "CCONF"             :"'START'",
   "LFLAT"             : ".TRUE.", #".FALSE.",
   "NMODEL"            : "1",
@@ -169,7 +169,7 @@ MODD_CONF__   = { # general config
   "LCHECK"            : ".FALSE.",
 }
 
-MODD_CONFn__  = { # config for model n (nesting)
+NAM_CONFn  = { # config for model n (nesting)
   "LUSERV"            : ".TRUE.",
   "LUSERC"            : ".FALSE.",
   "LUSERR"            : ".FALSE.",
@@ -180,7 +180,7 @@ MODD_CONFn__  = { # config for model n (nesting)
   "LUSECI"            : ".FALSE.",
 }
 
-MODD_FRC__    = {   # forcings
+NAM_FRC    = {   # forcings
   "LGEOST_UV_FRC"     : ".FALSE.",
   "LGEOST_TH_FRC"     : ".FALSE.",
   "LTEND_THRV_FRC"    : ".FALSE.",
@@ -202,7 +202,7 @@ MODD_FRC__    = {   # forcings
   "XRADY_OC"          :  "8000.",
 }
 
-MODD_LBCn__   = {  # boundary conditions for model n
+NAM_LBCn   = {  # boundary conditions for model n
   "CLBCX(1)"          :"'CYCL'",
   "CLBCX(2)"          :"'CYCL'",
   "CLBCY(1)"          :"'CYCL'",
@@ -214,7 +214,7 @@ MODD_LBCn__   = {  # boundary conditions for model n
   "XPOND"             : "1.0",
 }
 
-MODD_DYN__    = { # general dynamics
+NAM_DYN    = { # general dynamics
   "XSEGLEN"           : "43200.",
   "XASSELIN"          : "0.2",
   "XASSELIN_SV"       : "0.02",
@@ -228,7 +228,7 @@ MODD_DYN__    = { # general dynamics
   "XALZBAS"           : "0.01",
 }
 
-MODD_DYNn__   = { # dynamics for model n (nesting)
+NAM_DYNn   = { # dynamics for model n (nesting)
   "XTSTEP"            : "60.",
   "CPRESOPT"          : "'CRESI'",
   "NITR"              : "4",
@@ -243,7 +243,7 @@ MODD_DYNn__   = { # dynamics for model n (nesting)
   "XT4DIFSV"          : "1800.",
 }
 
-MODD_ADVn__   = { # advection for model n
+NAM_ADVn   = { # advection for model n
   "CUVW_ADV_SCHEME"   : "'CEN4TH'",
   "CMET_ADV_SCHEME"   : "'PPM_01'",
   "CSV_ADV_SCHEME"    : "'PPM_01'",
@@ -256,7 +256,7 @@ MODD_ADVn__   = { # advection for model n
   "LCFL_WRIT"         : ".FALSE.",
 }
 
-MODD_PARAMn__ = { # activate params for model n
+NAM_PARAMn = { # activate params for model n
   "CTURB"             : "'TKEL'", # "'NONE'"
   "CRAD"              : "'NONE'",
   "CCLOUD"            : "'LIMA'", # "'NONE'"
@@ -266,7 +266,7 @@ MODD_PARAMn__ = { # activate params for model n
   "CACTCCN"           : "'NONE'",
 }
 
-MODD_TURBn__  = { # config turbulence
+NAM_TURBn  = { # config turbulence
   "XIMPL"             : "1.",
   "XTKEMIN"           : "1E-10",
   "XCED"              : "0.84",
@@ -298,7 +298,7 @@ MODD_TURBn__  = { # config turbulence
   "LTURB_PRECIP"      : ".FALSE.",
 }
 
-MODD_RADn__   = { # config radiation
+NAM_RADn   = { # config radiation
   "XDTRAD"            : "XTSTEP",
   "XDTRAD_CLONLY"     : "XTSTEP",
   "LCLEAR_SKY"        :".FALSE.",
@@ -318,14 +318,19 @@ MODD_RADn__   = { # config radiation
   "LFIX_DAT"          :".FALSE.",
 }
 
-MODD_PARAM_MFSHALLn__ = { # config shallow mass flux scheme
+
+NAM_PARAM_KAFRn = {  # config deep convection scheme
+        "XDTCONV"    :"10.",
+        "LDAIGCONV"  :"TRUE"
+        }
+NAM_PARAM_MFSHALLn = { # config shallow mass flux scheme
   "CMF_UPDRAFT"       : "EDKF",
   "CMF_CLOUD"         : "DIRE", 
   "LMIXUV"            : ".TRUE.", 
   "LMF_FLX"           : ".TRUE.",   #".FALSE."
 }
 
-MODD_PARAM_ECRAD__ = { # config radiation scheme
+NAM_PARAM_ECRAD = { # config radiation scheme
   "NSWSOLVER"         : "0",
   "NLWSOLVER"         : "0",
   "LSPEC_ALB"         : ".FALSE.",
@@ -342,7 +347,7 @@ MODD_PARAM_ECRAD__ = { # config radiation scheme
   "XCLOUD_FRAC_STD"   : "1.0",
 }
 
-MODD_PARAM_LIMA__ = {  # config microphysics scheme
+NAM_PARAM_LIMA = {  # config microphysics scheme
    "LPTSPLIT"         : ".TRUE.",
    "LFEEDBACKT"       : ".TRUE.",
    "NMAXITER"         : "5",
@@ -405,7 +410,7 @@ MODD_PARAM_LIMA__ = {  # config microphysics scheme
    "LRDSF"            : ".FALSE.",
 }
 
-MODD_PARAM_C2R2__ = {               # default MNH
+NAM_PARAM_C2R2 = {               # default MNH
     "HPARAM_CCN"      : "'CPB'",    #"'XXX'",
     "HINI_CCN"        : "'CCN'",    #"'XXX'",
     "XCHEN"           : "0.173E+09",#"0.0",
@@ -416,11 +421,11 @@ MODD_PARAM_C2R2__ = {               # default MNH
     "LSEDC"           : ".FALSE.",  #".TRUE.",
 }
 
-MODD_BUDGET__  = { # compute budgets
+NAM_BUDGET  = { # compute budgets
   "CBUTYPE"           : "'CART'",   #"'NONE'",
   "LBU_KCP"           : ".FALSE.",  #".TRUE",
-  "XBUWRI"            : "3600.",    #MODD_DYN__["XSEGLEN"],
-  "XBULEN"            : "3600.",    #MODD_DYN__["XSEGLEN"],
+  "XBUWRI"            : "3600.",    #NAM_DYN["XSEGLEN"],
+  "XBULEN"            : "3600.",    #NAM_DYN["XSEGLEN"],
   "NBUMOD"            : "1",
   "NBUKL"             : "1",
   "NBUKH"             : "0",        
@@ -433,7 +438,7 @@ MODD_BUDGET__  = { # compute budgets
   "NBUMASK"           : "1",
 }
 
-MODD_LES__     = { # compute horizontal statistics 
+NAM_LES     = { # compute horizontal statistics 
   "LLES_MEAN"           : ".TRUE.",  #".FALSE.",
   "LLES_RESOLVED"       : ".TRUE.",  #".FALSE.",
   "LLES_SUBGRID"        : ".TRUE.",  #".FALSE.",
@@ -450,7 +455,7 @@ MODD_LES__     = { # compute horizontal statistics
   "LLES_CS_MASK"        : ".FALSE.",
 }
 
-MODD_CONDSAMP__ = { # conditional sampling
+NAM_CONDSAMP = { # conditional sampling
   "LCONDSAMP"         : ".FALSE.",
   "NCONDSAMP"         : "3",
   "XRADIO(:)"         : "900.",
@@ -464,7 +469,7 @@ MODD_CONDSAMP__ = { # conditional sampling
   "LTPLUS"            : ".TRUE.",
 }
 
-MODD_NEBn__ = { # conditional sampling
+NAM_NEBn = { # schéma de nuages
   "LHGT_QS"             : ".FALSE.",
   "LSTATNW"             : ".FALSE.",
   "LSUBG_COND"          : ".FALSE.",
@@ -478,7 +483,7 @@ MODD_NEBn__ = { # conditional sampling
   "CFAC_ICE_SHALLOW_MF" : "'S'",
 }
 
-MODD_OUTPUT__  = {
+NAM_OUTPUT  = {
   "XOUT_TIME_FREQ(1)"      : "3600", # "-999.",
   "XOUT_TIME_FREQ_FIRST(1)": "3600", # "0.",
   "LOUT_BEG"               : ".FALSE.",
@@ -500,7 +505,7 @@ MODD_OUTPUT__  = {
   "COUT_VAR(1,12)"         : "'RGT'",
 }
 
-MODD_BU_RTH__ = { 
+NAM_BU_RTH = { 
   "LBU_RTH"        : ".TRUE.",
   "CBULIST_RTH(1)" : "'FRC'",
   "CBULIST_RTH(2)" : "'ADV'",
@@ -512,7 +517,7 @@ MODD_BU_RTH__ = {
   "CBULIST_RTH(8)" : "'AVEF'",
 }
 
-MODD_BU_RRV__ = {
+NAM_BU_RRV = {
   "LBU_RRV"         : ".TRUE.",
   "CBULIST_RRV(1)"  : "'FRC'",
   "CBULIST_RRV(2)"  : "'ADV'",
@@ -524,7 +529,7 @@ MODD_BU_RRV__ = {
   "CBULIST_RRV(8)"  : "'AVEF'",
 }
 
-MODD_BU_RU__ = {
+NAM_BU_RU = {
   "LBU_RU"          : ".TRUE.",
   "CBULIST_RU(1)"   : "'FRC'",
   "CBULIST_RU(2)"   : "'COR'",
@@ -536,7 +541,7 @@ MODD_BU_RU__ = {
   "CBULIST_RU(8)"   : "'AVEF'",
 }
 
-MODD_BU_RV__ = {
+NAM_BU_RV = {
   "LBU_RV"          : ".TRUE.",
   "CBULIST_RV(1)"   : "'FRC'",
   "CBULIST_RV(2)"   : "'COR'",
@@ -548,12 +553,12 @@ MODD_BU_RV__ = {
   "CBULIST_RV(8)"   : "'AVEF'",
 }
 
-MODD_DIMn_PRE__ = { # pre_idea dimensions
+NAM_DIMn_PRE = { # pre_idea dimensions
   "NIMAX" : "10", 
   "NJMAX" : "10" 
 }
 
-MODD_DYNn_PRE__ = { # pressure solver
+NAM_DYNn_PRE = { # pressure solver
   "CPRESOPT"          : "'CRESI'",
   "NITR"              : "4",
   "XRELAX"            : "1.",
@@ -561,7 +566,7 @@ MODD_DYNn_PRE__ = { # pressure solver
   "XRES"              : "1.E-07",
 }
 
-MODD_GRID_PRE__ = {
+NAM_GRID_PRE = {
   "XLON0"   : "0.",
   "XLAT0"   : "60.",
   "XBETA"   : "0.",
@@ -570,7 +575,7 @@ MODD_GRID_PRE__ = {
   "XLATORI" : "37.",
 }
 
-MODD_VER_GRID__ = { # pre_idea vertical grid
+NAM_VER_GRID = { # pre_idea vertical grid
   "LTHINSHELL" : ".FALSE.",
   "NKMAX"      : "10",
   "YZGRID_TYPE": "'FUNCTN'",
@@ -584,7 +589,7 @@ MODD_VER_GRID__ = { # pre_idea vertical grid
   "XLEN2"      : "2500.",
 }
 
-MODD_CONF_PRE__ = { # pre_idea config
+NAM_CONF_PRE = { # pre_idea config
   "LCARTESIAN" : ".TRUE.", 
   "LPACK"      : ".TRUE.", 
   "CEQNSYS"    : "'DUR'",
@@ -601,7 +606,7 @@ MODD_CONF_PRE__ = { # pre_idea config
   "JPHEXT"     : "1",
 }
 
-MODD_PERT_PRE__ = {
+NAM_PERT_PRE = {
   "CPERT_KIND" : "'WH'",
   "XAMPLITH"   : "1.5",
   "XAMPLIRV"   : "0.0",
@@ -617,7 +622,7 @@ MODD_PERT_PRE__ = {
   "LWH_LBYV"   : ".FALSE.",
 }
 
-MODD_GRIDH_PRE__ = { 
+NAM_GRIDH_PRE = { 
   "XDELTAX"    : "5000.",
   "XDELTAY"    : "5000.",
   "XHMAX"      : "300.",
@@ -629,28 +634,28 @@ MODD_GRIDH_PRE__ = {
   "NJZS"       : "5",
 }
 
-MODD_GRn_PRE__ =  {
+NAM_GRn_PRE =  {
   "CSURF" : "'EXTE'", #"NONE",
 }
 
-MODD_PGD_SCHEMES__ =  {
+NAM_PGD_SCHEMES =  {
   "CSEA"    : "'FLUX'", #"'SEAFLUX'"
   "CNATURE" : "'TSZ0'",
 }
 
-MODD_COVER__ =  {
+NAM_COVER =  {
   "XUNIF_COVER(1)"    : "0.", # (fraction of ocean)
   "XUNIF_COVER(6)"    : "1.", # (fraction of land)
 }
 
-MODD_SEABATHY__ =  {
+NAM_SEABATHY =  {
   "XUNIF_SEABATHY"    : "5.",
 }
 
-MODD_PREP_SEAFLUX__ =  {
+NAM_PREP_SEAFLUX =  {
   "XSST_UNIF"         : "280.", # random default
 }
-MODD_DATA_SEAFLUX__ =  {
+NAM_DATA_SEAFLUX =  {
   "LSST_DATA"         : ".FALSE.", # 
   "NTIME_SST"         : "0",         #
   "NYEAR_SST(1)"      : "1980", # random default
@@ -659,19 +664,19 @@ MODD_DATA_SEAFLUX__ =  {
   "XTIME_SST(1)"      : "0.",   # random default
   "XUNIF_SST(1)"      : "280.", # random default
 }
-MODD_FRAC__ =  {
+NAM_FRAC =  {
   "LECOCLIMAP"        : ".TRUE.",
   "XUNIF_NATURE"      : "1.",
 }
-MODD_DATA_TSZ0__ =  {
+NAM_DATA_TSZ0 =  {
   "NTIME"             : "0",
   "XUNIF_DTS(1)"      : "-0.250", # SFX default 
 }
-MODD_DATA_ISBA__ =  {
+NAM_DATA_ISBA =  {
   "NTIME"             : "0",
   "XUNIF_Z0(1,1)"     : "0", # depends on the veg type and time
 }
-MODD_ISBA__ =  {
+NAM_ISBA =  {
   "XUNIF_CLAY"        : "1.",
   "XUNIF_SAND"        : "0.",
   "XUNIF_RUNOFFB"     : "0.5",
@@ -680,13 +685,13 @@ MODD_ISBA__ =  {
   "NPATCH"            : "1",
   "NGROUND_LAYER"     : "2",
 }
-MODD_PREP_SURF_ATM__ =  {
+NAM_PREP_SURF_ATM =  {
   "NYEAR"             : "1980",
   "NMONTH"            : "1",
   "NDAY"              : "1",
   "XTIME"             : "0.",
 }
-MODD_PREP_ISBA__ =  {
+NAM_PREP_ISBA =  {
   "XHUG_SURF"         : "0.",
   "XHUG_ROOT"         : "0.",
   "XHUG_DEEP"         : "0.",
@@ -702,67 +707,67 @@ MODD_PREP_ISBA__ =  {
   "NDAY"              : "1",
   "XTIME"             : "0.",
 }
-MODD_DEEPSOIL__ =  {
+NAM_DEEPSOIL =  {
   "LPHYSDOMC"         : ".FALSE.",
   "LDEEPSOIL"         : ".FALSE.",
 }
 
 default_preidea = {
-  "NAM_CONFIO": MODD_CONFIO__,
-  "NAM_CONFZ": MODD_CONFZ__,
-  "NAM_LUNITn": MODD_LUNITn__,
-  "NAM_DIMn_PRE": MODD_DIMn_PRE__,
-  "NAM_DYNn_PRE": MODD_DYNn_PRE__,
-  "NAM_GRID_PRE": MODD_GRID_PRE__,
-  "NAM_VER_GRID": MODD_VER_GRID__,
-  "NAM_CONF_PRE": MODD_CONF_PRE__,
-  "NAM_PERT_PRE": MODD_PERT_PRE__,
-  "NAM_GRIDH_PRE": MODD_GRIDH_PRE__,
-  "NAM_GRn_PRE": MODD_GRn_PRE__,
-  "NAM_CONFn": MODD_CONFn__,
-  "NAM_LBCn" : MODD_LBCn__,
-  "NAM_PGD_SCHEMES": MODD_PGD_SCHEMES__,
-  "NAM_COVER": MODD_COVER__,
-  "NAM_SEABATHY": MODD_SEABATHY__,
-  "NAM_PREP_SEAFLUX": MODD_PREP_SEAFLUX__,
-  "NAM_DATA_SEAFLUX": MODD_DATA_SEAFLUX__,
-  "NAM_FRAC": MODD_FRAC__,
-  "NAM_DATA_TSZ0": MODD_DATA_TSZ0__,
-  "NAM_DATA_ISBA": MODD_DATA_ISBA__,
-  "NAM_ISBA": MODD_ISBA__,
-  "NAM_PREP_SURF_ATM": MODD_PREP_SURF_ATM__,
-  "NAM_PREP_ISBA": MODD_PREP_ISBA__,
-  "NAM_DEEPSOIL": MODD_DEEPSOIL__,
+  "NAM_CONFIO": NAM_CONFIO,
+  "NAM_CONFZ": NAM_CONFZ,
+  "NAM_LUNITn": NAM_LUNITn,
+  "NAM_DIMn_PRE": NAM_DIMn_PRE,
+  "NAM_DYNn_PRE": NAM_DYNn_PRE,
+  "NAM_GRID_PRE": NAM_GRID_PRE,
+  "NAM_VER_GRID": NAM_VER_GRID,
+  "NAM_CONF_PRE": NAM_CONF_PRE,
+  "NAM_PERT_PRE": NAM_PERT_PRE,
+  "NAM_GRIDH_PRE": NAM_GRIDH_PRE,
+  "NAM_GRn_PRE": NAM_GRn_PRE,
+  "NAM_CONFn": NAM_CONFn,
+  "NAM_LBCn" : NAM_LBCn,
+  "NAM_PGD_SCHEMES": NAM_PGD_SCHEMES,
+  "NAM_COVER": NAM_COVER,
+  "NAM_SEABATHY": NAM_SEABATHY,
+  "NAM_PREP_SEAFLUX": NAM_PREP_SEAFLUX,
+  "NAM_DATA_SEAFLUX": NAM_DATA_SEAFLUX,
+  "NAM_FRAC": NAM_FRAC,
+  "NAM_DATA_TSZ0": NAM_DATA_TSZ0,
+  "NAM_DATA_ISBA": NAM_DATA_ISBA,
+  "NAM_ISBA": NAM_ISBA,
+  "NAM_PREP_SURF_ATM": NAM_PREP_SURF_ATM,
+  "NAM_PREP_ISBA": NAM_PREP_ISBA,
+  "NAM_DEEPSOIL": NAM_DEEPSOIL,
   "freeformat": {},
 }
-
 default_exseg = {
-  "NAM_CONFIO": MODD_CONFIO__,
-  "NAM_CONFZ": MODD_CONFZ__,
-  "NAM_LUNITn": MODD_LUNITn__,
-  "NAM_BACKUP": MODD_BACKUP__,
-  "NAM_IDEAL_FLUX": SURF_IDEAL_FLUX__,
-  "NAM_CONF": MODD_CONF__,
-  "NAM_CONFn": MODD_CONFn__,
-  "NAM_FRC" : MODD_FRC__,
-  "NAM_LBCn" : MODD_LBCn__,
-  "NAM_DYN" : MODD_DYN__,
-  "NAM_DYNn" : MODD_DYNn__,
-  "NAM_ADVn" : MODD_ADVn__,
-  "NAM_PARAMn" : MODD_PARAMn__,
-  "NAM_TURBn" : MODD_TURBn__,
-  "NAM_RADn" : MODD_RADn__,
-  "NAM_NEBn": MODD_NEBn__,
-  "NAM_PARAM_MFSHALLn" : MODD_PARAM_MFSHALLn__,
-  "NAM_PARAM_ECRAD" : MODD_PARAM_ECRAD__,
-  "NAM_PARAM_LIMA" : MODD_PARAM_LIMA__,
-  "NAM_PARAM_C2R2" : MODD_PARAM_C2R2__,
-  "NAM_BUDGET" : MODD_BUDGET__,
-  "NAM_LES" : MODD_LES__,
-  "NAM_CONDSAMP" : MODD_CONDSAMP__,
-  "NAM_OUTPUT" : MODD_OUTPUT__,
-  "NAM_BU_RTH" : MODD_BU_RTH__,
-  "NAM_BU_RRV" : MODD_BU_RRV__,
-  "NAM_BU_RU" : MODD_BU_RU__,
-  "NAM_BU_RV" : MODD_BU_RV__,
+  "NAM_CONFIO": NAM_CONFIO,
+  "NAM_CONFZ": NAM_CONFZ,
+  "NAM_LUNITn": NAM_LUNITn,
+  "NAM_BACKUP": NAM_BACKUP,
+  "NAM_IDEAL_FLUX": SURF_IDEAL_FLUX,
+  "NAM_CONF": NAM_CONF,
+  "NAM_CONFn": NAM_CONFn,
+  "NAM_FRC" : NAM_FRC,
+  "NAM_LBCn" : NAM_LBCn,
+  "NAM_DYN" : NAM_DYN,
+  "NAM_DYNn" : NAM_DYNn,
+  "NAM_ADVn" : NAM_ADVn,
+  "NAM_PARAMn" : NAM_PARAMn,
+  "NAM_TURBn" : NAM_TURBn,
+  "NAM_RADn" : NAM_RADn,
+  "NAM_NEBn": NAM_NEBn,
+  "NAM_PARAM_KAFRn" : NAM_PARAM_KAFRn,
+  "NAM_PARAM_MFSHALLn" : NAM_PARAM_MFSHALLn,
+  "NAM_PARAM_ECRAD" : NAM_PARAM_ECRAD,
+  "NAM_PARAM_LIMA" : NAM_PARAM_LIMA,
+  "NAM_PARAM_C2R2" : NAM_PARAM_C2R2,
+  "NAM_BUDGET" : NAM_BUDGET,
+  "NAM_LES" : NAM_LES,
+  "NAM_CONDSAMP" : NAM_CONDSAMP,
+  "NAM_OUTPUT" : NAM_OUTPUT,
+  "NAM_BU_RTH" : NAM_BU_RTH,
+  "NAM_BU_RRV" : NAM_BU_RRV,
+  "NAM_BU_RU" : NAM_BU_RU,
+  "NAM_BU_RV" : NAM_BU_RV,
 }
