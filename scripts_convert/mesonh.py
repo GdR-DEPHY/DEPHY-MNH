@@ -144,8 +144,8 @@ NAM_BACKUP = { # backup files for restarts
 }
 
 SURF_IDEAL_FLUX = { # surfex default namelist
-  "NFORCF"            : "0",
-  "NFORCT"            : "0",
+  "NFORCF"            : "2", # default number of flux forcings
+  "NFORCT"            : "2", # default number of temp forcings
   "CSFTQ"             : "'W/m2'", #'kg/m2/s'",
   "CUSTARTYPE"        : "'Z0'",
 }

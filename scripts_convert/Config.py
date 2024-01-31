@@ -213,7 +213,8 @@ class Config:
     for (z,u,v) in zip(cas.lev_u, cas.var_u[0], cas.var_v[0]):
       str_init += "%14.1f %14.2f %14.2f\n"%(z,u,v)
     str_init += "%i   \n"%cas.nlev_init_tq
-    for (z,t,q) in zip(cas.lev_t, cas.var_t[0], cas.var_q[0]):
+    for i,(z,t,q) in enumerate(zip(cas.lev_t, cas.var_t[0], cas.var_q[0])):
+      if i==0: continue
       str_init += "%14.1f %14.2f %14.8f\n"%(z,t,q)
     self.config["freeformat"]["RSOU"] = str_init
 
@@ -317,12 +318,12 @@ class Config:
     if cas.name_var_u["frc"] == "ug" : 
       self.modify("NAM_DYN", "LCORIO", ".TRUE.")
       self.modify("NAM_FRC", "LGEOST_UV_FRC", ".TRUE.")
-      self.modify("NAM_FRC", "LRELAX_UV_MEAN_FRC", ".FALSE.")
+      self.modify("NAM_FRC", "LRELAX_UVMEAN_FRC", ".FALSE.")
     else:
       self.modify("NAM_DYN", "LCORIO", ".FALSE.")
       self.modify("NAM_FRC", "LGEOST_TH_FRC", ".FALSE.")
       if cas.name_var_u["frc"] == "ua_nud": 
-        self.modify("NAM_FRC", "LRELAX_UV_MEAN_FRC", ".TRUE.")
+        self.modify("NAM_FRC", "LRELAX_UVMEAN_FRC", ".TRUE.")
         self.modify("NAM_FRC", "XRELAX_TIME_FRC", "%f"%cas.xrelax_time_frc)
     if cas.name_var_t["adv"] == "none" :
       self.modify("NAM_FRC", "LTEND_THRV_FRC", ".FALSE.")
@@ -435,8 +436,8 @@ class Config:
     for var,key in zip(list_vars, list_keys):
       if var is not None :
         if len(var) != ntf: var = [var[0]]*ntf
-        if key == "XZ0":   self.modify("NAM_IDEAL_FLUX", "CUSTARTYPE", "Z0")
-        if key == "USTAR": self.modify("NAM_IDEAL_FLUX", "CUSTARTYPE", "USTAR")
+        if key == "XZ0":   self.modify("NAM_IDEAL_FLUX", "CUSTARTYPE", "'Z0'")
+        if key == "USTAR": self.modify("NAM_IDEAL_FLUX", "CUSTARTYPE", "'USTAR'")
         if key == "XTSRAD": self.modify("NAM_IDEAL_FLUX", "NFORCT", "%i"%nf)
         for i,f in enumerate(forc(var)):
           self.modify("NAM_IDEAL_FLUX", key+"(%i)"%(i+1), "%f"%f)
