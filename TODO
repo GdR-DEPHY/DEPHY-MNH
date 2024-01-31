@@ -30,12 +30,15 @@ autoconversion en testant celle de ICE3, celle de LIMA et celle de KHKO
 Faire varier CCN a 100, 300, 1000
 
 - déterminer les périodes de spin-up et d'intérêt pour chaque cas
+  AMMA -> 18h (6h-24h) spin-up~ 3-4h - sortie fréquente a partir de 10h
+  LBA -> 18h mais transition bcp plus rapide (pbmatique du spin-up??)
+  KB -> 5jours 120h) spin-up ~ 6h
+  EUROCS -> 18h (6h-24h) intéressant de faire le J2 aussi. spin-up ~ 3h?
 
-- réfléchir au forçage en vent à la surface, u* ou z0 ?
-=> plutôt u* pour mieux contraindre les flux ?
-=> pas une priorité. On reste sur les setups des papiers de ref. ATELIER ?
 
-Forçage vent en volume 
-=> rappel profil moyen puis delta U à chaque colonne
-
+- réfléchir au forçage en vent : 
+  - à la surface, u* ou z0 ? => plutôt u* pour mieux contraindre les flux 
+  - en volume, coriolis+géostroph ; rappel profil moyen ; chaque colonne ?
+    => plutôt rappel profil moyen puis delta U à chaque colonne
+=> pour l'instant on garde le forcage du papier mais intéressant de faire peut-etre en plus un cas systématiquement avec un u* prescrit
 - vérifier les fichiers formats communs == les papiers de référence

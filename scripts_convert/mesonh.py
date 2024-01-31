@@ -112,7 +112,7 @@ exseg_SCM = {
 }
 
 ######################################
-## DEFAULT CONFIGS IN MESO-NH 5.6.2 ##
+## DEFAULT CONFIGS IN MESO-NH 5.7.0 ##
 # modified to match default config  ##
 # in DEPHY project                  ##
 ######################################
@@ -147,7 +147,7 @@ SURF_IDEAL_FLUX = { # surfex default namelist
   "NFORCF"            : "0",
   "NFORCT"            : "0",
   "CSFTQ"             : "'W/m2'", #'kg/m2/s'",
-  "CUSTARTYPE"        : "Z0",
+  "CUSTARTYPE"        : "'Z0'",
 }
 
 NAM_CONF   = { # general config
