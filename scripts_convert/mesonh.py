@@ -519,50 +519,27 @@ NAM_OUTPUT  = {
 
 NAM_BU_RTH = { 
   "LBU_RTH"        : ".TRUE.",
-  "CBULIST_RTH(1)" : "'FRC'",
-  "CBULIST_RTH(2)" : "'ADV'",
-  "CBULIST_RTH(3)" : "'VTURB+HTURB'",
-  "CBULIST_RTH(4)" : "'ADJU'", 
-  "CBULIST_RTH(5)" : "'REVA+HENU+HON+SFR+DEPS+DEPG+IMLT+BERFI+RIM+ACC+CFRZ+WETG+DRYG+GMLT+DEPI+CORR+NECON+NEADV+NETUR+NEGA'",
-  "CBULIST_RTH(6)" : "'INIF'",
-  "CBULIST_RTH(7)" : "'ENDF'",
-  "CBULIST_RTH(8)" : "'AVEF'",
+  "CBULIST_RTH(1)" : "'ALL'",
 }
 
 NAM_BU_RRV = {
   "LBU_RRV"         : ".TRUE.",
-  "CBULIST_RRV(1)"  : "'FRC'",
-  "CBULIST_RRV(2)"  : "'ADV'",
-  "CBULIST_RRV(3)"  : "'VTURB+HTURB'",
-  "CBULIST_RRV(4)"  : "'ADJU'",
-  "CBULIST_RRV(5)"  : "'REVA+DEPS+DEPG+DEPI+HENU+CORR+NECON+NEADV+NETUR+NEGA'",
-  "CBULIST_RRV(6)"  : "'INIF'",
-  "CBULIST_RRV(7)"  : "'ENDF'",
-  "CBULIST_RRV(8)"  : "'AVEF'",
+  "CBULIST_RRV(1)"  : "'ALL'",
+}
+
+NAM_BU_RRC = {
+  "LBU_RRC"         : ".TRUE.",
+  "CBULIST_RRC(1)"  : "'ALL'",
 }
 
 NAM_BU_RU = {
   "LBU_RU"          : ".TRUE.",
-  "CBULIST_RU(1)"   : "'FRC'",
-  "CBULIST_RU(2)"   : "'COR'",
-  "CBULIST_RU(3)"   : "'ADV'",
-  "CBULIST_RU(4)"   : "'VTURB+HTURB'",
-  "CBULIST_RU(5)"   : "'PRES'", 
-  "CBULIST_RU(6)"   : "'INIF'",
-  "CBULIST_RU(7)"   : "'ENDF'",
-  "CBULIST_RU(8)"   : "'AVEF'",
+  "CBULIST_RU(1)"   : "'ALL'",
 }
 
 NAM_BU_RV = {
   "LBU_RV"          : ".TRUE.",
-  "CBULIST_RV(1)"   : "'FRC'",
-  "CBULIST_RV(2)"   : "'COR'",
-  "CBULIST_RV(3)"   : "'ADV'",
-  "CBULIST_RV(4)"   : "'VTURB+HTURB'",
-  "CBULIST_RV(5)"   : "'PRES'", 
-  "CBULIST_RV(6)"   : "'INIF'",
-  "CBULIST_RV(7)"   : "'ENDF'",
-  "CBULIST_RV(8)"   : "'AVEF'",
+  "CBULIST_RV(1)"   : "'ALL'",
 }
 
 NAM_DIMn_PRE = { # pre_idea dimensions
@@ -780,6 +757,7 @@ default_exseg = {
   "NAM_OUTPUT" : NAM_OUTPUT,
   "NAM_BU_RTH" : NAM_BU_RTH,
   "NAM_BU_RRV" : NAM_BU_RRV,
+  "NAM_BU_RRC" : NAM_BU_RRC,
   "NAM_BU_RU" : NAM_BU_RU,
   "NAM_BU_RV" : NAM_BU_RV,
 }
