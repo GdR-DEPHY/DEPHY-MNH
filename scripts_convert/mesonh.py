@@ -37,8 +37,7 @@ exseg_LES = {
                    "CPRESOPT"   : "'ZRESI'",     }, # parallel CRESI
   "NAM_TURBn"  : { "XIMPL"      : "0.",
                    "CTURBLEN"   : "'DEAR'",
-                   "CTURBDIM"   : "'3DIM'",
-                   "LSIGMAS"    : ".FALSE.",     },
+                   "CTURBDIM"   : "'3DIM'",     },
   "NAM_LES" :   { "LLES_NEB_MASK"  : ".TRUE.", 
                   "LLES_CORE_MASK" : ".TRUE.", 
                   "LLES_CS_MASK"   : ".TRUE.",
@@ -70,7 +69,7 @@ exseg_CRM = {
   "NAM_DYNn"   : { "XTSTEP"     : "10.",
                    "XT4DIFU"    : "3000.",          # convention 300xtime_step
                    "CPRESOPT"   : "'ZRESI'",     }, # parallel CRESI
-  "NAM_TURBn"  : { "LSUBG_COND" : ".TRUE.",      }, # activate subrid condensation
+  "NAM_NEBn"  : { "LSUBG_COND" : ".TRUE.",      },# activate subrid condensation
   "NAM_LES"    : { "XLES_TEMP_SAMPLING"   : "300.",
                    "XLES_TEMP_MEAN_START" : "0.",
                    "XLES_TEMP_MEAN_STEP"  : "3600."},
@@ -93,15 +92,15 @@ exseg_SCM = {
                    "CDCONV"     : "'KAFR'"      },
   "NAM_DYNn"   : { "XTSTEP"     : "30.",
                    "XT4DIFU"    : "9000."        },# convention 300xtime_step
-  "NAM_TURBn"  : { "LSUBG_COND" : ".TRUE.", 
-                   "CTURBLEN"   :'BL89',
-                   "CTURBDIM"   :'1DIM'     },
+  "NAM_TURBn"  : { "CTURBLEN"   :"'BL89'",
+                   "CTURBDIM"   :"'1DIM'"     },
+  "NAM_NEBn"  : { "LSUBG_COND" : ".TRUE.",      },# activate subrid condensation
   "NAM_PARAM_MFSHALLn" : {"CMF_UPDRAFT"    :"'EDKF'",
                           "CMF_CLOUD"      :"'DIRE'", 
                           "LMIXUV"         :".TRUE.", 
                           "LMF_FLX"        : ".TRUE."},
-  "NAM_PARAM_KAFRn" : {"XDTCONV"    :"10.",
-                          "LDAIGCONV"      :"TRUE"}, 
+  "NAM_PARAM_KAFRn" : {"XDTCONV"    :"30.", # doit etre au moins  nXTSTEP
+                          "LDIAGCONV"      :"TRUE"}, 
   "NAM_LES" :   { "XLES_TEMP_SAMPLING"   : "300.",
                   "XLES_TEMP_MEAN_START" : "0.",
                   "XLES_TEMP_MEAN_STEP"  : "3600."},
@@ -249,7 +248,6 @@ NAM_ADVn   = { # advection for model n
   "CSV_ADV_SCHEME"    : "'PPM_01'",
   "CTEMP_SCHEME"      : "'RKC4'",
   "NWENO_ORDER"       : "3",
-  "NSPLIT"            : "1",
   "LSPLIT_CFL"        : ".TRUE.",
   "LSPLIT_WENO"       : ".TRUE.",
   "XSPLIT_CFL"        : "0.8",
@@ -320,8 +318,15 @@ NAM_RADn   = { # config radiation
 
 
 NAM_PARAM_KAFRn = {  # config deep convection scheme
-        "XDTCONV"    :"10.",
-        "LDAIGCONV"  :"TRUE"
+        "NICE"         :"1",
+        "LREFRESH_ALL" :"TRUE",
+        "LCHTRANS"     :"TRUE",
+        "LDOWN"        :"TRUE",
+        "LSETTADJ"     :"TRUE",
+        "XTADJD"       :"3600",
+        "XTADJS"       :"10800",
+        "LDIAGCONV"    :"TRUE",
+        "NENSM"        :"0",
         }
 NAM_PARAM_MFSHALLn = { # config shallow mass flux scheme
   "CMF_UPDRAFT"       : "EDKF",
@@ -352,7 +357,7 @@ NAM_PARAM_LIMA = {  # config microphysics scheme
    "LFEEDBACKT"       : ".TRUE.",
    "NMAXITER"         : "5",
    "XMRSTEP"          : "0.005",
-   "L_XTSTEP_TS"      : "20.",
+   "XTSTEP_TS"      : "20.",
    "XNUC"             : "1.0",
    "XALPHAC"          : "3.0",
    "XNUR"             : "2.0",
@@ -363,17 +368,12 @@ NAM_PARAM_LIMA = {  # config microphysics scheme
    "LADJ"             : ".TRUE.",
    "LSPRO"            : ".FALSE.",
    "LKHKO"            : ".FALSE.",
-   "ODEPOC"           : ".TRUE.",
-   "LBOUND"           : ".FALSE.",
-   "OACTTKE"          : ".TRUE.",
+   "LDEPOC"           : ".TRUE.",
+   "LACTTKE"          : ".TRUE.",
    "LKESSLERAC"       : ".TRUE.", #".FALSE.",
    "NMOM_C"           : "1",      #"2",
    "NMOM_R"           : "1",      #"2",
-   "OVDEPOC"          : "0.02",
-   "CINI_CCN"         : "'AER'",
-   "CTYPE_CCN(:)"     : "'M'",
-   "YAERDIFF"         : "0.0",
-   "YAERHEIGHT"       : "2000.",
+   "XVDEPOC"          : "0.02",
    "XFSOLUB_CCN"      : "1.0",
    "XACTEMP_CCN"      : "280.",
    "NMOD_CCN"         : "0",      #"1",
@@ -409,7 +409,19 @@ NAM_PARAM_LIMA = {  # config microphysics scheme
    "XNDEBRIS_CIBU"    : "50.0",
    "LRDSF"            : ".FALSE.",
 }
-
+NAM_NEBn = { # default
+   "LHGT_QS"      : ".FALSE.",
+   "LSTATNW"      : ".FALSE.",
+   "XTMINMIX"     : "253.16",
+   "XTMAXMIX"     : "273.16",
+   "LSUBG_COND"   : ".FALSE.",
+   "CCONDENS"     : "'CB02'",
+   "CLAMBDA3"     : "'CB'",
+   "LSIGMAS"      : ".TRUE.",
+   "VSIGQSAT"     : "0.02",
+   "CFRAC_ICE_ADJUST" : "'S'",
+   "CFRAC_ICE_SHALLOW_MF" : "'S'",
+}
 NAM_PARAM_C2R2 = {               # default MNH
     "HPARAM_CCN"      : "'CPB'",    #"'XXX'",
     "HINI_CCN"        : "'CCN'",    #"'XXX'",
@@ -480,7 +492,7 @@ NAM_NEBn = { # schéma de nuages
   "CLAMBDA3"            : "'CB'",
   "VSIGQSAT"            : "0.02",
   "CFRAC_ICE_ADJUST"    : "'S'",
-  "CFAC_ICE_SHALLOW_MF" : "'S'",
+  "CFRAC_ICE_SHALLOW_MF" : "'S'",
 }
 
 NAM_OUTPUT  = {
@@ -625,7 +637,7 @@ NAM_PERT_PRE = {
 NAM_GRIDH_PRE = { 
   "XDELTAX"    : "5000.",
   "XDELTAY"    : "5000.",
-  "XHMAX"      : "300.",
+  "XHMAX"      : "0.",
   "NEXPX"      : "3",
   "NEXPY"      : "1",
   "XAX"        : "10000.",
