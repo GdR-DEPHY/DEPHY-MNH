@@ -242,7 +242,7 @@ class Config:
       self.modify("NAM_GRIDH_PRE", "XDELTAY", "%f"%cas.dy)
     self.modify("NAM_VER_GRID", "LTHINSHELL", ".TRUE.")
     if cas.zgrid is not None: # manual z grid, ZHAT will be dumped in PRE_IDEA
-      self.modify("NAM_VER_GRID", "NKMAX", "%i"%cas.nz)
+      self.modify("NAM_VER_GRID", "NKMAX", "%i"%(cas.nz-1))
       self.modify("NAM_VER_GRID", "YZGRID_TYPE", "'MANUAL'")
     else:  # automatically stretched (or constant) z grid
       self.modify("NAM_VER_GRID", "YZGRID_TYPE", "'FUNCTN'")
@@ -341,6 +341,9 @@ class Config:
 
   def set_buffer_layer(self, cas):
     self.modify("NAM_DYN", "XALZBOT", "%f"%cas.zbot)
+
+  def set_def_budget_zone(self, cas):
+    self.modify("NAM_BUDGET", "NBUKH", "%i"%(cas.nz-1))
 
   def set_outputs(self, cas, iseg):
     # list of hours to begin segments
