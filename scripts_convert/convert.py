@@ -134,8 +134,8 @@ log(INFO, "vertical grid: "+str(cas.zgrid), verbosity)
 cas.read_initial_profiles_and_forcings(attributes, ds, verbosity, read_zorog=read_zorog)
 log(INFO, "forcings and initial profiles have been read", verbosity)
 
-## output files
-cas.setup_outputs()
+## output files ## each seg lasts 4h max
+cas.setup_outputs(max_seg_dur = 4)
 
 ####################
 # WRITE DATA INTO NAMELISTS
@@ -175,5 +175,6 @@ for i in range(cas.nseg+1):
   exseg.reset_seg_surface_forcings(cas, i)
   exseg.write("%s/conf_EXSEG%02i_%s_%s.nam"%(output_dir, i, cas.shortname,
       sim_mode))
+  if sim_mode == "SCM" : break # only do 00 in SCM mode
 
 exit()
