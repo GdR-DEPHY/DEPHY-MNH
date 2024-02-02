@@ -343,7 +343,8 @@ class Config:
     self.modify("NAM_DYN", "XALZBOT", "%f"%cas.zbot)
 
   def set_def_budget_zone(self, cas):
-    self.modify("NAM_BUDGET", "NBUKH", "%i"%(cas.nz-1))
+    if cas.zgrid is not None:  
+        self.modify("NAM_BUDGET", "NBUKH", "%i"%(cas.nz-1))
 
   def set_outputs(self, cas, iseg):
     # list of hours to begin segments
