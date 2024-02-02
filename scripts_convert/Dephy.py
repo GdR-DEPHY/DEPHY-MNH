@@ -94,15 +94,31 @@ class Case:
         self.zzmax = 1000    ; self.zztop = 0
         self.zbot = cas_type[self.type]["zbot"]
 
-  def setup_outputs(self):
+  def setup_outputs(self, max_seg_dur=24):
+    ## max_seg_dur :: maximum duration of one segment
     caseoutput = CasesOutputs[self.casename]
     self.hourhf = caseoutput["hourhf"]
-    self.begin_seg = [0, caseoutput["spinup"]]
+    begin_seg = [0, caseoutput["spinup"]]
     for h in self.hourhf:
-      if h == self.begin_seg[-1]: self.begin_seg += [h+1]
-      elif h > self.begin_seg[-1] and h+1 <= self.duration_hour:
-        self.begin_seg += [h, h+1]
-    self.nseg = len(self.begin_seg)
+      if h == begin_seg[-1]: begin_seg += [h+1]
+      elif h > begin_seg[-1] and h+1 <= self.duration_hour:
+        begin_seg += [h, h+1]
+    more_segs = []
+    for i,h in enumerate(begin_seg):
+      if h < caseoutput["spinup"] : continue
+      if i+1 < len(begin_seg): # not the anti last 
+        hnext = begin_seg[i+1]
+      else:
+        hnext = self.duration_hour
+      if hnext-h > max_seg_dur:
+        print(i,h,hnext, "more than", max_seg_dur)
+        more_segs += [i for i in np.arange(h+max_seg_dur,hnext,max_seg_dur)]
+        print(more_segs)
+    begin_seg = np.unique(begin_seg+more_segs)
+    begin_seg.sort()
+    print(begin_seg)
+    self.nseg = len(begin_seg)
+    self.begin_seg = begin_seg
 
   def set_init_and_forcing_types(self, attributes):
     """ set the type of variables that define initial profiles, advection and
