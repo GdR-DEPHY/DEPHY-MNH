@@ -432,12 +432,15 @@ class Config:
 
     list_vars = [cas.var_hfls, cas.var_hfss, cas.var_ts, cas.var_z0,
             cas.var_ustar, [0.]]
-    list_keys = ["XSFTQ", "XSFTH", "XTSRAD", "XZ0", "USTAR", "XSFCO2"]
+    list_keys = ["XSFTQ", "XSFTH", "XTSRAD", "XZ0", "XUSTAR", "XSFCO2"]
     for var,key in zip(list_vars, list_keys):
       if var is not None :
         if len(var) != ntf: var = [var[0]]*ntf
-        if key == "XZ0":   self.modify("NAM_IDEAL_FLUX", "CUSTARTYPE", "'Z0'")
-        if key == "USTAR": self.modify("NAM_IDEAL_FLUX", "CUSTARTYPE", "'USTAR'")
+        if key == "XZ0":   
+            self.modify("NAM_IDEAL_FLUX", "CUSTARTYPE", "'Z0'")
+            self.modify("NAM_IDEAL_FLUX", "XZ0", "%.3f"%(forc(var)[0]))
+            continue # ne dépend pas du temps
+        if key == "XUSTAR": self.modify("NAM_IDEAL_FLUX", "CUSTARTYPE", "'USTAR'")
         if key == "XTSRAD": self.modify("NAM_IDEAL_FLUX", "NFORCT", "%i"%nf)
         for i,f in enumerate(forc(var)):
           self.modify("NAM_IDEAL_FLUX", key+"(%i)"%(i+1), "%f"%f)
