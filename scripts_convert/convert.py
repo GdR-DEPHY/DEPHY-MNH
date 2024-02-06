@@ -158,6 +158,7 @@ exseg = Config(casename, "EXS", sim_mode)
 exseg.set_name(cas)
 exseg.set_ini_filenames(cas)
 exseg.set_forcing_flags(cas)
+exseg.set_buffer_layer(cas)
 exseg.set_def_budget_zone(cas)
 
 if "shcv" in cas.type: # condition pour être warm == shallow conv ?

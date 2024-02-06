@@ -80,6 +80,7 @@ class Case:
     self.dx = cas_type[self.type]["dx"]
     self.dy = cas_type[self.type]["dy"]
     self.dz = cas_type[self.type]["dz"]
+    self.zbot = cas_type[self.type]["zbot"]
     
     if casename == "GABLS1": 
         self.dzmin = 2    ; self.dzmax = 6
@@ -213,6 +214,9 @@ class Case:
     var_v, lev_v = getzvar(name_var_v)           # va: merid wind profile
     var_t, lev_t = getzvar(name_var_t)           # theta, thetal or ta
     var_q, lev_q = getzvar(name_var_q)           # rv, rt or qv 
+    print('lev_u',lev_u)
+    if lev_u[0] >= 900.:
+        mnh_init_keyword= "PUVTHLMR"
     
     nlev_init_uv = len(lev_u)
     nlev_init_tq = len(lev_t)
@@ -226,7 +230,10 @@ class Case:
     
     if name_var_t == "ta" :
       # convert T to theta
-      press = ds.variables["pa"][:]
+      if lev_u[0] >= 900.:
+        press=ds.variables["lev"][:]
+      else:
+        press = ds.variables["pa"][:]
       var_t = T_to_theta(var_t, press)
     
     if "q" in name_var_q: 

@@ -219,7 +219,10 @@ class Config:
     self.config["freeformat"]["RSOU"] = str_init
 
   def freeformat_zfrc(self, cas):
-    str_zfrc = "ZFRC\n"
+    if cas.mnh_init_keyword == "ZUVTHLMR" or cas.mnh_init_keyword == "ZUVTHDMR":
+      str_zfrc = "ZFRC\n"
+    else:
+      str_zfrc = "PFRC\n"
     str_zfrc += "%i\n"%cas.ntime_forcings
     for it in range(cas.ntime_forcings):
       date = cas.start_date + timedelta(seconds = int(cas.tim_forcings[it]))

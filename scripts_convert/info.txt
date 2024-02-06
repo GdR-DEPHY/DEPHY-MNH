@@ -1,0 +1,29 @@
+progr 
+principal convert.py
+methode cas_set_time_attribute
+object=> cas qui contient toutes les infos pour les namelists
+cas => contient l'info dx/dz
+WRITE DATA into namelist
+PreId pour calculer le PREIDEA
+Config=objets
+est décrit dans le fichier config.py
+contient toutes les namelists
+casename=ARMCU/....
+
+A lancer:
+python3 convert.py -c ARMCU -s MESONH -v 2 -m SCM -i ../../DEPHY-SCM
+python3 convert.py -c ARMCU -s MESONH -v 3 -m SCM -i ../../DEPHY-SCM
+python3 convert.py -c AMMA -s REF -v 2 -m SCM -i ../../DEPHY-SCM -g ../grilles/
+-o output_namelists
+
+
+TEST de tous les cas:
+Création de namelists
+OK sauf BOMEX 
+BOMEX= pbm car u & v ne sont pas sur la meme grille
+lev_ua=0,500,3000
+lev_va=0,3000
+
+
+Runs SCM:
+OK sauf LBA/GABLS1/GABLS4/SANDU
