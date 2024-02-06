@@ -329,8 +329,8 @@ NAM_PARAM_KAFRn = {  # config deep convection scheme
         "NENSM"        :"0",
         }
 NAM_PARAM_MFSHALLn = { # config shallow mass flux scheme
-  "CMF_UPDRAFT"       : "EDKF",
-  "CMF_CLOUD"         : "DIRE", 
+  "CMF_UPDRAFT"       : "'EDKF'",
+  "CMF_CLOUD"         : "'DIRE'", 
   "LMIXUV"            : ".TRUE.", 
   "LMF_FLX"           : ".TRUE.",   #".FALSE."
 }
