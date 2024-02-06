@@ -326,8 +326,11 @@ class Config:
       self.modify("NAM_DYN", "LCORIO", ".FALSE.")
       self.modify("NAM_FRC", "LGEOST_TH_FRC", ".FALSE.")
       if cas.name_var_u["frc"] == "ua_nud": 
-        self.modify("NAM_FRC", "LRELAX_UVMEAN_FRC", ".TRUE.")
-        self.modify("NAM_FRC", "XRELAX_TIME_FRC", "%f"%cas.xrelax_time_frc)
+          if self.mode == "SCM":
+              self.modify("NAM_FRC", "LRELAX_UV_FRC", ".TRUE.")
+          else:
+              self.modify("NAM_FRC", "LRELAX_UVMEAN_FRC", ".TRUE.")
+          self.modify("NAM_FRC", "XRELAX_TIME_FRC", "%f"%cas.xrelax_time_frc)
     if cas.name_var_t["adv"] == "none" :
       self.modify("NAM_FRC", "LTEND_THRV_FRC", ".FALSE.")
     else:
