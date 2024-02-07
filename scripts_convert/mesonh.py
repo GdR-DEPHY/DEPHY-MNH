@@ -100,7 +100,7 @@ exseg_SCM = {
                           "LMIXUV"         :".TRUE.", 
                           "LMF_FLX"        : ".TRUE."},
   "NAM_PARAM_KAFRn" : {"XDTCONV"    :"30.", # doit etre au moins  nXTSTEP
-                          "LDIAGCONV"      :"TRUE"}, 
+                          "LDIAGCONV"      :".TRUE."}, 
   "NAM_LES" :   { "XLES_TEMP_SAMPLING"   : "300.",
                   "XLES_TEMP_MEAN_START" : "0.",
                   "XLES_TEMP_MEAN_STEP"  : "3600."},
@@ -157,7 +157,7 @@ NAM_CONF   = { # general config
   "NVERB"             : "6",      # "5", 
   "CEXP"              : "'EXP01'",
   "CSEG"              : "'SEG01'",
-  "LFORCING"          : ".TRUE",  #".FALSE.",
+  "LFORCING"          : ".TRUE.",  #".FALSE.",
   "NHALO"             : "1",
   "JPHEXT"            : "1",
   "CSPLIT"            :"'BSPLITTING'",
@@ -276,7 +276,7 @@ NAM_TURBn  = { # config turbulence
   "XCADAP"            : "0.5",
   "CTURBLEN"          : "'BL89'",
   "CTURBDIM"          : "'1DIM'",
-  "LTURB_FLX"         : ".TRUE",    #".FALSE.",
+  "LTURB_FLX"         : ".TRUE.",    #".FALSE.",
   "LTURB_DIAG"        : ".TRUE.",   #".FALSE.",
   "LSIG_CONV"         : ".FALSE.",
   "LRMC01"            : ".TRUE.",   #".FALSE.",
@@ -319,13 +319,13 @@ NAM_RADn   = { # config radiation
 
 NAM_PARAM_KAFRn = {  # config deep convection scheme
         "NICE"         :"1",
-        "LREFRESH_ALL" :"TRUE",
-        "LCHTRANS"     :"TRUE",
-        "LDOWN"        :"TRUE",
-        "LSETTADJ"     :"TRUE",
+        "LREFRESH_ALL" :".TRUE.",
+        "LCHTRANS"     :".TRUE.",
+        "LDOWN"        :".TRUE.",
+        "LSETTADJ"     :".TRUE.",
         "XTADJD"       :"3600",
         "XTADJS"       :"10800",
-        "LDIAGCONV"    :"TRUE",
+        "LDIAGCONV"    :".TRUE.",
         "NENSM"        :"0",
         }
 NAM_PARAM_MFSHALLn = { # config shallow mass flux scheme
