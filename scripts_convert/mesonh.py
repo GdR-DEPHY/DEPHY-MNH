@@ -335,10 +335,11 @@ NAM_PARAM_KAFRn = {  # config deep convection scheme
         "NENSM"        :"0",
         }
 NAM_PARAM_MFSHALLn = { # config shallow mass flux scheme
-  "CMF_UPDRAFT"       : "'EDKF'",
-  "CMF_CLOUD"         : "'DIRE'", 
-  "LMIXUV"            : ".TRUE.", 
-  "LMF_FLX"           : ".TRUE.",   #".FALSE."
+  "CMF_UPDRAFT"       : "'EDKF'",   # choix de l'updraft
+  "CMF_CLOUD"         : "'DIRE'",   # choix de la param pour prévoir la fraction nuageuse et le contenu en hydrom
+  "LMIXUV"            : ".TRUE.",   # activation du melange du vent par le thermique
+  "LMF_FLX"           : ".TRUE.",   #diagnostiques des flux de masse
+  "LVERLIMUP"         : ".TRUE.",   #decroissance lente de l'intensité de l'updraft sur les derniers 1000m de l'upd
 }
 
 NAM_PARAM_ECRAD = { # config radiation scheme
