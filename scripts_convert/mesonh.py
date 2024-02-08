@@ -38,6 +38,8 @@ exseg_LES = {
   "NAM_TURBn"  : { "XIMPL"      : "0.",
                    "CTURBLEN"   : "'DEAR'",
                    "CTURBDIM"   : "'3DIM'",     },
+  "NAM_PARAM_RADn"  : { "XDTRAD"        : "1.",
+                        "XDTRAD_CLONLY" : "1.",},
   "NAM_LES" :   { "LLES_NEB_MASK"  : ".TRUE.", 
                   "LLES_CORE_MASK" : ".TRUE.", 
                   "LLES_CS_MASK"   : ".TRUE.",
@@ -69,6 +71,8 @@ exseg_CRM = {
   "NAM_DYNn"   : { "XTSTEP"     : "10.",
                    "XT4DIFU"    : "3000.",          # convention 300xtime_step
                    "CPRESOPT"   : "'ZRESI'",     }, # parallel CRESI
+  "NAM_PARAM_RADn"  : { "XDTRAD"        : "10.",
+                        "XDTRAD_CLONLY" : "10.",},
   "NAM_NEBn"  : { "LSUBG_COND" : ".TRUE.",      },# activate subrid condensation
   "NAM_LES"    : { "XLES_TEMP_SAMPLING"   : "300.",
                    "XLES_TEMP_MEAN_START" : "0.",
@@ -95,6 +99,8 @@ exseg_SCM = {
   "NAM_TURBn"  : { "CTURBLEN"   :"'BL89'",
                    "CTURBDIM"   :"'1DIM'"     },
   "NAM_NEBn"  : { "LSUBG_COND" : ".TRUE.",      },# activate subrid condensation
+  "NAM_PARAM_RADn"  : { "XDTRAD"        : "30.",
+                        "XDTRAD_CLONLY" : "30.",},
   "NAM_PARAM_MFSHALLn" : {"CMF_UPDRAFT"    :"'EDKF'",
                           "CMF_CLOUD"      :"'DIRE'", 
                           "LMIXUV"         :".TRUE.", 
@@ -296,9 +302,9 @@ NAM_TURBn  = { # config turbulence
   "LTURB_PRECIP"      : ".FALSE.",
 }
 
-NAM_RADn   = { # config radiation
-  "XDTRAD"            : "XTSTEP",
-  "XDTRAD_CLONLY"     : "XTSTEP",
+NAM_PARAM_RADn   = { # config radiation
+  "XDTRAD"            : "60.",
+  "XDTRAD_CLONLY"     : "60.",
   "LCLEAR_SKY"        :".FALSE.",
   "NRAD_COLNBR"       : "1000",
   "NRAD_DIAG"         : "0",
@@ -744,7 +750,7 @@ default_exseg = {
   "NAM_ADVn" : NAM_ADVn,
   "NAM_PARAMn" : NAM_PARAMn,
   "NAM_TURBn" : NAM_TURBn,
-  "NAM_RADn" : NAM_RADn,
+  "NAM_PARAM_RADn" : NAM_PARAM_RADn,
   "NAM_NEBn": NAM_NEBn,
   "NAM_PARAM_KAFRn" : NAM_PARAM_KAFRn,
   "NAM_PARAM_MFSHALLn" : NAM_PARAM_MFSHALLn,
