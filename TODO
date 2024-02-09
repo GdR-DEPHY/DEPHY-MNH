@@ -42,3 +42,8 @@ Faire varier CCN a 100, 300, 1000
     => plutôt rappel profil moyen puis delta U à chaque colonne
 => pour l'instant on garde le forcage du papier mais intéressant de faire peut-etre en plus un cas systématiquement avec un u* prescrit
 - vérifier les fichiers formats communs == les papiers de référence
+
+- quand ustar est prescrit pas sur la même grille temporelle : si ustar est
+  constant (min=max) alors on remplit tout avec la même valeur ; sinon on
+  déclenche une erreur ; mais en vrai il faudrait interpoler
+
