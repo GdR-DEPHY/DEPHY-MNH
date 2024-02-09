@@ -410,7 +410,14 @@ class Config:
     if cas.var_ustar is not None and cas.tim_forc_uv[:] != all_tim_forc:
       print(cas.tim_forc_uv[:], all_tim_forc)
       print(cas.var_ustar, cas.var_z0)
-      print("problemo ???"); exit()
+      nus=len(cas.var_ustar)
+      nth=len(cas.var_hfss)
+      print('nus',nus,np.min(cas.var_ustar),np.max(cas.var_ustar))
+      if (np.min(cas.var_ustar) == np.max(cas.var_ustar)):
+          cas.var_ustar=np.zeros(nth)
+          cas.var_ustar[:]=cas.var_ustar[0]
+      else :
+          print("problemo ???",ntf); exit()
     
     # select only times that are needed for the segment
     list_ = None

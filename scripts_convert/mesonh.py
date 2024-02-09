@@ -326,7 +326,7 @@ NAM_PARAM_RADn   = { # config radiation
 NAM_PARAM_KAFRn = {  # config deep convection scheme
         "NICE"         :"1",
         "LREFRESH_ALL" :".TRUE.",
-        "LCHTRANS"     :".TRUE.",
+        "LCHTRANS"     :".FALSE.",
         "LDOWN"        :".TRUE.",
         "LSETTADJ"     :".TRUE.",
         "XTADJD"       :"3600",
@@ -537,6 +537,26 @@ NAM_BU_RRV = {
 NAM_BU_RRC = {
   "LBU_RRC"         : ".TRUE.",
   "CBULIST_RRC(1)"  : "'ALL'",
+}
+
+NAM_BU_RRR = {
+  "LBU_RRR"         : ".TRUE.",
+  "CBULIST_RRR(1)"  : "'ALL'",
+}
+
+NAM_BU_RRI = {
+  "LBU_RRI"         : ".TRUE.",
+  "CBULIST_RRI(1)"  : "'ALL'",
+}
+
+NAM_BU_RRS = {
+  "LBU_RRS"         : ".TRUE.",
+  "CBULIST_RRS(1)"  : "'ALL'",
+}
+
+NAM_BU_RRG = {
+  "LBU_RRG"         : ".TRUE.",
+  "CBULIST_RRG(1)"  : "'ALL'",
 }
 
 NAM_BU_RU = {
@@ -765,6 +785,10 @@ default_exseg = {
   "NAM_BU_RTH" : NAM_BU_RTH,
   "NAM_BU_RRV" : NAM_BU_RRV,
   "NAM_BU_RRC" : NAM_BU_RRC,
+  "NAM_BU_RRR" : NAM_BU_RRR,
+  "NAM_BU_RRI" : NAM_BU_RRI,
+  "NAM_BU_RRS" : NAM_BU_RRS,
+  "NAM_BU_RRG" : NAM_BU_RRG,
   "NAM_BU_RU" : NAM_BU_RU,
   "NAM_BU_RV" : NAM_BU_RV,
 }

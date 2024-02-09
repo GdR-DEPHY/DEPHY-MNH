@@ -62,6 +62,9 @@ class Case:
       self.shortname   = casename[:5]
     if "GABLS" in casename :
       self.shortname = "GABL%s"%casename[-1]
+    if len(self.shortname)<5: 
+        toto=self.shortname+"000" 
+        self.shortname = toto[:5] 
 
     if   casename in listCaseMoistShCv : self.type = "moistshcv"
     elif casename in listCaseDCv       : self.type = "dcv" 
