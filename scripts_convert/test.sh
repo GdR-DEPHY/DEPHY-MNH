@@ -12,7 +12,7 @@ do
     *) add="";;
   esac
   echo "$cas"
-  /usr/bin/python3 convert.py -c $cas -i $DIR_DEPHY_SCM -v 3 -g ../grilles/ -o ../output_namelists/ $add > /tmp/log_cas_$cas 2>/tmp/err_cas_$cas 
+  /usr/bin/python3 convert.py -c $cas -i $DIR_DEPHY_SCM -v 3 -g ../grilles/ -o ../output_namelists/ -m SCM $add > /tmp/log_cas_$cas 2>/tmp/err_cas_$cas 
 done 
 
 ## cas pas interpolés en grilles de forçages :

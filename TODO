@@ -1,11 +1,11 @@
-- lire qt/rv .. / theta/ta dans le format commun et en déduire THUVTHDMR
+x lire qt/rv .. / theta/ta dans le format commun et en déduire THUVTHDMR
 
-- initialiser les dictionnaires de config en fonction du type de cas
+x initialiser les dictionnaires de config en fonction du type de cas
 => pour les cas de transition, dx = 200 m et lire la grille verticale
 
-- cas de transiiton "dcv" : AMMA LBA KB et EUROCS
+x cas de transiiton "dcv" : AMMA LBA KB et EUROCS
 
-- reprendre et factoriser les scripts de conversion (LES/1D et dedans)
+x reprendre et factoriser les scripts de conversion (LES/1D et dedans)
 
 - discuter avec Benoit pour la config LIMA (config REF + sensibilités)
 => DONE
@@ -47,3 +47,6 @@ Faire varier CCN a 100, 300, 1000
   constant (min=max) alors on remplit tout avec la même valeur ; sinon on
   déclenche une erreur ; mais en vrai il faudrait interpoler
 
+x shortname avec des "_" à la fin si trop court
+
+x pas de backup ni de out en mode SCM

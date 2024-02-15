@@ -368,34 +368,40 @@ class Config:
     spinup_secs = lseg[1]*3600.
     seg_dur = duration*3600.
 
-    if iseg in [0,1]:   # 0 = mother config, the whole simulation ; 1 = spinup
-      bak_fir = spinup_secs ; bak_frq = 3600.
-      out_fir = spinup_secs ; out_frq = 1800.
-      self.is_hf = 0
-    else: # >= 2
-      if iseg == 2 or iseg-2 in cas.hourhf: nbak_in_prev = 1
-      else: nbak_in_prev = lseg[iseg-1]-lseg[iseg-2]
-      prev_name = "%s.1.%s.%03i"%(cas.shortname, "SEG%02i"%(iseg-1),
-              nbak_in_prev)
-      self.modify("NAM_CONF",   "CCONF", "'RESTA'")
-      self.modify("NAM_LUNITn", "CINIFILE", "'%s'"%prev_name)
-      if lseg[iseg-1] in cas.hourhf: # heure d'intérêt
-        bak_fir = 3600. ; bak_frq = 3600.
-        out_fir = 60.   ; out_frq = 60.
-        self.is_hf = 1
-      else: # entre deux heures d'intérêt ou à la fin
-        bak_fir = 3600. ; bak_frq = 3600.
-        out_fir = 1800. ; out_frq = 1800.
-        self.is_hf = 0
+    self.modify("NAM_CONF",   "CSEG", "'SEG%02i'"%iseg)
+    self.modify("NAM_DYN",    "XSEGLEN", "%f"%seg_dur)
+    self.modify("NAM_LES",    "XLES_TEMP_MEAN_END", "%f"%seg_dur)
+
+    if self.mode == "SCM":
+      out_frq = -999 ; out_fir = 0 ; bak_frq = -999 ; bak_fir = 0 
+      is_hf = 0
+    else:
+      if iseg in [0,1]:   # 0 = mother config, the whole simulation ; 1 = spinup
+        bak_fir = spinup_secs ; bak_frq = 3600.
+        out_fir = spinup_secs ; out_frq = 1800.
+        is_hf = 0
+      else: # >= 2
+        if iseg == 2 or iseg-2 in cas.hourhf: nbak_in_prev = 1
+        else: nbak_in_prev = lseg[iseg-1]-lseg[iseg-2]
+        prev_name = "%s.1.%s.%03i"%(cas.shortname, "SEG%02i"%(iseg-1),
+                nbak_in_prev)
+        self.modify("NAM_CONF",   "CCONF", "'RESTA'")
+        self.modify("NAM_LUNITn", "CINIFILE", "'%s'"%prev_name)
+        if lseg[iseg-1] in cas.hourhf: # heure d'intérêt
+          bak_fir = 3600. ; bak_frq = 3600.
+          out_fir = 60.   ; out_frq = 60.
+          is_hf = 1
+        else: # entre deux heures d'intérêt ou à la fin
+          bak_fir = 3600. ; bak_frq = 3600.
+          out_fir = 1800. ; out_frq = 1800.
+          is_hf = 0
 
     self.iseg    = iseg
     self.seg_beg = 0 if iseg==0 else lseg[iseg-1]*3600.
     self.seg_dur = seg_dur
     self.seg_end = self.seg_dur + self.seg_beg
+    self.is_hf = is_hf
 
-    self.modify("NAM_CONF",   "CSEG", "'SEG%02i'"%iseg)
-    self.modify("NAM_DYN",    "XSEGLEN", "%f"%seg_dur)
-    self.modify("NAM_LES",    "XLES_TEMP_MEAN_END", "%f"%seg_dur)
     self.modify("NAM_OUTPUT", "XOUT_TIME_FREQ(1)",       "%f"%out_frq)
     self.modify("NAM_OUTPUT", "XOUT_TIME_FREQ_FIRST(1)", "%f"%out_fir)
     self.modify("NAM_BACKUP", "XBAK_TIME_FREQ(1)",       "%f"%bak_frq)

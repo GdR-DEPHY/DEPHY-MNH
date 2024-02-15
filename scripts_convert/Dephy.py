@@ -55,16 +55,25 @@ class Case:
     """
     self.casename    = casename
     self.subcasename = subcasename
+    # si sous cas n'est pas REF (sauf SANDU) ou MESONH, combine cas / sous-cas
     if subcasename != "MESONH" and subcasename != "REF" or casename == "SANDU":
-      if len(subcasename)>5: self.shortname = casename[:3]+subcasename[:2]
-      else: self.shortname   = casename[:5-len(subcasename)]+subcasename
+      # si le sous cas est long ; 3 premières lettres du cas + 2 premières du sous cas
+      if len(subcasename)>5: short = casename[:3]+subcasename[:2]
+      # sinon ; x premières lettres du cas + sous cas tel que = 5 caractères au total
+      else:                  short = casename[:5-len(subcasename)]+subcasename
+    # si sous cas = REF ou MESONH, shortname = nom du cas
     else: 
-      self.shortname   = casename[:5]
-    if "GABLS" in casename :
-      self.shortname = "GABL%s"%casename[-1]
-    if len(self.shortname)<5: 
-        toto=self.shortname+"000" 
-        self.shortname = toto[:5] 
+      short   = casename[:5]
+    
+    # traitement spécifique pour GABLS
+    if "GABLS" in casename :   # replace S by number of GABLSx case
+      short = "GABL%s"%casename[-1]
+ 
+    # ajout de caractères si < 5 caractères
+    if len(short)<5:           # pad case shortname with _ at the end
+        short += "_"*(5-len(short))
+
+    self.shortname = short
 
     if   casename in listCaseMoistShCv : self.type = "moistshcv"
     elif casename in listCaseDCv       : self.type = "dcv" 
@@ -84,7 +93,8 @@ class Case:
     self.dy = cas_type[self.type]["dy"]
     self.dz = cas_type[self.type]["dz"]
     self.zbot = cas_type[self.type]["zbot"]
-    
+
+    # grilles stretchées pour GABLS
     if casename == "GABLS1": 
         self.dzmin = 2    ; self.dzmax = 6
         self.zzmax = 250. ; self.zztop = 20
@@ -93,10 +103,10 @@ class Case:
         self.dzmin = 0.2  ; self.dzmax = 2
         self.zzmax = 50.  ; self.zztop = 20
         self.zbot = 80.
+    # sinon grille régulière
     else: 
         self.dzmin = self.dz ; self.dzmax = self.dz 
         self.zzmax = 1000    ; self.zztop = 0
-        self.zbot = cas_type[self.type]["zbot"]
 
   def setup_outputs(self, max_seg_dur=24):
     ## max_seg_dur :: maximum duration of one segment
