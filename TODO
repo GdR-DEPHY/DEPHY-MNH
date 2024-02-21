@@ -1,3 +1,15 @@
+Adriana :
+=========
+
+- ARMCu avant le démarrage de la convection
+  => à partir de la 2ème heure et elle nous dira si le spin up est fini ou pas
+  outputs toutes les demi heures ce serait bien
+  (1 min pas la peine)
+
+- intéressée par les cas convection sèche
+
+===
+
 x lire qt/rv .. / theta/ta dans le format commun et en déduire THUVTHDMR
 
 x initialiser les dictionnaires de config en fonction du type de cas
