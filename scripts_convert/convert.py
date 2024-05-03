@@ -85,7 +85,7 @@ log(INFO, "output_dir  : %s"%output_dir , verbosity)
 log(INFO, "verbosity   : %i"%verbosity  , verbosity)
 
 ##################
-# INITIALIZE OBJECTS AND READ GLOBAL ATTRIBUTES
+# INITIALIZE CASE 
 
 log(INFO, "\n######### INIT CASE #########",  verbosity)
 cas = Case(casename, subcasename)
@@ -94,8 +94,7 @@ log(INFO, cas, verbosity)
 log(INFO, "\n######## READ FC FILE #######",  verbosity)
 log(INFO, "FC filename: %s"%inp_file_FC,      verbosity)
 
-## GLOBAL
-
+## read global attributes
 ds = nc.Dataset(inp_file_FC, "r")
 listVars = ds.variables
 log(DEBUG, listVars, verbosity)
@@ -126,11 +125,16 @@ log(DEBUG, "init and forcings\n\tT:" + str(cas.name_var_t) + "\n\tq:"+str(cas.na
 ## longitude latitude
 cas.set_lonlat(ds)
 
-## grille verticale 
 cas.set_vertical_grid(grids_dir)
+
 log(INFO, "vertical grid: "+str(cas.zgrid), verbosity)
 
 ## initial profiles and forcings
+# is the case pressure-defined or altitude-defined
+if not("forc_zh" in attributes or "forc_pa" in attributes) or attributes["forc_zh"]:
+  cas.def_lev = "z"
+else :
+  cas.def_lev = "P"
 cas.read_initial_profiles_and_forcings(attributes, ds, verbosity, read_zorog=read_zorog)
 log(INFO, "forcings and initial profiles have been read", verbosity)
 

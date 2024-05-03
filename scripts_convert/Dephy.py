@@ -14,7 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from Utils import parse_time, log, T_to_theta
+from Utils import parse_time, log
+from Utils import T_to_theta, P_to_z, interp_plev_to_zlev, H_atm, p0
 from Utils import ERROR, WARNING, INFO, DEBUG
 from cases_output import CasesOutputs
 from datetime import timedelta, datetime
@@ -197,19 +198,19 @@ class Case:
   def read_initial_profiles_and_forcings(self, attributes, ds, verbosity, read_zorog=0):
     # local helper function to read 2D, z-dependent and t-dependent variables
     def getzvar(name_var): 
-      lev = "lev_"+name_var
-      if not lev in ds.variables: lev="lev"
-      return ds.variables[name_var][:], ds.variables[lev]
+      lev = "lev_"+name_var                 # specific vertical grid 
+      if not lev in ds.variables: lev="lev" # or standard vert grid
+      return ds.variables[name_var][:], ds.variables[lev][:]
     def gettvar(name_var): 
-      tim = "time_"+name_var 
-      if not tim in ds.variables: tim="time"
-      return ds.variables[name_var][:], ds.variables[tim]
+      tim = "time_"+name_var                 # specific time grid
+      if not tim in ds.variables: tim="time" # or standard
+      return ds.variables[name_var][:], ds.variables[tim][:]
     def get2dvar(name_var):
       lev = "lev_"+name_var
       if not lev in ds.variables: lev="lev"
       tim = "time_"+name_var 
       if not tim in ds.variables: tim="time"
-      return ds.variables[name_var][:], ds.variables[lev], ds.variables[tim]
+      return ds.variables[name_var][:], ds.variables[lev][:], ds.variables[tim][:]
 
     ## champs initiaux T,q,ps,u,v,zorog
     name_var_t = self.name_var_t["ini"]
@@ -220,30 +221,55 @@ class Case:
     ### initialize with theta_dry or theta_liquid
     mnh_init_keyword = "ZUVTHLMR" if name_var_t == "thetal" else "ZUVTHDMR"
     
-    ### get initial profiles 
+    ### init: read profiles 
     ps    = ds.variables['ps'][:]      # surface pressure
     zs    = ds.variables['orog'][:] if read_zorog else ps*0
     var_u, lev_u = getzvar(name_var_u)           # ua: zonal wind profile
     var_v, lev_v = getzvar(name_var_v)           # va: merid wind profile
     var_t, lev_t = getzvar(name_var_t)           # theta, thetal or ta
-    var_q, lev_q = getzvar(name_var_q)           # rv, rt or qv 
-    print('lev_u',lev_u)
-    if lev_u[0] >= 900.:
-        mnh_init_keyword= "PUVTHLMR"
+    var_q, lev_q = getzvar(name_var_q)           # rv, rt or qv
+
+    if (lev_v.size != lev_u.size):
+      log(WARNING, 'ERROR!! DIFFERENT VERTICAL GRIDS FOR U & V to be dealt \
+              separately', verbosity)
+      var_v = 0.*var_u+var_v[0][0]
+
+    if len(lev_t) != len(lev_q):
+      log(ERROR, "T and q not initialized on the same grid", verbosity)
     
     nlev_init_uv = len(lev_u)
     nlev_init_tq = len(lev_t)
+    print(nlev_init_uv, var_u.shape, nlev_init_tq, var_t.shape)
     
-    log(DEBUG, "Original lev_t (%s) %s"%(name_var_t, lev_t), verbosity)
-    log(DEBUG, "Original lev_q (%s) %s"%(name_var_q, lev_q), verbosity)
+    log(DEBUG, "Original lev_t (%s) %s"%(self.def_lev, lev_t), verbosity)
+    log(DEBUG, "Original lev_u (%s) %s"%(self.def_lev, lev_u), verbosity)
     log(DEBUG, "Original var_t (%s) %s"%(name_var_t, var_t), verbosity)
     log(DEBUG, "Original var_q (%s) %s"%(name_var_q, var_q), verbosity)
+
+    ### init: convert Pressure to height if needed
+
+    if self.def_lev == "P" :
+      lev_pre_t = lev_t[:]*1
+      lev_pre_u = lev_u[:]*1
+      lev_t = P_to_z(name_var_t, var_t, name_var_q, var_q, lev_pre_t, zs)
+      if np.max(lev_pre_u) <= np.max(lev_pre_t) and np.min(lev_pre_u) >= np.min(lev_pre_t):
+        # interpolate from thermo profiles
+        lev_u = np.array([interp_plev_to_zlev(lev_t, lev_pre_t, p) for p in lev_pre_u])
+      else:
+        # use basic exponential function and atmospheric length scale
+        lev_u = -H_atm*np.log(-lev_pre_u/p0)
+
+      #import matplotlib.pyplot as plt
+      #plt.plot(lev_pre_t, lev_t, ls="", marker="o")
+      #plt.plot(lev_pre_u, lev_u, ls="", marker=".")
+      #plt.show()
+      #exit()
     
-    ### convert T to theta and q to mixing ratio if needed
+    ### init: convert T to theta and q to mixing ratio if needed
     
     if name_var_t == "ta" :
       # convert T to theta
-      if lev_u[0] >= 900.:
+      if self.def_lev == "P":
         press=ds.variables["lev"][:]
       else:
         press = ds.variables["pa"][:]
@@ -253,15 +279,10 @@ class Case:
       # convert content to mixing ratio
       var_q = var_q/(1-var_q)
     
+    log(DEBUG, "Converted lev_t (%s) %s"%("z", lev_t), verbosity)
+    log(DEBUG, "Converted lev_u (%s) %s"%("z", lev_u), verbosity)
     log(DEBUG, "Converted var_t (%s) %s"%(name_var_t, var_t), verbosity)
     log(DEBUG, "Converted var_q (%s) %s"%(name_var_q, var_q), verbosity)
-    
-    if (lev_v.size != lev_u.size):
-      log(WARNING, 'ERROR!! DIFFERENT VERTICAL GRIDS FOR U & V to be dealt \
-              separately', verbosity)
-      var_v = 0.*var_u+var_v[0][0]
-    if len(lev_t) != len(lev_q):
-      log(ERROR, "T and q not initialized on the same grid", verbosity)
     
     ### get forcings
     
@@ -371,20 +392,35 @@ class Case:
             tim_q_ten if self.name_var_q["adv"]!="none" else \
             tim_u_frc if attributes["forc_geo"] else None
     lev_forcings = lev_t_ten if self.name_var_t["adv"]!="none" else \
-            tim_q_ten if self.name_var_q["adv"]!="none" else \
+            lev_q_ten if self.name_var_q["adv"]!="none" else \
             lev_u_frc if attributes["forc_geo"] else None
     ntime_forcings = len(tim_forcings)
     nlevs_forcings = len(lev_forcings)
 
+    if self.def_lev == "P" :
+      lev_pre_forcings = lev_forcings[:]*1
+      if np.max(lev_pre_forcings) <= np.max(lev_pre_t) and np.min(lev_pre_forcings) >= np.min(lev_pre_t):
+        # interpolate from thermo profiles
+        lev_forcings = np.array([interp_plev_to_zlev(lev_t, lev_pre_t, p) for p in lev_pre_forcings])
+      else:
+        # use basic exponential function and atmospheric length scale
+        lev_forcings = -H_atm*np.log(-lev_pre_forcings/p0)
+
+      #import matplotlib.pyplot as plt
+      #plt.plot(lev_pre_forcings, lev_forcings, ls="", marker="o", label="forcings")
+      #plt.plot(lev_pre_t, lev_t, ls="", marker=".", label="t")
+      #plt.plot(lev_pre_u, lev_u, ls="", marker=".", label="u")
+      #plt.legend()
+      #plt.show()
+    
     # set case variables
     ## init
     self.mnh_init_keyword = mnh_init_keyword
     self.nlev_init_uv     = nlev_init_uv
     self.nlev_init_tq     = nlev_init_tq
     self.zs    = zs    ; self.ps    = ps 
-    self.lev_u = lev_u ; self.lev_t = lev_t
-    self.var_u = var_u ; self.var_v = var_v
-    self.var_t = var_t ; self.var_q = var_q
+    self.lev_u = lev_u ; self.var_u = var_u ; self.var_v = var_v
+    self.lev_t = lev_t ; self.var_t = var_t ; self.var_q = var_q
     # forcings atm
     self.tim_forcings = tim_forcings
     self.lev_forcings = lev_forcings
@@ -404,8 +440,8 @@ class Case:
     self.var_hfls  = var_hfls
     self.var_hfss  = var_hfss
     self.var_z0h   = var_z0h
-    self.var_z0   = var_z0
-    self.var_ustar   = var_ustar
+    self.var_z0    = var_z0
+    self.var_ustar = var_ustar
 
   def set_none_to_zero(self,var, verbosity): 
     if var is None: var = np.zeros((self.ntime_forcings, self.nlevs_forcings))
