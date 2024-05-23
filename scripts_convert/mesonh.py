@@ -241,7 +241,7 @@ NAM_DYNn   = { # dynamics for model n (nesting)
   "LRES"              : ".FALSE.",
   "XRES"              : "1.E-07",
   "XRELAX"            : "1.",
-  "LVE_RELAX"         : ".FALSE.",
+  "LVE_RELAX"         : ".TRUE.",
   "LVE_RELAX_GRD"     : ".FALSE.",
   "XT4DIFU"           : "1800.",
   "XT4DIFTH"          : "1800.",
@@ -440,6 +440,24 @@ NAM_PARAM_C2R2 = {               # default MNH
     "LSEDC"           : ".FALSE.",  #".TRUE.",
 }
 
+NAM_PARAM_ICE = {               # default MNH
+    "LWARM"           : ".TRUE.",    #"'XXX'",
+    "LSEDIC"          : ".TRUE.",    #"'XXX'",
+    "LRED"            : ".TRUE.",    #"'XXX'", 
+    "CSUBG_AUCV_RC"   : "'NONE'",#"0.0",
+    "CSUBG_AUCV_RI"   : "'NONE'",    #"0.0",
+    "CSUBG_MF_PDF"    : "'NONE'",    #"0.0",
+    "CSUBG_RC_RR_ACCR": "'NONE'",   #"0.0",
+    "CSUBG_RR_EVAP"   : "'NONE'",  #".TRUE.",
+    "CSUBG_PR_PDF"    : "'SIGM'",  #".TRUE.",
+}
+NAM_DIAG_SURFn = {   #default SURFEX
+        "N2M"             : "2",
+}
+NAM_DIAG_SURF_ATMn = { #default SURFEX
+        "LDIAG_GRID"      : ".TRUE.", 
+}
+
 NAM_BUDGET  = { # compute budgets
   "CBUTYPE"           : "'CART'",   #"'NONE'",
   "LBU_KCP"           : ".FALSE.",  #".TRUE",
@@ -466,12 +484,13 @@ NAM_LES     = { # compute horizontal statistics
   "LLES_SPECTRA"        : ".FALSE.",
   "CLES_NORM_TYPE"      : "'NONE'",
   "CBL_HEIGHT_DEF"      : "'KE'",
+  "XLES_TEMP_SAMPLING" : "300.",
   "XLES_TEMP_MEAN_STEP" : "3600.",
   "LLES_CART_MASK"      : ".FALSE.",
-  "LLES_NEB_MASK"       : ".FALSE.",
-  "LLES_CORE_MASK"      : ".FALSE.",
+  "LLES_NEB_MASK"       : ".TRUE.",
+  "LLES_CORE_MASK"      : ".TRUE.",
   "LLES_MY_MASK"        : ".FALSE.",
-  "LLES_CS_MASK"        : ".FALSE.",
+  "LLES_CS_MASK"        : ".TRUE.",
 }
 
 NAM_CONDSAMP = { # conditional sampling
@@ -507,7 +526,7 @@ NAM_OUTPUT  = {
   "XOUT_TIME_FREQ_FIRST(1)": "3600", # "0.",
   "LOUT_BEG"               : ".FALSE.",
   "LOUT_END"               : ".FALSE.",
-  "LOUT_REDUCE_FLOAT_PRECISION(1)" : ".FALSE.", 
+  "LOUT_REDUCE_FLOAT_PRECISION(1)" : ".TRUE.", 
   "LOUT_COMPRESS(1)"       : ".FALSE.",
   "NOUT_COMPRESS_LEVEL(1)" : "4",
   "COUT_VAR(1,1)"          : "'UT'",
@@ -519,9 +538,10 @@ NAM_OUTPUT  = {
   "COUT_VAR(1,7)"          : "'RRT'",
   "COUT_VAR(1,8)"          : "'TKET'",
   "COUT_VAR(1,9)"          : "'PABST'",
-  "COUT_VAR(1,10)"         : "'RIT'",
-  "COUT_VAR(1,11)"         : "'RST'",
-  "COUT_VAR(1,12)"         : "'RGT'",
+  "COUT_VAR(1,10)"         : "'INPRR'",
+  "COUT_VAR(1,11)"         : "'RIT'",
+  "COUT_VAR(1,12)"         : "'RST'",
+  "COUT_VAR(1,13)"         : "'RGT'",
 }
 
 NAM_BU_RTH = { 
@@ -778,6 +798,9 @@ default_exseg = {
   "NAM_PARAM_ECRAD" : NAM_PARAM_ECRAD,
   "NAM_PARAM_LIMA" : NAM_PARAM_LIMA,
   "NAM_PARAM_C2R2" : NAM_PARAM_C2R2,
+  "NAM_PARAM_ICEn" : NAM_PARAM_ICE,
+  "NAM_DIAG_SURFn" : NAM_DIAG_SURFn,
+  "NAM_DIAG_SURF_ATMn" : NAM_DIAG_SURF_ATMn,
   "NAM_BUDGET" : NAM_BUDGET,
   "NAM_LES" : NAM_LES,
   "NAM_CONDSAMP" : NAM_CONDSAMP,
