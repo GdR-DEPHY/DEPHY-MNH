@@ -217,6 +217,12 @@ class Config:
       if i==0: continue
       str_init += "%14.1f %14.2f %14.8f\n"%(z,t,q)
     self.config["freeformat"]["RSOU"] = str_init
+    import matplotlib.pyplot as plt
+    #plt.plot(cas.var_t[0], cas.lev_t)
+    #plt.plot(cas.var_q[0], cas.lev_t)
+    plt.plot(cas.var_u[0], cas.lev_u)
+    plt.plot(cas.var_v[0], cas.lev_u)
+    plt.show()
 
   def freeformat_zfrc(self, cas):
     if cas.mnh_init_keyword == "ZUVTHLMR" or cas.mnh_init_keyword == "ZUVTHDMR":
@@ -271,7 +277,7 @@ class Config:
 
   def set_surface_forcings(self, cas):
     sf = cas.surface_forcing
-    nts = len(cas.tim_forc_ts)
+    nts = min(36, len(cas.tim_forc_ts))
     # continental with prescribed flux ==== ocean.f90 in mesonh!
     if "ocean" in sf or sf == "landsurface_flux":
       self.modify("NAM_PGD_SCHEMES", "CSEA", "'SEAFLX'" if "ts" in sf else "'FLUX'")
@@ -291,6 +297,7 @@ class Config:
           self.modify("NAM_DATA_SEAFLUX", "XTIME_SST(%i)"%(it+1), "%f"%date_secs)
           self.modify("NAM_DATA_SEAFLUX", "XUNIF_SST(%i)"%(it+1), "%f"%cas.var_ts[it])
     elif "land" in sf:
+      self.modify("NAM_PGD_SCHEMES", "CSEA", "'NONE'")
       self.modify("NAM_PGD_SCHEMES", "CNATURE", "'TSZ0'")
       self.modify("NAM_COVER", "XUNIF_COVER(1)", "0.")
       self.modify("NAM_COVER", "XUNIF_COVER(6)", "1.")

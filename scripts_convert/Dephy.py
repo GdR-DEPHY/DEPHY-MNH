@@ -343,7 +343,9 @@ class Case:
         var_t_ten += ds.variables[name_var_t][:]
       else:
         name_var_t = "tn"+self.name_var_t["ini"]+"_rad"
-        var_t_ten = ds.variables[name_var_t][:]
+        #var_t_ten = ds.variables[name_var_t][:]
+        var_t_ten, lev_t_ten, tim_t_ten = get2dvar(name_var_t)
+        self.name_var_t["adv"] = self.name_var_t["ini"]
     
     # subsidence, either in w or omega
     if attributes['forc_wa'] == 1:
@@ -361,7 +363,7 @@ class Case:
     var_ts   = None; var_hfls = None; var_hfss = None; var_z0h  = None
     var_ustar= None; var_z0   = None
 
-    ## prescribed SST or turbulent fluxes
+    ## prescribed surface temperature or turbulent fluxes
     if attributes['surface_forcing_temp'] == 'ts':
       var_ts, tim_sst = gettvar("ts_forc")
       var_ts = np.array([int(s*100)/100. for s in var_ts])
@@ -396,6 +398,12 @@ class Case:
             lev_u_frc if attributes["forc_geo"] else None
     ntime_forcings = len(tim_forcings)
     nlevs_forcings = len(lev_forcings)
+
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    # !!!! forcings might be defined on different grids !!!!
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    # make lev, tim grid that includes all forcings lev/tim
+    # for each type of forcing and variable, linear interpolation on new grid...
 
     if self.def_lev == "P" :
       lev_pre_forcings = lev_forcings[:]*1
@@ -443,12 +451,13 @@ class Case:
     self.var_z0    = var_z0
     self.var_ustar = var_ustar
 
-  def set_none_to_zero(self,var, verbosity): 
+  def set_none_to_zero(self,var, verbosity):
+    print(var)
     if var is None: var = np.zeros((self.ntime_forcings, self.nlevs_forcings))
     if var.shape != (self.ntime_forcings, self.nlevs_forcings):
       # if not the right grid, will be broadcasted to the right grid
-      log(DEBUG, "var shape "+str(var.shape)+"\n shape frc %i\
-              %i"%(self.ntime_forcings, self.nlevs_forcings), verbosity)
+      log(DEBUG, "var shape "+str(var.shape), verbosity)
+      log(DEBUG, "frc shape %i %i"%(self.ntime_forcings, self.nlevs_forcings), verbosity)
       var = np.broadcast_to(var, (self.ntime_forcings, self.nlevs_forcings))
     return var
 
