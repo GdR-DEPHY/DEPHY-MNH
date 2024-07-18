@@ -1,5 +1,5 @@
-# Copyright (C) 2023 Météo-France
-# Copyright (C) 2023 Centre National de la Recherche Scientifique
+# Copyright (C) 2024 Météo-France
+# Copyright (C) 2024 Centre National de la Recherche Scientifique
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -112,16 +112,66 @@ def P_to_z(name_var_t, var_t, name_var_q, var_q, var_p, zs):
         z[ilev] = z[ilev-1] + dz
     return z
 
-def interp_plev_to_zlev(z, pp, plev):
+def interp_plev_to_zlev(zz, pp, plev):
     """Compute the altitude of a given pressure level (interpolation)
     (func copied and adapted from dephy-scm/dephycf/thermo.py)
     """
 
-    nlev, = z.shape
+    nlev, = zz.shape
     zlev = 0
+    # increasing altitude and decreasing pressure order
     if pp[0] < pp[1]: p = pp[::-1]
     else: p = pp
+    if zz[0] > zz[1]: z = zz[::-1]
+    else: z = zz
+
     for ilev in range(0,nlev-1):
       if p[ilev] >= plev and p[ilev+1] <= plev:
         zlev = z[ilev] + (z[ilev+1]-z[ilev])/(p[ilev+1]-p[ilev])*(plev-p[ilev])
     return zlev
+
+def interp_zlev_to_plev(pp, zz, zlev):
+    """Compute the pressure of a given altitude level (interpolation)
+    inputs:
+       pp = vector of pressures
+       zz = vector of altitudes corresponding to p
+     zlev = altitude at which the pressure is computed
+    """
+    nlev, = pp.shape
+    # increasing altitude and decreasing pressure order
+    if pp[0] < pp[1]: p = pp[::-1]
+    else: p = pp
+    if zz[0] > zz[1]: z = zz[::-1]
+    else: z = zz
+    if zlev < z[0] or zlev > z[-1]:
+      import numpy as np
+      #import matplotlib.pyplot as plt
+      # p = p0 exp(-z/H)
+      # ln(p/p0) = -z/H
+      # H = -z/ln(p/p0)
+      H = -(z-z[0])/np.log(p/p[0])
+      #plt.plot(H,z); plt.show(); exit()
+      H = np.mean(H[-10:])
+      plev = p[0]*np.exp(-(zlev-z[0])/H) #float("nan")
+      #plt.plot(p,z,label="p,z")
+      #plt.plot(p[0]*np.exp(-(z-z[0])/H),z, label="exp")
+      #plt.legend()
+      #plt.show()
+    for ilev in range(0,nlev-1):
+      if z[ilev] <= zlev and z[ilev+1] > zlev: # zlev is between ilev and ilev+1
+        plev = p[ilev] + (p[ilev+1]-p[ilev])/(z[ilev+1]-z[ilev])*(zlev-z[ilev])
+        break
+    print(z[ilev], z[ilev+1], zlev, plev)
+    return plev
+
+def bilin_interp(var, t, z, newt, newz):
+    import numpy as np
+    from scipy.interpolate import RegularGridInterpolator
+    nt = len(t); nz = len(z)
+    nnt = len(newt); nnz = len(newz)
+    nvar = np.zeros((nnt, nnz))
+    interp = RegularGridInterpolator((t, z), var, bounds_error=False, fill_value=0.)
+    for i, tt in enumerate(newt):
+        for j, zz in enumerate(newz):
+            nvar[i,j] = interp([tt,zz])
+    return nvar

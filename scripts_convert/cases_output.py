@@ -20,4 +20,5 @@ CasesOutputs = {
   "AYOTTE":base_cas,
   "IHOP":base_cas,
   "BLLAST":base_cas,
+  "MOSAI":base_cas,
 }

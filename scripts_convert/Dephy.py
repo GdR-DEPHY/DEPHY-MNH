@@ -15,7 +15,8 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from Utils import parse_time, log
-from Utils import T_to_theta, P_to_z, interp_plev_to_zlev, H_atm, p0
+from Utils import T_to_theta, P_to_z, interp_plev_to_zlev, interp_zlev_to_plev, H_atm, p0
+from Utils import bilin_interp
 from Utils import ERROR, WARNING, INFO, DEBUG
 from cases_output import CasesOutputs
 from datetime import timedelta, datetime
@@ -29,7 +30,7 @@ import os
 listCaseMoistShCv = ["ARMCU", "BOMEX", "SANDU", "RICO", "SCMS", "FIRE"] # moist shallow conv
 listCaseDCv       = ["LBA", "AMMA", "KB2006", "EUROCS"]         # deep conv
 listCaseStable    = ["GABLS1", "GABLS4"]                        # stable
-listCaseDryShCv   = ["AYOTTE", "IHOP", "BLLAST"]                # dry shallow conv
+listCaseDryShCv   = ["AYOTTE", "IHOP", "BLLAST", "MOSAI"]       # dry shallow conv
 
 # this is the list of all defined cases
 listCases = listCaseMoistShCv+listCaseDryShCv+listCaseStable+listCaseDCv
@@ -38,7 +39,7 @@ listCases = listCaseMoistShCv+listCaseDryShCv+listCaseStable+listCaseDCv
 cas_type = {"moistshcv" : {"dx" : 25,  "dy" : 25,  "dz" : 25,   "zbot": 3500}, 
             "dcv"       : {"dx" : 200, "dy" : 200, "dz" : None, "zbot": 16500},
             "stable"    : {"dx" : 5,   "dy" : 5,   "dz" : None, "zbot": None},
-            "dryshcv"   : {"dx" : 25,  "dy" : 25,  "dz" : 25,   "zbot": 3500},
+            "dryshcv"   : {"dx" : 25,  "dy" : 25,  "dz" : 25,   "zbot": 3000},
             }
 
 def FC_filename(dir, cas, subcas):
@@ -294,8 +295,8 @@ class Case:
       var_u_frc, lev_u_frc, tim_u_frc = get2dvar(name_var_u)
       var_v_frc, lev_v_frc, tim_v_frc = get2dvar(name_var_v)
     else:
-      var_u_frc = None
-      var_v_frc = None
+      var_u_frc, lev_u_frc, tim_u_frc = None, None, None
+      var_v_frc, lev_v_frc, tim_v_frc = None, None, None
     
     # thermodynamics : frc = nudging | none ; tend = adv | rad | none
     ## T
@@ -304,7 +305,7 @@ class Case:
       name_var_t = self.name_var_t["nudging"]+"_nud"
       var_t_frc, lev_t_frc, tim_t_frc = get2dvar(name_var_t)
     else:
-      var_t_frc = None
+      var_t_frc, lev_t_frc, tim_t_frc = None, None, None
     if name_var_t == "ta_nud" :
       log(ERROR, "Don't know how to convert T nudge to theta", verbosity)
     ## q
@@ -315,7 +316,7 @@ class Case:
         # convert content to mixing ratio
         var_q_frc = var_q_frc/(1-var_q_frc)
     else:
-      var_q_frc = None
+      var_q_frc, lev_q_frc, tim_q_frc = None, None, None
     
     # thermodynamics : advection 
     ## T
@@ -323,9 +324,22 @@ class Case:
       name_var_t = "tn"+self.name_var_t["adv"]+"_adv"
       var_t_ten, lev_t_ten, tim_t_ten = get2dvar(name_var_t)
     else:
-      var_t_ten = None
+      var_t_ten, lev_t_ten, tim_t_ten = None, None, None
     if name_var_t == "tnta_adv":
-      log(ERROR, "Don't know how to convert T adv to theta", verbosity)
+      # log(ERROR, "Don't know how to convert T adv to theta", verbosity)
+      ##### ONGOING WORK !!!!! #####
+      # need pressure to convert T to theta
+      # on the same grid as t adv forcings
+      if self.def_lev == "P": 
+        # already defined on pressure levels, conversion is immediate
+        var_t_ten = T_to_theta(var_t_ten, lev_t_ten)
+      else:
+        # defined on altitude levels, use initial pressure profile
+        # to convert ; first need to interpolate press_ini on lev_t_ten
+        altit_ini = lev_t
+        press_ini = ds.variables["pa"][:].squeeze()
+        pre_t_ten = np.array([interp_zlev_to_plev(press_ini, altit_ini, l) for l in lev_t_ten])
+        var_t_ten = T_to_theta(var_t_ten, pre_t_ten)
     ## q
     if self.name_var_q["adv"] != "none":
       name_var_q = "tn"+self.name_var_q["adv"]+"_adv"
@@ -334,7 +348,7 @@ class Case:
         # convert content to mixing ratio
         var_q_ten = var_q_ten/(1-var_q_ten)
     else:
-      var_q_ten = None
+      var_q_ten, lev_q_ten, tim_q_ten = None, None, None
     
     ## radiation tendency 
     if attributes["radiation"] == "tend":
@@ -350,14 +364,14 @@ class Case:
     # subsidence, either in w or omega
     if attributes['forc_wa'] == 1:
       self.name_var_w["forc"] = "wa"
-      var_w_frc, lev_w_frc, time_w_frc = get2dvar("wa")
+      var_w_frc, lev_w_frc, tim_w_frc = get2dvar("wa")
     elif attributes['forc_wap'] == 1: 
       self.name_var_w["forc"] = "wap"
-      var_w_frc, lev_w_frc, time_w_frc = get2dvar("wap")
+      var_w_frc, lev_w_frc, tim_w_frc = get2dvar("wap")
       var_w_frc /= -1.*288*ds.variables['ta'][:]*9.81
     else:
       self.name_var_w["forc"] = "none"
-      var_w_frc = None
+      var_w_frc, lev_w_frc, tim_w_frc = None, None, None
     
     # surface forcings
     var_ts   = None; var_hfls = None; var_hfss = None; var_z0h  = None
@@ -390,12 +404,15 @@ class Case:
       log(WARNING, "No surface condition for momentum?", verbosity)
     
     ## chose forcing time x lev grid (priority to advection)
-    tim_forcings = tim_t_ten if self.name_var_t["adv"]!="none" else \
-            tim_q_ten if self.name_var_q["adv"]!="none" else \
-            tim_u_frc if attributes["forc_geo"] else None
-    lev_forcings = lev_t_ten if self.name_var_t["adv"]!="none" else \
-            lev_q_ten if self.name_var_q["adv"]!="none" else \
-            lev_u_frc if attributes["forc_geo"] else None
+    tim_forcings = []
+    lev_forcings = []
+    if self.name_var_t["adv"]!="none": tim_forcings += list(tim_t_ten); lev_forcings+=list(lev_t_ten)
+    if self.name_var_q["adv"]!="none": tim_forcings += list(tim_q_ten); lev_forcings+=list(lev_q_ten)
+    if attributes["forc_geo"]: tim_forcings += list(tim_u_frc); lev_forcings+=list(lev_u_frc)
+    tim_forcings = np.unique(tim_forcings)
+    lev_forcings = np.unique(lev_forcings)
+    tim_forcings.sort()
+    lev_forcings.sort()
     ntime_forcings = len(tim_forcings)
     nlevs_forcings = len(lev_forcings)
 
@@ -434,13 +451,14 @@ class Case:
     self.lev_forcings = lev_forcings
     self.ntime_forcings = ntime_forcings
     self.nlevs_forcings = nlevs_forcings
-    self.var_u_frc = self.set_none_to_zero(var_u_frc, verbosity)
-    self.var_v_frc = self.set_none_to_zero(var_v_frc, verbosity)
-    self.var_w_frc = self.set_none_to_zero(var_w_frc, verbosity)
-    self.var_t_frc = self.set_none_to_zero(var_t_frc, verbosity)
-    self.var_q_frc = self.set_none_to_zero(var_q_frc, verbosity)
-    self.var_t_ten = self.set_none_to_zero(var_t_ten, verbosity)
-    self.var_q_ten = self.set_none_to_zero(var_q_ten, verbosity)
+    print(lev_u_frc, lev_forcings)
+    self.var_u_frc = self.set_none_to_zero(var_u_frc, tim_u_frc, lev_u_frc, verbosity)
+    self.var_v_frc = self.set_none_to_zero(var_v_frc, tim_v_frc, lev_v_frc, verbosity)
+    self.var_w_frc = self.set_none_to_zero(var_w_frc, tim_w_frc, lev_w_frc, verbosity)
+    self.var_t_frc = self.set_none_to_zero(var_t_frc, tim_t_frc, lev_t_frc, verbosity)
+    self.var_q_frc = self.set_none_to_zero(var_q_frc, tim_q_frc, lev_q_frc, verbosity)
+    self.var_t_ten = self.set_none_to_zero(var_t_ten, tim_t_ten, lev_t_ten, verbosity)
+    self.var_q_ten = self.set_none_to_zero(var_q_ten, tim_q_ten, lev_q_ten, verbosity)
     # forcings surf
     self.tim_forc_ts = tim_forc_ts
     self.tim_forc_uv = tim_forc_uv
@@ -451,14 +469,17 @@ class Case:
     self.var_z0    = var_z0
     self.var_ustar = var_ustar
 
-  def set_none_to_zero(self,var, verbosity):
+  def set_none_to_zero(self, var, tgrid, zgrid, verbosity):
     print(var)
     if var is None: var = np.zeros((self.ntime_forcings, self.nlevs_forcings))
     if var.shape != (self.ntime_forcings, self.nlevs_forcings):
-      # if not the right grid, will be broadcasted to the right grid
+      # if not the right grid, will be interpolated to the right grid
+      log(DEBUG, "in set_none_to_zero", verbosity)
       log(DEBUG, "var shape "+str(var.shape), verbosity)
+      log(DEBUG, "var t,z grids"+str(tgrid)+str(zgrid), verbosity)
       log(DEBUG, "frc shape %i %i"%(self.ntime_forcings, self.nlevs_forcings), verbosity)
-      var = np.broadcast_to(var, (self.ntime_forcings, self.nlevs_forcings))
+      log(DEBUG, "frc t,z grids"+str(self.tim_forcings)+str(self.lev_forcings), verbosity)
+      var = bilin_interp(var, tgrid, zgrid, self.tim_forcings, self.lev_forcings)
     return var
 
   def __str__(self):
