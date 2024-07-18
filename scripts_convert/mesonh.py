@@ -35,7 +35,7 @@ exseg_LES = {
   "NAM_DYNn"   : { "XTSTEP"     : "1.",
                    "XT4DIFU"    : "300.",
                    "CPRESOPT"   : "'ZRESI'",     }, # parallel CRESI
-  "NAM_TURBn"  : { "XIMPL"      : "0.",
+  "NAM_TURBn"  : { "XIMPL"      : "1.",
                    "CTURBLEN"   : "'DEAR'",
                    "CTURBDIM"   : "'3DIM'",     },
   "NAM_PARAM_RADn"  : { "XDTRAD"        : "1.",
