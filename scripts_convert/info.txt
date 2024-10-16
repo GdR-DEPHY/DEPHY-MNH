@@ -12,18 +12,16 @@ casename=ARMCU/....
 
 A lancer:
 python3 convert.py -c ARMCU -s MESONH -v 2 -m SCM -i ../../DEPHY-SCM
-python3 convert.py -c ARMCU -s MESONH -v 3 -m SCM -i ../../DEPHY-SCM
-python3 convert.py -c AMMA -s REF -v 2 -m SCM -i ../../DEPHY-SCM -g ../grilles/
--o output_namelists
+python3 convert.py -c ARMCU -s MESONH -v 3 -m CRM -i ../../DEPHY-SCM
+python3 convert.py -c AMMA -s REF -v 2 -m SCM -i ../../DEPHY-SCM -g ../grilles/ -o output_namelists
+python3 convert.py -c EUROCS -s REF -v 2 -m SCM -i ../../DEPHY-SCM -g ../grilles/
+python3 convert.py -c KB2006 -s MESONH -v 2 -m LES -i ../../DEPHY-SCM -g ../grilles/ -o output_namelists
+
+python3 convert.py -c MPACE -s REF -v 2 -m LES -i ../../DEPHY-SCM 
+
 
 
 TEST de tous les cas:
-Création de namelists
-OK sauf BOMEX 
-BOMEX= pbm car u & v ne sont pas sur la meme grille
-lev_ua=0,500,3000
-lev_va=0,3000
-
 
 Runs SCM:
-OK sauf LBA/GABLS1/GABLS4/SANDU
+OK sauf GABLS1/GABLS4/SANDU
