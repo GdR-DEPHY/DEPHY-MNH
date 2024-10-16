@@ -126,10 +126,11 @@ class Case:
         hnext = begin_seg[i+1]
       else:
         hnext = self.duration_hour
+      print("iseg %i, from hour %i to %i"%(i,h,hnext))
       if hnext-h > max_seg_dur:
-        print(i,h,hnext, "more than", max_seg_dur)
+        print("! lasts more than max seg dur (%i)"%(max_seg_dur))
         more_segs += [i for i in np.arange(h+max_seg_dur,hnext,max_seg_dur)]
-        print(more_segs)
+        print("! cut into more segs :", more_segs)
     begin_seg = np.unique(begin_seg+more_segs)
     begin_seg.sort()
     print(begin_seg)
@@ -240,7 +241,7 @@ class Case:
     
     nlev_init_uv = len(lev_u)
     nlev_init_tq = len(lev_t)
-    print(nlev_init_uv, var_u.shape, nlev_init_tq, var_t.shape)
+    #print(nlev_init_uv, var_u.shape, nlev_init_tq, var_t.shape)
     
     log(DEBUG, "Original lev_t (%s) %s"%(self.def_lev, lev_t), verbosity)
     log(DEBUG, "Original lev_u (%s) %s"%(self.def_lev, lev_u), verbosity)
@@ -423,7 +424,8 @@ class Case:
     # for each type of forcing and variable, linear interpolation on new grid...
 
     if self.def_lev == "P" :
-      lev_pre_forcings = lev_forcings[:]*1
+      ## lev_forcings have been sorted in increasing order so need to reverse them if pressure defined
+      lev_pre_forcings = lev_forcings[::-1]*1
       if np.max(lev_pre_forcings) <= np.max(lev_pre_t) and np.min(lev_pre_forcings) >= np.min(lev_pre_t):
         # interpolate from thermo profiles
         lev_forcings = np.array([interp_plev_to_zlev(lev_t, lev_pre_t, p) for p in lev_pre_forcings])
@@ -451,7 +453,7 @@ class Case:
     self.lev_forcings = lev_forcings
     self.ntime_forcings = ntime_forcings
     self.nlevs_forcings = nlevs_forcings
-    print(lev_u_frc, lev_forcings)
+    #print(lev_u_frc, lev_forcings)
     self.var_u_frc = self.set_none_to_zero(var_u_frc, tim_u_frc, lev_u_frc, verbosity)
     self.var_v_frc = self.set_none_to_zero(var_v_frc, tim_v_frc, lev_v_frc, verbosity)
     self.var_w_frc = self.set_none_to_zero(var_w_frc, tim_w_frc, lev_w_frc, verbosity)
@@ -470,7 +472,6 @@ class Case:
     self.var_ustar = var_ustar
 
   def set_none_to_zero(self, var, tgrid, zgrid, verbosity):
-    print(var)
     if var is None: var = np.zeros((self.ntime_forcings, self.nlevs_forcings))
     if var.shape != (self.ntime_forcings, self.nlevs_forcings):
       # if not the right grid, will be interpolated to the right grid
