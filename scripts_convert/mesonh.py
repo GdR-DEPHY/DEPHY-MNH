@@ -44,7 +44,6 @@ exseg_LES = {
                   "LLES_CORE_MASK" : ".TRUE.", 
                   "LLES_CS_MASK"   : ".TRUE.",
                   "XLES_TEMP_SAMPLING"   : "300.",
-                  "XLES_TEMP_MEAN_START" : "0.",
                   "XLES_TEMP_MEAN_STEP"  : "3600."},
   "NAM_CONDSAMP": { "LCONDSAMP"    : ".TRUE."     },
   "NAM_CONFZ"   : { "MPI_BUFFER_SIZE" :"400"      },
@@ -75,7 +74,6 @@ exseg_CRM = {
                         "XDTRAD_CLONLY" : "10.",},
   "NAM_NEBn"  : { "LSUBG_COND" : ".TRUE.",      },# activate subrid condensation
   "NAM_LES"    : { "XLES_TEMP_SAMPLING"   : "300.",
-                   "XLES_TEMP_MEAN_START" : "0.",
                    "XLES_TEMP_MEAN_STEP"  : "3600."},
   "NAM_CONDSAMP": { "LCONDSAMP"    : ".TRUE."    },
   "NAM_BUDGET"  : { "NBUIH"        : "%i"%CRM_Nhoriz,
@@ -107,11 +105,16 @@ exseg_SCM = {
                           "LMF_FLX"        : ".TRUE."},
   "NAM_PARAM_KAFRn" : {"XDTCONV"    :"30.", # doit etre au moins  nXTSTEP
                           "LDIAGCONV"      :".TRUE."}, 
-  "NAM_LES" :   { "XLES_TEMP_SAMPLING"   : "300.",
-                  "XLES_TEMP_MEAN_START" : "0.",
-                  "XLES_TEMP_MEAN_STEP"  : "3600."},
-  "NAM_CONDSAMP": { "LCONDSAMP"    : ".TRUE."    },
-  "NAM_BUDGET"  : { "NBUIH"        : "%i"%SCM_Nhoriz,
+  "NAM_LES" :   { "LLES_MEAN"           : ".TRUE.",
+                  "LLES_RESOLVED"       : ".TRUE.",
+                  "LLES_SUBGRID"        : ".TRUE.",
+                  "LLES_NEB_MASK"       : ".FALSE.",
+                  "LLES_CORE_MASK"      : ".FALSE.",
+                  "LLES_CS_MASK"        : ".FALSE.",
+                },
+  "NAM_CONDSAMP": { "LCONDSAMP"    : ".FALSE."    },
+  "NAM_BUDGET"  : { "CBUTYPE"      : "'NONE'",
+                    "NBUIH"        : "%i"%SCM_Nhoriz,
                     "NBUJH"        : "%i"%SCM_Nhoriz, 
                     "NBUKH"        : "%i"%SCM_Nverti},
 }
@@ -263,7 +266,7 @@ NAM_ADVn   = { # advection for model n
 NAM_PARAMn = { # activate params for model n
   "CTURB"             : "'TKEL'", # "'NONE'"
   "CRAD"              : "'NONE'",
-  "CCLOUD"            : "'LIMA'", # "'NONE'"
+  "CCLOUD"            : "'ICE3'", # "'NONE'"
   "CDCONV"            : "'NONE'",
   "CSCONV"            : "'NONE'",
   "CELEC"             : "'NONE'",
@@ -484,13 +487,14 @@ NAM_LES     = { # compute horizontal statistics
   "LLES_SPECTRA"        : ".FALSE.",
   "CLES_NORM_TYPE"      : "'NONE'",
   "CBL_HEIGHT_DEF"      : "'KE'",
-  "XLES_TEMP_SAMPLING" : "300.",
+  "XLES_TEMP_SAMPLING"  : "300.",
+  "XLES_TEMP_MEAN_START": "0.",
   "XLES_TEMP_MEAN_STEP" : "3600.",
   "LLES_CART_MASK"      : ".FALSE.",
   "LLES_NEB_MASK"       : ".TRUE.",
   "LLES_CORE_MASK"      : ".TRUE.",
-  "LLES_MY_MASK"        : ".FALSE.",
   "LLES_CS_MASK"        : ".TRUE.",
+  "LLES_MY_MASK"        : ".FALSE.",
 }
 
 NAM_CONDSAMP = { # conditional sampling

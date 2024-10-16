@@ -1,14 +1,5 @@
-Adriana :
-=========
-
-- ARMCu avant le démarrage de la convection
-  => à partir de la 2ème heure et elle nous dira si le spin up est fini ou pas
-  outputs toutes les demi heures ce serait bien
-  (1 min pas la peine)
-
-- intéressée par les cas convection sèche
-
-===
+Trucs à faire
+=============
 
 x lire qt/rv .. / theta/ta dans le format commun et en déduire THUVTHDMR
 
@@ -19,7 +10,7 @@ x cas de transiiton "dcv" : AMMA LBA KB et EUROCS
 
 x reprendre et factoriser les scripts de conversion (LES/1D et dedans)
 
-- discuter avec Benoit pour la config LIMA (config REF + sensibilités)
+x discuter avec Benoit pour la config LIMA (config REF + sensibilités)
 => DONE
 Besoin d'inclure le 'mode_lima_tendencies.f90' envoyé par email le 30 Nov 2023
 et la namelist suivante:
@@ -41,18 +32,30 @@ activation NMOM_C=2 & NMOM_R=2 (eau liquide + rain)
 autoconversion en testant celle de ICE3, celle de LIMA et celle de KHKO
 Faire varier CCN a 100, 300, 1000
 
-- déterminer les périodes de spin-up et d'intérêt pour chaque cas
+x déterminer les périodes de spin-up et d'intérêt pour chaque cas
   AMMA -> 18h (6h-24h) spin-up~ 3-4h - sortie fréquente a partir de 10h
   LBA -> 18h mais transition bcp plus rapide (pbmatique du spin-up??)
   KB -> 5jours 120h) spin-up ~ 6h
   EUROCS -> 18h (6h-24h) intéressant de faire le J2 aussi. spin-up ~ 3h?
 
+x EUROCS défini en pression, conversion P->z pour les namelists MNH 
+  tourne mais fait n'importe quoi
+  => trouvé des bugs dans la définition du cas, corrigé
+  => Fleur refait tourner avec les bons forçages
+
+- BOMEX => Fleur refait tourner pour vérifier
+
+- crash quand on demande la dernière heure en HF
+
+- T and q not initialized on the same grid (RICO/SHORT) => interpoler comme
+  pour les forçages 
 
 - réfléchir au forçage en vent : 
   - à la surface, u* ou z0 ? => plutôt u* pour mieux contraindre les flux 
   - en volume, coriolis+géostroph ; rappel profil moyen ; chaque colonne ?
     => plutôt rappel profil moyen puis delta U à chaque colonne
-=> pour l'instant on garde le forcage du papier mais intéressant de faire peut-etre en plus un cas systématiquement avec un u* prescrit
+  => pour l'instant on garde le forcage du papier mais intéressant de faire peut-etre en plus un cas systématiquement avec un u* prescrit
+
 - vérifier les fichiers formats communs == les papiers de référence
 
 - quand ustar est prescrit pas sur la même grille temporelle : si ustar est
@@ -62,3 +65,30 @@ Faire varier CCN a 100, 300, 1000
 x shortname avec des "_" à la fin si trop court
 
 x pas de backup ni de out en mode SCM
+
+- tout refaire tourner 
+  - tests 1D : EUROCS/BOMEX/SANDU
+  - run ARM/AMMA/GABLS1/AYOTTE
+  - validation
+  - tous les cas
+  - SANDU ?
+
+- rayonnement : calibrer ecRad (faire les mêmes hypothèses) *et* comprendre les effets radiatifs
+  - angles solaires
+  - pas de cartes (flux moyen en surface et au TOA)
+  - htrdr avec le bon flux SW au TOA, LW question du raccord ?
+  - propriétés optiques : reff ; tables de pptés ?
+
+- tests de sensibilité
+
+=========
+Adriana :
+=========
+
+- ARMCu avant le démarrage de la convection
+  => à partir de la 2ème heure et elle nous dira si le spin up est fini ou pas
+  outputs toutes les demi heures ce serait bien
+  (1 min pas la peine)
+
+- intéressée par les cas convection sèche
+

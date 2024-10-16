@@ -217,12 +217,12 @@ class Config:
       if i==0: continue
       str_init += "%14.1f %14.2f %14.8f\n"%(z,t,q)
     self.config["freeformat"]["RSOU"] = str_init
-    import matplotlib.pyplot as plt
+    #import matplotlib.pyplot as plt
     #plt.plot(cas.var_t[0], cas.lev_t)
     #plt.plot(cas.var_q[0], cas.lev_t)
-    plt.plot(cas.var_u[0], cas.lev_u)
-    plt.plot(cas.var_v[0], cas.lev_u)
-    plt.show()
+    #plt.plot(cas.var_u[0], cas.lev_u)
+    #plt.plot(cas.var_v[0], cas.lev_u)
+    #plt.show()
 
   def freeformat_zfrc(self, cas):
     if cas.mnh_init_keyword == "ZUVTHLMR" or cas.mnh_init_keyword == "ZUVTHDMR":
@@ -380,7 +380,7 @@ class Config:
     self.modify("NAM_LES",    "XLES_TEMP_MEAN_END", "%f"%seg_dur)
 
     if self.mode == "SCM":
-      out_frq = -999 ; out_fir = 0 ; bak_frq = -999 ; bak_fir = 0 
+      out_frq = -999 ; out_fir = 0 ; bak_frq = seg_dur; bak_fir = 0 
       is_hf = 0
     else:
       if iseg in [0,1]:   # 0 = mother config, the whole simulation ; 1 = spinup
@@ -420,7 +420,8 @@ class Config:
             "NAM_IDEAL_FLUX", "all")
     all_tim_forc = cas.tim_forc_ts[:]
     ntf = len(all_tim_forc)
-    if cas.var_ustar is not None and cas.tim_forc_uv[:] != all_tim_forc:
+    if cas.var_ustar is not None and (cas.tim_forc_uv[:] != all_tim_forc).any():
+      # interp ???
       print(cas.tim_forc_uv[:], all_tim_forc)
       print(cas.var_ustar, cas.var_z0)
       nus=len(cas.var_ustar)
