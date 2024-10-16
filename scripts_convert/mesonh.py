@@ -266,7 +266,7 @@ NAM_ADVn   = { # advection for model n
 NAM_PARAMn = { # activate params for model n
   "CTURB"             : "'TKEL'", # "'NONE'"
   "CRAD"              : "'NONE'",
-  "CCLOUD"            : "'ICE3'", # "'NONE'"
+  "CCLOUD"            : "'LIMA'", # "'NONE'"
   "CDCONV"            : "'NONE'",
   "CSCONV"            : "'NONE'",
   "CELEC"             : "'NONE'",
