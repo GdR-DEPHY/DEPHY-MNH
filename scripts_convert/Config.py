@@ -205,7 +205,7 @@ class Config:
     str_init = "RSOU\n"
     str_init += str_time(cas.start_date)
     str_init += "%s   \n"%cas.mnh_init_keyword
-    str_init += "%.2f \n"%cas.zs[0]
+    str_init += "%.2f \n"%cas.zs
     str_init += "%.2f \n"%cas.ps[0]
     str_init += "%.2f \n"%cas.var_t[0][0]
     str_init += "%.8f \n"%cas.var_q[0][0]
@@ -233,7 +233,7 @@ class Config:
     for it in range(cas.ntime_forcings):
       date = cas.start_date + timedelta(seconds = int(cas.tim_forcings[it]))
       str_zfrc += str_time(date)
-      str_zfrc += "%.2f \n"%cas.zs[0]
+      str_zfrc += "%.2f \n"%cas.zs
       str_zfrc += "%.2f \n"%cas.ps[0]
       str_zfrc += "%.2f \n"%cas.var_t[0][0]
       str_zfrc += "%.8f \n"%cas.var_q[0][0]

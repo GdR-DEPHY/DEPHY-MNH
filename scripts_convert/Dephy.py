@@ -187,7 +187,7 @@ class Case:
     self.duration_secs = self.duration.total_seconds()
     self.duration_hour = self.duration_secs/3600.
 
-  def set_vertical_grid(self, inp_dir):
+  def set_vertical_grid(self, inp_dir, read_zorog=0):
     if self.type == "dcv":
       fil="%s/grille_dcv.txt"%(inp_dir)
       if os.path.isfile(fil):
@@ -195,6 +195,7 @@ class Case:
         self.nz    = len(self.zgrid)
       else: print("error: vertical grid file %s not found for case %s/%s"%(
           fil, self.casename, self.subcasename)); exit()
+      if read_zorog: self.zgrid += self.zs
     else: self.zgrid = None
 
   def read_initial_profiles_and_forcings(self, attributes, ds, verbosity, read_zorog=0):
@@ -226,6 +227,7 @@ class Case:
     ### init: read profiles 
     ps    = ds.variables['ps'][:]      # surface pressure
     zs    = ds.variables['orog'][:] if read_zorog else ps*0
+    if len(zs)>1: zs=zs[0]
     var_u, lev_u = getzvar(name_var_u)           # ua: zonal wind profile
     var_v, lev_v = getzvar(name_var_v)           # va: merid wind profile
     var_t, lev_t = getzvar(name_var_t)           # theta, thetal or ta
