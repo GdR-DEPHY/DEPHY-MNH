@@ -130,7 +130,6 @@
 
 &NAM_PGD_SCHEMES
   CSEA = 'FLUX',
-  CNATURE = 'TSZ0',
 / 
 
 &NAM_COVER

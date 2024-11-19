@@ -680,8 +680,8 @@ NAM_GRn_PRE =  {
 
 NAM_PGD_SCHEMES =  {
   "CSEA"    : "'FLUX'", #"'SEAFLUX'"
-  "CNATURE" : "'TSZ0'",
 }
+#"CNATURE" : "'TSZ0'",
 
 NAM_COVER =  {
   "XUNIF_COVER(1)"    : "0.", # (fraction of ocean)

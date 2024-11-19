@@ -289,7 +289,7 @@
 &NAM_PARAMn
   CTURB = 'TKEL',
   CRAD = 'NONE',
-  CCLOUD = 'ICE3',
+  CCLOUD = 'LIMA',
   CDCONV = 'KAFR',
   CSCONV = 'EDKF',
   CELEC = 'NONE',

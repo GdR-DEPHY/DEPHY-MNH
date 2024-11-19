@@ -379,6 +379,7 @@ class Case:
     # surface forcings
     var_ts   = None; var_hfls = None; var_hfss = None; var_z0h  = None
     var_ustar= None; var_z0   = None
+    tim_rad_ts = None
 
     ## prescribed surface temperature or turbulent fluxes
     if attributes['surface_forcing_temp'] == 'ts':
@@ -389,6 +390,12 @@ class Case:
       var_hfls, tim_hfls = gettvar('hfls')
       var_hfss, tim_hfss = gettvar('hfss')
       tim_forc_ts = tim_hfls
+      # prescribed fluxes + Ts for radiation scheme
+      att = 'surface_radiation_temp'
+      if att in attributes and attributes[att] == "ts" :
+        var_ts, tim_sst = gettvar("ts_forc")
+        var_ts = np.array([int(s*100)/100. for s in var_ts])
+        tim_rad_ts = tim_sst
     elif attributes['surface_forcing_temp'] == 'none':
       var_z0h, tim_z0h = gettvar('z0h') # ? this is never used ??
       tim_forc_ts = tim_z0h
@@ -406,7 +413,8 @@ class Case:
       tim_forc_uv = None
       log(WARNING, "No surface condition for momentum?", verbosity)
     
-    ## chose forcing time x lev grid (priority to advection)
+    # make lev, tim grid that includes all forcings lev/tim
+    # for each type of forcing and variable, bilinear interpolation on new grid
     tim_forcings = []
     lev_forcings = []
     if self.name_var_t["adv"]!="none": tim_forcings += list(tim_t_ten); lev_forcings+=list(lev_t_ten)
@@ -418,12 +426,6 @@ class Case:
     lev_forcings.sort()
     ntime_forcings = len(tim_forcings)
     nlevs_forcings = len(lev_forcings)
-
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    # !!!! forcings might be defined on different grids !!!!
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    # make lev, tim grid that includes all forcings lev/tim
-    # for each type of forcing and variable, linear interpolation on new grid...
 
     if self.def_lev == "P" :
       ## lev_forcings have been sorted in increasing order so need to reverse them if pressure defined
@@ -455,16 +457,23 @@ class Case:
     self.lev_forcings = lev_forcings
     self.ntime_forcings = ntime_forcings
     self.nlevs_forcings = nlevs_forcings
-    #print(lev_u_frc, lev_forcings)
-    self.var_u_frc = self.set_none_to_zero(var_u_frc, tim_u_frc, lev_u_frc, verbosity)
-    self.var_v_frc = self.set_none_to_zero(var_v_frc, tim_v_frc, lev_v_frc, verbosity)
-    self.var_w_frc = self.set_none_to_zero(var_w_frc, tim_w_frc, lev_w_frc, verbosity)
-    self.var_t_frc = self.set_none_to_zero(var_t_frc, tim_t_frc, lev_t_frc, verbosity)
-    self.var_q_frc = self.set_none_to_zero(var_q_frc, tim_q_frc, lev_q_frc, verbosity)
-    self.var_t_ten = self.set_none_to_zero(var_t_ten, tim_t_ten, lev_t_ten, verbosity)
-    self.var_q_ten = self.set_none_to_zero(var_q_ten, tim_q_ten, lev_q_ten, verbosity)
+    self.var_u_frc = self.set_none_to_zero_and_interp_to_grid(var_u_frc,
+            tim_u_frc, lev_u_frc, verbosity)
+    self.var_v_frc = self.set_none_to_zero_and_interp_to_grid(var_v_frc,
+            tim_v_frc, lev_v_frc, verbosity)
+    self.var_w_frc = self.set_none_to_zero_and_interp_to_grid(var_w_frc,
+            tim_w_frc, lev_w_frc, verbosity)
+    self.var_t_frc = self.set_none_to_zero_and_interp_to_grid(var_t_frc,
+            tim_t_frc, lev_t_frc, verbosity)
+    self.var_q_frc = self.set_none_to_zero_and_interp_to_grid(var_q_frc,
+            tim_q_frc, lev_q_frc, verbosity)
+    self.var_t_ten = self.set_none_to_zero_and_interp_to_grid(var_t_ten,
+            tim_t_ten, lev_t_ten, verbosity)
+    self.var_q_ten = self.set_none_to_zero_and_interp_to_grid(var_q_ten,
+            tim_q_ten, lev_q_ten, verbosity)
     # forcings surf
     self.tim_forc_ts = tim_forc_ts
+    self.tim_rad_ts = tim_rad_ts
     self.tim_forc_uv = tim_forc_uv
     self.var_ts    = var_ts
     self.var_hfls  = var_hfls
@@ -473,7 +482,7 @@ class Case:
     self.var_z0    = var_z0
     self.var_ustar = var_ustar
 
-  def set_none_to_zero(self, var, tgrid, zgrid, verbosity):
+  def set_none_to_zero_and_interp_to_grid(self, var, tgrid, zgrid, verbosity):
     if var is None: var = np.zeros((self.ntime_forcings, self.nlevs_forcings))
     if var.shape != (self.ntime_forcings, self.nlevs_forcings):
       # if not the right grid, will be interpolated to the right grid

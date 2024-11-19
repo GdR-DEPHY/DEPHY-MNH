@@ -40,8 +40,17 @@ x déterminer les périodes de spin-up et d'intérêt pour chaque cas
 
 x EUROCS défini en pression, conversion P->z pour les namelists MNH 
   tourne mais fait n'importe quoi
+  [ séance du 16/10/24 ]
   => trouvé des bugs dans la définition du cas, corrigé
   => Fleur refait tourner avec les bons forçages
+  [ séance du 19/11/24 ]
+  x profils initiaux 
+    u, v différents proche surface : en z (5 m/s) et en P (3 m/s) [ OK ]
+    theta différents au dessus de 18 km : + chaud en z qu'en P => OSEF 
+    rv : OK
+  x ça diverge quand même => pas les bons forçages TRAD 
+  x mieux avec les bons forçages de Ts Rad (cycle diurne de Ts !! cf Catherine !!)
+  x encore des différences => à cause du schéma de rayonnement !!! ECMWF vs ECRA !!!
 
 - BOMEX => Fleur refait tourner pour vérifier
 

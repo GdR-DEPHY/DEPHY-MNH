@@ -418,8 +418,14 @@ class Config:
     default = Config("def", "EXSEG", self.mode)
     self.config = replace_and_delete_config(self.config, default.config,
             "NAM_IDEAL_FLUX", "all")
+
     all_tim_forc = cas.tim_forc_ts[:]
+    all_tim_rad = all_tim_forc[:]
+    if cas.tim_rad_ts is not None:
+      all_tim_rad = cas.tim_rad_ts[:]
+
     ntf = len(all_tim_forc)
+    ntt = len(all_tim_rad)
     if cas.var_ustar is not None and (cas.tim_forc_uv[:] != all_tim_forc).any():
       # interp ???
       print(cas.tim_forc_uv[:], all_tim_forc)
@@ -434,16 +440,27 @@ class Config:
           print("problemo ???",ntf); exit()
     
     # select only times that are needed for the segment
-    list_ = None
+    ## for fluxes
+    list_f = None
     for i,t in enumerate(all_tim_forc):
       if t > self.seg_beg:
-        if list_ is None: list_ = [i-1]
-        list_ += [i]
+        if list_f is None: list_f = [i-1]
+        list_f += [i]
         if t >= self.seg_end : break
 
-    # forcing time relative to the beginning of the segment
-    rel_times = [t - self.seg_beg for t in all_tim_forc[list_]]
-    nf = len(rel_times)
+    ## for Ts (== fluxes if no prescribed Ts)
+    list_t = None
+    for i,t in enumerate(all_tim_rad):
+      if t > self.seg_beg:
+        if list_t is None: list_t = [i-1]
+        list_t += [i]
+        if t >= self.seg_end : break
+
+    # forcing times relative to the beginning of the segment
+    rel_times_f = [t - self.seg_beg for t in all_tim_forc[list_f]]
+    rel_times_t = [t - self.seg_beg for t in all_tim_rad[list_t]]
+    nrf = len(rel_times_f)
+    nrt = len(rel_times_t)
     
     # extract forcing for the segment, interpolate if needed
     def forc(var):
@@ -456,27 +473,39 @@ class Config:
       forc += [v for v in var[list_[1]:list_[-1]+1]]
       return forc
 
-    var = rel_times ; key = "XTIMEF"
+    var = rel_times_f ; key = "XTIMEF"
     for i,f in enumerate(var):
       if i == 0: self.modify("NAM_IDEAL_FLUX", key+"(1)", "0.")
       else: self.modify("NAM_IDEAL_FLUX", key+"(%i)"%(i+1), "%f"%f)
 
+    if cas.var_ts is not None :
+      var = rel_times_t ; key = "XTIMET"
+      for i,f in enumerate(var):
+        if i == 0: self.modify("NAM_IDEAL_FLUX", key+"(1)", "0.")
+        else: self.modify("NAM_IDEAL_FLUX", key+"(%i)"%(i+1), "%f"%f)
+
     list_vars = [cas.var_hfls, cas.var_hfss, cas.var_ts, cas.var_z0,
             cas.var_ustar, [0.]]
     list_keys = ["XSFTQ", "XSFTH", "XTSRAD", "XZ0", "XUSTAR", "XSFCO2"]
+
     for var,key in zip(list_vars, list_keys):
+      rel_times=rel_times_f; list_=list_f;
       if var is not None :
-        if len(var) != ntf: var = [var[0]]*ntf
-        if key == "XZ0":   
+        if len(var) != nrf and len(var) != ntf: var = [var[0]]*ntf
+        if key == "XZ0":
             self.modify("NAM_IDEAL_FLUX", "CUSTARTYPE", "'Z0'")
             self.modify("NAM_IDEAL_FLUX", "XZ0", "%.3f"%(forc(var)[0]))
             continue # ne dépend pas du temps
-        if key == "XUSTAR": self.modify("NAM_IDEAL_FLUX", "CUSTARTYPE", "'USTAR'")
-        if key == "XTSRAD": self.modify("NAM_IDEAL_FLUX", "NFORCT", "%i"%nf)
+        if key == "XUSTAR":
+            self.modify("NAM_IDEAL_FLUX", "CUSTARTYPE", "'USTAR'")
+        if key == "XTSRAD":
+            rel_times=rel_times_t; list_=list_t;
+            self.modify("NAM_IDEAL_FLUX", "NFORCT", "%i"%nrt)
+
         for i,f in enumerate(forc(var)):
           self.modify("NAM_IDEAL_FLUX", key+"(%i)"%(i+1), "%f"%f)
 
-    self.modify("NAM_IDEAL_FLUX", "NFORCF", "%i"%nf)
+    self.modify("NAM_IDEAL_FLUX", "NFORCF", "%i"%nrf)
 
   def set_name(self,cas):
     self.modify("NAM_CONF",   "CEXP", "'%s'"%cas.shortname)

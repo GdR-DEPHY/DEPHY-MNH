@@ -1,7 +1,3 @@
-python convert.py -c MOSAI -i ../../dephy-scm -v 3 -o . -m SCM -z -s MAIZE_ADV
-python convert.py -c MOSAI -i ../../dephy-scm -v 3 -o . -m SCM -z -s MAIZE
-exit
-
 DIR_DEPHY_SCM=~/work/dephy/dephy-scm
 
 set -e
@@ -12,11 +8,14 @@ do
     GABLS4) add="-s STAGE3";;
     AYOTTE) add="-s 00SC";;
     MOSAI) add="-s MAIZE";;
+    EUROCS) add="-z" ;;
     dephycf|GABLS1|ARPEGE|DYNAMO|ISDAC|MAGIC|MPACE|ASTEX|FIRE|SCMS) echo "$cas -- skip"; continue ;;
     *) add="";;
   esac
   echo "$cas"
-  echo "/usr/bin/python3 convert.py -c $cas -i $DIR_DEPHY_SCM -v 3 -g ../grilles/ -o ../output_namelists/ -m SCM $add > /tmp/log_cas_$cas 2>/tmp/err_cas_$cas "
+  run="/usr/bin/python3 convert.py -c $cas -i $DIR_DEPHY_SCM -v 3 -g ../grilles/ -o ../output_namelists/ -m SCM $add > ../logs/log_cas_$cas 2> ../logs/err_cas_$cas "
+  echo $run
+  eval $run
 done 
 
 ## BOMEX : ok interpolation des forçages sur grille commune à partir des profils du papier
@@ -31,3 +30,9 @@ done
 
 # cas pas défini dans les listes moistshcv / dcv / dryshcv / stable
 # ARPEGE|DYNAMO|ISDAC|MAGIC|MPACE|ASTEX
+
+exit 
+python convert.py -c MOSAI -i ../../dephy-scm -v 3 -o . -m SCM -z -s MAIZE_ADV
+python convert.py -c MOSAI -i ../../dephy-scm -v 3 -o . -m SCM -z -s MAIZE
+exit
+
