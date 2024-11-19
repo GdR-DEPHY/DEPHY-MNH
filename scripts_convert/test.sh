@@ -13,9 +13,12 @@ do
     *) add="";;
   esac
   echo "$cas"
-  run="/usr/bin/python3 convert.py -c $cas -i $DIR_DEPHY_SCM -v 3 -g ../grilles/ -o ../output_namelists/ -m SCM $add > ../logs/log_cas_$cas 2> ../logs/err_cas_$cas "
-  echo $run
-  eval $run
+  for mode in SCM LES 
+  do
+    run="/usr/bin/python3 convert.py -c $cas -i $DIR_DEPHY_SCM -v 3 -g ../grilles/ -o ../output_namelists/ -m $mode $add >> ../logs/log_cas_$cas 2> ../logs/err_cas_$cas "
+    echo $run
+    eval $run
+  done
 done 
 
 ## BOMEX : ok interpolation des forçages sur grille commune à partir des profils du papier
