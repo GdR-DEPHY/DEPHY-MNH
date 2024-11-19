@@ -138,7 +138,7 @@ cas.set_vertical_grid(grids_dir, read_zorog=read_zorog)
 log(INFO, "vertical grid: "+str(cas.zgrid), verbosity)
 
 ## output files ## each seg lasts 4h max
-cas.setup_outputs(max_seg_dur = 4)
+cas.setup_outputs(verbosity, max_seg_dur = 4)
 
 ####################
 # WRITE DATA INTO NAMELISTS

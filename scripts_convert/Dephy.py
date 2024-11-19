@@ -110,7 +110,7 @@ class Case:
         self.dzmin = self.dz ; self.dzmax = self.dz 
         self.zzmax = 1000    ; self.zztop = 0
 
-  def setup_outputs(self, max_seg_dur=24):
+  def setup_outputs(self, verbosity, max_seg_dur=24):
     ## max_seg_dur :: maximum duration of one segment
     caseoutput = CasesOutputs[self.casename]
     self.hourhf = caseoutput["hourhf"]
@@ -119,6 +119,7 @@ class Case:
       if h == begin_seg[-1]: begin_seg += [h+1]
       elif h > begin_seg[-1] and h+1 <= self.duration_hour:
         begin_seg += [h, h+1]
+    if begin_seg[-1] == self.duration_hour: begin_seg = begin_seg[:-1]
     more_segs = []
     for i,h in enumerate(begin_seg):
       if h < caseoutput["spinup"] : continue
@@ -126,14 +127,13 @@ class Case:
         hnext = begin_seg[i+1]
       else:
         hnext = self.duration_hour
-      print("iseg %i, from hour %i to %i"%(i,h,hnext))
       if hnext-h > max_seg_dur:
-        print("! lasts more than max seg dur (%i)"%(max_seg_dur))
+        log(WARNING, "seg %i (%i-%i) lasts more than max seg dur (%i)"%(i, h,
+            hnext, max_seg_dur), verbosity)
         more_segs += [i for i in np.arange(h+max_seg_dur,hnext,max_seg_dur)]
-        print("! cut into more segs :", more_segs)
+        log(WARNING, "will be cut into more segs", verbosity)
     begin_seg = np.unique(begin_seg+more_segs)
     begin_seg.sort()
-    print(begin_seg)
     self.nseg = len(begin_seg)
     self.begin_seg = begin_seg
 

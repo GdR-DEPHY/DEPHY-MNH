@@ -54,7 +54,7 @@ x EUROCS défini en pression, conversion P->z pour les namelists MNH
 
 - BOMEX => Fleur refait tourner pour vérifier
 
-- crash quand on demande la dernière heure en HF
+x crash quand on demande la dernière heure en HF
 
 - T and q not initialized on the same grid (RICO/SHORT) => interpoler comme
   pour les forçages 
