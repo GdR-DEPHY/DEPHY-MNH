@@ -491,7 +491,8 @@ class Config:
     for var,key in zip(list_vars, list_keys):
       rel_times=rel_times_f; list_=list_f;
       if var is not None :
-        if len(var) != nrf and len(var) != ntf: var = [var[0]]*ntf
+        # not the right dim, or constant forcing => take only the first value
+        if (len(var) != nrf and len(var) != ntf) or (var.min()==var.max()): var = [var[0]]*ntf
         if key == "XZ0":
             self.modify("NAM_IDEAL_FLUX", "CUSTARTYPE", "'Z0'")
             self.modify("NAM_IDEAL_FLUX", "XZ0", "%.3f"%(forc(var)[0]))
