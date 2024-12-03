@@ -97,18 +97,20 @@ class Case:
     self.zbot = cas_type[self.type]["zbot"]
 
     # grilles stretchées pour GABLS
+    # non en fait, grilles fixes à 5m et 1m respectivement
     if casename == "GABLS1": 
-        self.dzmin = 2    ; self.dzmax = 6
-        self.zzmax = 250. ; self.zztop = 20
+        self.dz = 5
+        #self.dzmin = 2    ; self.dzmax = 6
+        #self.zzmax = 250. ; self.zztop = 20
         self.zbot = 350.
     elif casename == "GABLS4":
-        self.dzmin = 0.2  ; self.dzmax = 2
-        self.zzmax = 50.  ; self.zztop = 20
+        self.dz = 1
+        #self.dzmin = 0.2  ; self.dzmax = 2
+        #self.zzmax = 50.  ; self.zztop = 20
         self.zbot = 80.
-    # sinon grille régulière
-    else: 
-        self.dzmin = self.dz ; self.dzmax = self.dz 
-        self.zzmax = 1000    ; self.zztop = 0
+
+    self.dzmin = self.dz ; self.dzmax = self.dz 
+    self.zzmax = 1000    ; self.zztop = 0
 
   def setup_outputs(self, verbosity, max_seg_dur=24):
     ## max_seg_dur :: maximum duration of one segment
