@@ -1,0 +1,6 @@
+if [ $# -ne 1 ] ; then
+  echo "Usage $0 <input.nc>"
+fi
+inp=$1
+
+ncks -O -G : -g LES_budgets/Mean/Cartesian/Time_averaged/Not_normalized/cart $inp ${inp%.nc}_flat.nc

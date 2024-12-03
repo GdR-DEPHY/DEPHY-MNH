@@ -1,0 +1,17 @@
+Mettre le script run_dephy_scm_cases.sh dans un répertoire sous MY_RUN par
+exemple 
+
+WD=$HOME/work/mesonh/MNH-V5-7-1/MY_RUN/DEPHY_SCM/
+
+mkdir -p $WD
+cp run_dephy_scm_cases.sh $WD
+
+Dans le script, modifier si besoin la variable :
+DIR_NAMElISTS=~/work/dephy/dephy-mnh/output_namelists/
+
+Copier le script convert_mnh_000 dans ~/.local/bin ou dans le répertoire $WD
+
+cp convert_mnh_000 $WD/
+
+Aller dans $WD et lancer 
+bash run_dephy_scm_cases.sh > out_run_dephy_scm_cases.log 2>&1 &
