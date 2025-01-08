@@ -193,6 +193,13 @@ class Config:
     if namelist not in self.config:
         print("cannot modify namelist %s"%namelist); exit()
     self.config[namelist][key] = value
+  
+  def remove(self, namelist, key):
+    if namelist not in self.config:
+        print("cannot remove %s from undefined namelist %s"%(key,namelist))
+        exit()
+    if key in self.config[namelist]:
+      del self.config[namelist][key]
 
   def freeformat_zhat(self, cas):
     if cas.zgrid is None : str_zhat=""
@@ -515,6 +522,9 @@ class Config:
     self.modify("NAM_PARAM_LIMA", "NMOM_I", "0")
     self.modify("NAM_PARAM_LIMA", "NMOM_S", "0")
     self.modify("NAM_PARAM_LIMA", "NMOM_G", "0")
+    self.remove("NAM_OUTPUT", "COUT_VAR(1,11)")
+    self.remove("NAM_OUTPUT", "COUT_VAR(1,12)")
+    self.remove("NAM_OUTPUT", "COUT_VAR(1,13)")
 
   def deactivate_radiation(self):
     self.modify("NAM_PARAMn", "CRAD", "'NONE'")
