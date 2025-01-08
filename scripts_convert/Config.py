@@ -515,6 +515,9 @@ class Config:
     self.modify("NAM_PARAM_LIMA", "NMOM_I", "0")
     self.modify("NAM_PARAM_LIMA", "NMOM_S", "0")
     self.modify("NAM_PARAM_LIMA", "NMOM_G", "0")
+    self.modify("NAM_BU_RRI", "LBU_RRI", ".FALSE.")
+    self.modify("NAM_BU_RRS", "LBU_RRS", ".FALSE.")
+    self.modify("NAM_BU_RRG", "LBU_RRG", ".FALSE.")
 
   def deactivate_radiation(self):
     self.modify("NAM_PARAMn", "CRAD", "'NONE'")
