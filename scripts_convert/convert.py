@@ -164,8 +164,12 @@ exseg.set_forcing_flags(cas)
 exseg.set_buffer_layer(cas)
 exseg.set_def_budget_zone(cas)
 
-if "shcv" in cas.type: # condition pour être warm == shallow conv ?
+if "dryshcv" in cas.type: 
+  exseg.set_adjust_microphysics()
+elif "shcv" in cas.type:
   exseg.set_warm_microphysics()
+else:
+  exseg.set_cold_microphysics()
 
 if attributes["radiation"] == "on":
   exseg.activate_radiation()
