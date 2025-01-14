@@ -520,7 +520,7 @@ class Config:
 
   def unset_microphysics(self):
     self.modify("NAM_PARAMn", "CCLOUD", "'NONE'")
-    self.remove("NAM_OUTPUT", "COUT_VAR(1,7)") # RVT
+    self.remove("NAM_OUTPUT", "COUT_VAR(1,8)") # RVT
     self.modify("NAM_BU_RRV", "LBU_RRV", ".FALSE.")
     self.unset_warm_microphysics()
     self.unset_cold_microphysics()
@@ -529,8 +529,8 @@ class Config:
     self.unset_microphysics()
     # reset simple variables (vapour and liq. cloud, no rain)
     self.modify("NAM_PARAMn", "CCLOUD", "'REVE'")
-    self.modify("NAM_OUTPUT", "COUT_VAR(1,7)", "'RVT'")
-    self.modify("NAM_OUTPUT", "COUT_VAR(1,8)", "'RCT'")
+    self.modify("NAM_OUTPUT", "COUT_VAR(1,8)", "'RVT'")
+    self.modify("NAM_OUTPUT", "COUT_VAR(1,9)", "'RCT'")
     self.modify("NAM_BU_RRV", "LBU_RRV", ".TRUE.")
     self.modify("NAM_BU_RRC", "LBU_RRC", ".TRUE.")
 
@@ -539,9 +539,9 @@ class Config:
     self.modify("NAM_PARAM_LIMA", "NMOM_R", "0")
     self.modify("NAM_BU_RRC", "LBU_RRC", ".FALSE.")
     self.modify("NAM_BU_RRR", "LBU_RRR", ".FALSE.")
-    self.remove("NAM_OUTPUT", "COUT_VAR(1,8)")  # RCT
-    self.remove("NAM_OUTPUT", "COUT_VAR(1,9)")  # RRT
-    self.remove("NAM_OUTPUT", "COUT_VAR(1,10)") # INPRR
+    self.remove("NAM_OUTPUT", "COUT_VAR(1,9)")  # RCT
+    self.remove("NAM_OUTPUT", "COUT_VAR(1,10)")  # RRT
+    self.remove("NAM_OUTPUT", "COUT_VAR(1,11)") # INPRR
 
   def unset_cold_microphysics(self):
     self.modify("NAM_PARAM_LIMA", "NMOM_I", "0")
@@ -550,9 +550,9 @@ class Config:
     self.modify("NAM_BU_RRI", "LBU_RRI", ".FALSE.")
     self.modify("NAM_BU_RRS", "LBU_RRS", ".FALSE.")
     self.modify("NAM_BU_RRG", "LBU_RRG", ".FALSE.")
-    self.remove("NAM_OUTPUT", "COUT_VAR(1,11)") # RIT
-    self.remove("NAM_OUTPUT", "COUT_VAR(1,12)") # RST
-    self.remove("NAM_OUTPUT", "COUT_VAR(1,13)") # RGT
+    self.remove("NAM_OUTPUT", "COUT_VAR(1,12)") # RIT
+    self.remove("NAM_OUTPUT", "COUT_VAR(1,13)") # RST
+    self.remove("NAM_OUTPUT", "COUT_VAR(1,14)") # RGT
 
   def set_warm_microphysics(self, moment=1):
     self.modify("NAM_PARAMn", "CCLOUD", "'LIMA'")
@@ -560,9 +560,9 @@ class Config:
     self.modify("NAM_PARAM_LIMA", "NMOM_R", "%i"%moment)
     self.modify("NAM_BU_RRC", "LBU_RRC", ".TRUE.")
     self.modify("NAM_BU_RRR", "LBU_RRR", ".TRUE.")
-    self.modify("NAM_OUTPUT", "COUT_VAR(1,8)", "'RCT'")
-    self.modify("NAM_OUTPUT", "COUT_VAR(1,9)", "'RRT'")
-    self.modify("NAM_OUTPUT", "COUT_VAR(1,10)", "'INPRR'")
+    self.modify("NAM_OUTPUT", "COUT_VAR(1,9)", "'RCT'")
+    self.modify("NAM_OUTPUT", "COUT_VAR(1,10)", "'RRT'")
+    self.modify("NAM_OUTPUT", "COUT_VAR(1,11)", "'INPRR'")
     self.unset_cold_microphysics()
 
   def set_cold_microphysics(self, moment=1):
@@ -573,9 +573,9 @@ class Config:
     self.modify("NAM_BU_RRI", "LBU_RRI", ".TRUE.")
     self.modify("NAM_BU_RRS", "LBU_RRS", ".TRUE.")
     self.modify("NAM_BU_RRG", "LBU_RRG", ".TRUE.")
-    self.modify("NAM_OUTPUT", "COUT_VAR(1,11)", "'RIT'")
-    self.modify("NAM_OUTPUT", "COUT_VAR(1,12)", "'RST'")
-    self.modify("NAM_OUTPUT", "COUT_VAR(1,13)", "'RGT'")
+    self.modify("NAM_OUTPUT", "COUT_VAR(1,12)", "'RIT'")
+    self.modify("NAM_OUTPUT", "COUT_VAR(1,13)", "'RST'")
+    self.modify("NAM_OUTPUT", "COUT_VAR(1,14)", "'RGT'")
 
   def deactivate_radiation(self):
     self.modify("NAM_PARAMn", "CRAD", "'NONE'")

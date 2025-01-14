@@ -51,9 +51,8 @@ exseg_LES = {
                     "NBUJH"        : "%i"%LES_Nhoriz, 
                     "NBUKH"        : "%i"%LES_Nverti,},
 # no need for now: the SVT variables will be output by default
-#  "NAM_OUTPUT"  : { "COUT_VAR(1,13)" : "'SVT001'",
-#                    "COUT_VAR(1,14)" : "'SVT002'",
-#                    "COUT_VAR(1,15)" : "'SVT003'", },
+#  "NAM_OUTPUT"  : { "COUT_VAR(1,15)" : "'SVT002'",
+#                    "COUT_VAR(1,16)" : "'SVT003'", },
 }
 
 # specific adaptations of default preidea and exseg to CRM mode
@@ -539,13 +538,14 @@ NAM_OUTPUT  = {
   "COUT_VAR(1,4)"          : "'THT'",
   "COUT_VAR(1,5)"          : "'TKET'",
   "COUT_VAR(1,6)"          : "'PABST'",
-  "COUT_VAR(1,7)"          : "'RVT'", 
-  "COUT_VAR(1,8)"          : "'RCT'",
-  "COUT_VAR(1,9)"          : "'RRT'",
-  "COUT_VAR(1,10)"         : "'INPRR'",
-  "COUT_VAR(1,11)"         : "'RIT'",
-  "COUT_VAR(1,12)"         : "'RST'",
-  "COUT_VAR(1,13)"         : "'RGT'",
+  "COUT_VAR(1,7)"          : "'SVT001'", 
+  "COUT_VAR(1,8)"          : "'RVT'", 
+  "COUT_VAR(1,9)"          : "'RCT'",
+  "COUT_VAR(1,10)"          : "'RRT'",
+  "COUT_VAR(1,11)"         : "'INPRR'",
+  "COUT_VAR(1,12)"         : "'RIT'",
+  "COUT_VAR(1,13)"         : "'RST'",
+  "COUT_VAR(1,14)"         : "'RGT'",
 }
 
 NAM_BU_RTH = { 
