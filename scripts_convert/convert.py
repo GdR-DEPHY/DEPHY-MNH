@@ -38,10 +38,11 @@ def add_opt_swt(m, h): parser.add_argument(m, help=h, action="store_true")
 add_opt_arg("-s", "Subcase name",           "subcasename", "REF")
 add_opt_arg("-m", "Simulation mode",        "sim_mode",    "LES")
 add_opt_arg("-i", "Input files directory",  "input_dir",   "./")
-add_opt_arg("-g", "Grids (zhat) directory", "grids_dir",   "./")
+add_opt_arg("-g", "Grids (zhat) file",      "grid_file",   "./")
 add_opt_arg("-o", "Output directory",       "output_dir",  "./")
 add_opt_arg("-v", "Verbosity level [0-3]",  "verbosity",   0)
 add_opt_swt("-z", "Use zorog from case def") # switch
+add_opt_swt("-e", "Deactivate EDKF") # switch
 
 ## parse command line arguments
 args = parser.parse_args()
@@ -51,18 +52,19 @@ casename    = args.c
 subcasename = args.s
 sim_mode    = args.m
 input_dir   = args.i
-grids_dir   = args.g
+grid_file   = args.g
 output_dir  = args.o
 verbosity   = int(args.v)
 read_zorog  = args.z
+deac_edkf   = args.e
 
 ## check arguments validity
 if not casename in listCases: 
   arg_error("case %s is not available"%casename)
 if not os.path.isdir(input_dir):
   arg_error("input dir %s does not exist"%input_dir)
-if not os.path.isdir(grids_dir):
-  arg_error("grids dir %s does not exist"%grids_dir)
+if not os.path.isfile(grid_file):
+  arg_error("grid file %s does not exist"%grid_file)
 if not os.path.isdir(output_dir): 
   log(WARNING, "will create output directory %s"%output_dir, verbosity)
   os.system("mkdir -p %s"%output_dir)
@@ -134,7 +136,7 @@ else :
 cas.read_initial_profiles_and_forcings(attributes, ds, verbosity, read_zorog=read_zorog)
 log(INFO, "forcings and initial profiles have been read", verbosity)
 
-cas.set_vertical_grid(grids_dir, read_zorog=read_zorog)
+cas.set_vertical_grid(grid_file, read_zorog=read_zorog)
 log(INFO, "vertical grid: "+str(cas.zgrid), verbosity)
 
 ## output files ## each seg lasts 4h max
@@ -153,8 +155,8 @@ preid.set_surface_forcings(cas)
 preid.freeformat_zhat(cas)
 preid.freeformat_rsou(cas)
 preid.freeformat_zfrc(cas)
-preid.write("%s/conf_PRE_IDEA_%s_%s.nam"%(output_dir, cas.shortname,
-    sim_mode))
+preid.write("%s/conf_PRE_IDEA_%s_%s.nam"%(output_dir, 
+    cas.shortname+("noedkf" if deac_edkf else "edkf"), sim_mode))
 
 ## initialize namelist EXSEG
 exseg = Config(casename, "EXS", sim_mode)
@@ -171,6 +173,9 @@ elif "shcv" in cas.type:
 else:
   exseg.set_cold_microphysics()
 
+if deac_edkf:
+  exseg.deactivate_edkf()
+
 if attributes["radiation"] == "on":
   exseg.activate_radiation()
 else:
@@ -181,8 +186,8 @@ for i in range(cas.nseg+1):
   log(INFO, "iseg %i from hour %02i to %02i ; is hf ? %1i"%(i,
       exseg.seg_beg/3600, exseg.seg_end/3600, exseg.is_hf), verbosity)
   exseg.reset_seg_surface_forcings(cas, i)
-  exseg.write("%s/conf_EXSEG%02i_%s_%s.nam"%(output_dir, i, cas.shortname,
-      sim_mode))
+  exseg.write("%s/conf_EXSEG%02i_%s_%s.nam"%(output_dir,
+      i, cas.shortname+("noedkf" if deac_edkf else "edkf"), sim_mode))
   if sim_mode == "SCM" : break # only do 00 in SCM mode
 
 exit()

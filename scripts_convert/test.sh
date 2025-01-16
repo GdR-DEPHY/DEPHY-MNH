@@ -9,7 +9,7 @@ do
     AYOTTE) add="-s 00SC";;
     MOSAI) add="-s MAIZE";;
     EUROCS) add="-z" ;;
-    dephycf|GABLS1|ARPEGE|DYNAMO|ISDAC|MAGIC|MPACE|ASTEX|FIRE|SCMS) echo "$cas -- skip"; continue ;;
+    dephycf|GABLS1|ARPEGE|DYNAMO|ISDAC|MAGIC|MPACE|ASTEX|SCMS) echo "$cas -- skip"; continue ;;
     *) add="";;
   esac
   echo "$cas"
@@ -29,7 +29,6 @@ done
 #     et laisser MNH refaire l'interpolation qui va bien au lieu de définir le cas
 #     sur 301 niveaux ?
 # SCMS
-# FIRE
 
 # cas pas défini dans les listes moistshcv / dcv / dryshcv / stable
 # ARPEGE|DYNAMO|ISDAC|MAGIC|MPACE|ASTEX

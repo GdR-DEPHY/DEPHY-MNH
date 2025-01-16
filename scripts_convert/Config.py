@@ -582,7 +582,13 @@ class Config:
   def activate_radiation(self):
     self.modify("NAM_PARAMn", "CRAD", "'ECRA'")
 
+  def deactivate_edkf(self):
+    self.modify("NAM_PARAMn", "CSCONV", "'NONE'")
+  def activate_edkf(self):
+    self.modify("NAM_PARAMn", "CSCONV", "'EDKF'")
+
   def deactivate_budgets(self):
     self.modify("NAM_BUDGET", "CBUTYPE", "'NONE'")
   def activate_budgets(self):
     self.modify("NAM_BUDGET", "CBUTYPE", "'CART'")
+

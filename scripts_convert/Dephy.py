@@ -189,14 +189,13 @@ class Case:
     self.duration_secs = self.duration.total_seconds()
     self.duration_hour = self.duration_secs/3600.
 
-  def set_vertical_grid(self, inp_dir, read_zorog=0):
-    if self.type == "dcv":
-      fil="%s/grille_dcv.txt"%(inp_dir)
-      if os.path.isfile(fil):
-        self.zgrid = np.genfromtxt(fil, dtype=None,skip_header=0,usecols=0)
+  def set_vertical_grid(self, inp_grid_file, read_zorog=0):
+    if self.type == "dcv" or (inp_grid_file is not None):
+      if os.path.isfile(inp_grid_file):
+        self.zgrid = np.genfromtxt(inp_grid_file, dtype=None,skip_header=0,usecols=0)
         self.nz    = len(self.zgrid)
       else: print("error: vertical grid file %s not found for case %s/%s"%(
-          fil, self.casename, self.subcasename)); exit()
+          inp_grid_file, self.casename, self.subcasename)); exit()
       if read_zorog: self.zgrid += self.zs
     else: self.zgrid = None
 
