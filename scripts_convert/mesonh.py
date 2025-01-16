@@ -51,9 +51,8 @@ exseg_LES = {
                     "NBUJH"        : "%i"%LES_Nhoriz, 
                     "NBUKH"        : "%i"%LES_Nverti,},
 # no need for now: the SVT variables will be output by default
-#  "NAM_OUTPUT"  : { "COUT_VAR(1,13)" : "'SVT001'",
-#                    "COUT_VAR(1,14)" : "'SVT002'",
-#                    "COUT_VAR(1,15)" : "'SVT003'", },
+#  "NAM_OUTPUT"  : { "COUT_VAR(1,15)" : "'SVT002'",
+#                    "COUT_VAR(1,16)" : "'SVT003'", },
 }
 
 # specific adaptations of default preidea and exseg to CRM mode
