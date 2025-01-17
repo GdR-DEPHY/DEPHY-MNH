@@ -43,6 +43,7 @@ add_opt_arg("-o", "Output directory",       "output_dir",  "./")
 add_opt_arg("-v", "Verbosity level [0-3]",  "verbosity",   0)
 add_opt_swt("-z", "Use zorog from case def") # switch
 add_opt_swt("-e", "Deactivate EDKF") # switch
+add_opt_swt("-r", "ECMW instead of ECRA") # switch
 
 ## parse command line arguments
 args = parser.parse_args()
@@ -57,6 +58,7 @@ output_dir  = args.o
 verbosity   = int(args.v)
 read_zorog  = args.z
 deac_edkf   = args.e
+radi_ecmw   = args.r
 
 ## check arguments validity
 if not casename in listCases: 
@@ -177,7 +179,7 @@ if deac_edkf:
   exseg.deactivate_edkf()
 
 if attributes["radiation"] == "on":
-  exseg.activate_radiation()
+  exseg.activate_radiation(rad='ECMW' if radi_ecmw else 'ECRA')
 else:
   exseg.deactivate_radiation()
 

@@ -579,8 +579,8 @@ class Config:
 
   def deactivate_radiation(self):
     self.modify("NAM_PARAMn", "CRAD", "'NONE'")
-  def activate_radiation(self):
-    self.modify("NAM_PARAMn", "CRAD", "'ECRA'")
+  def activate_radiation(self, rad='ECRA'):
+    self.modify("NAM_PARAMn", "CRAD", "%s"%rad)
 
   def deactivate_edkf(self):
     self.modify("NAM_PARAMn", "CSCONV", "'NONE'")
