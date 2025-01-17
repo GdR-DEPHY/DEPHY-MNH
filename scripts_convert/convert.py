@@ -156,7 +156,7 @@ preid.freeformat_zhat(cas)
 preid.freeformat_rsou(cas)
 preid.freeformat_zfrc(cas)
 preid.write("%s/conf_PRE_IDEA_%s_%s.nam"%(output_dir, 
-    cas.shortname+("noedkf" if deac_edkf else "edkf"), sim_mode))
+    cas.shortname, sim_mode))
 
 ## initialize namelist EXSEG
 exseg = Config(casename, "EXS", sim_mode)
@@ -187,7 +187,7 @@ for i in range(cas.nseg+1):
       exseg.seg_beg/3600, exseg.seg_end/3600, exseg.is_hf), verbosity)
   exseg.reset_seg_surface_forcings(cas, i)
   exseg.write("%s/conf_EXSEG%02i_%s_%s.nam"%(output_dir,
-      i, cas.shortname+("noedkf" if deac_edkf else "edkf"), sim_mode))
+      i, cas.shortname, sim_mode))
   if sim_mode == "SCM" : break # only do 00 in SCM mode
 
 exit()
