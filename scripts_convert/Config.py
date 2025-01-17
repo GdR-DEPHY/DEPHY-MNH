@@ -391,8 +391,8 @@ class Config:
       is_hf = 0
     else:
       if iseg in [0,1]:   # 0 = mother config, the whole simulation ; 1 = spinup
-        bak_fir = spinup_secs ; bak_frq = 3600.
-        out_fir = spinup_secs ; out_frq = 1800.
+        bak_fir = spinup_secs ; bak_frq = 3600. if self.mode=="LES" else seg_dur
+        out_fir = spinup_secs ; out_frq = 1800. if self.mode=="LES" else 3600.
         is_hf = 0
       else: # >= 2
         if iseg == 2 or iseg-2 in cas.hourhf: nbak_in_prev = 1
