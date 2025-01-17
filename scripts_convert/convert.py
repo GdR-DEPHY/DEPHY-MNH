@@ -38,7 +38,7 @@ def add_opt_swt(m, h): parser.add_argument(m, help=h, action="store_true")
 add_opt_arg("-s", "Subcase name",           "subcasename", "REF")
 add_opt_arg("-m", "Simulation mode",        "sim_mode",    "LES")
 add_opt_arg("-i", "Input files directory",  "input_dir",   "./")
-add_opt_arg("-g", "Grids (zhat) file",      "grid_file",   "./")
+add_opt_arg("-g", "Grids (zhat) file",      "grid_file",   None)
 add_opt_arg("-o", "Output directory",       "output_dir",  "./")
 add_opt_arg("-v", "Verbosity level [0-3]",  "verbosity",   0)
 add_opt_swt("-z", "Use zorog from case def") # switch
@@ -63,7 +63,7 @@ if not casename in listCases:
   arg_error("case %s is not available"%casename)
 if not os.path.isdir(input_dir):
   arg_error("input dir %s does not exist"%input_dir)
-if not os.path.isfile(grid_file):
+if grid_file is not None and not os.path.isfile(grid_file):
   arg_error("grid file %s does not exist"%grid_file)
 if not os.path.isdir(output_dir): 
   log(WARNING, "will create output directory %s"%output_dir, verbosity)
