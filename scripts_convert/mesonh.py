@@ -344,7 +344,7 @@ NAM_PARAM_MFSHALLn = { # config shallow mass flux scheme
   "LVERLIMUP"         : ".TRUE.",   #decroissance lente de l'intensité de l'updraft sur les derniers 1000m de l'upd
 }
 
-NAM_PARAM_ECRAD = { # config radiation scheme
+NAM_PARAM_ECRADn = { # config radiation scheme
   "NSWSOLVER"         : "0",
   "NLWSOLVER"         : "0",
   "LSPEC_ALB"         : ".FALSE.",
@@ -798,7 +798,7 @@ default_exseg = {
   "NAM_NEBn": NAM_NEBn,
   "NAM_PARAM_KAFRn" : NAM_PARAM_KAFRn,
   "NAM_PARAM_MFSHALLn" : NAM_PARAM_MFSHALLn,
-  "NAM_PARAM_ECRAD" : NAM_PARAM_ECRAD,
+  "NAM_PARAM_ECRADn" : NAM_PARAM_ECRADn,
   "NAM_PARAM_LIMA" : NAM_PARAM_LIMA,
   "NAM_PARAM_C2R2" : NAM_PARAM_C2R2,
   "NAM_PARAM_ICEn" : NAM_PARAM_ICE,
