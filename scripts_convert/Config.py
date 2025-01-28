@@ -592,3 +592,48 @@ class Config:
   def activate_budgets(self):
     self.modify("NAM_BUDGET", "CBUTYPE", "'CART'")
 
+  def horizontal_resolution(self, delta_x):
+    self.modify("NAM_GRIDH_PRE", "XDELTAX", delta_x)
+    self.modify("NAM_GRIDH_PRE", "XDELTAY", delta_x)
+
+  def horizontal_domain(self, ni):
+    if self.is_exseg:
+      self.modify("NAM_BUDGET", "NBUIH", ni)
+      self.modify("NAM_BUDGET", "NBUJH", ni)
+    else:
+      self.modify("NAM_DIMn_PRE", "NIMAX", ni)
+      self.modify("NAM_DIMn_PRE", "NJMAX", ni)
+
+  def set_adrien_version(self):
+    self.modify("NAM_PARAM_ICEn", "CSUBG_RC_RR_ACCR",   "'PRFR'")
+    self.modify("NAM_PARAM_ICEn", "CSUBG_RR_EVAP",      "'PRFR'")
+    self.modify("NAM_PARAM_ICEn", "CSUBG_AUCV_RC",      "'ADJU'")
+    self.modify("NAM_PARAM_ICEn", "CSUBG_AUCV_RI",      "'ADJU'")
+    self.modify("NAM_PARAM_ICEn", "CSUBG_MF_PDF",       "'BIGA'")
+
+    self.modify("NAM_PARAM_MFSHALLn", "CMF_CLOUD",      "'BIGA'")
+    self.modify("NAM_PARAM_MFSHALLn", "LMIXTKE",        ".TRUE.")
+    self.modify("NAM_PARAM_MFSHALLn", "XENTR_MF","0.44987109008137")
+    self.modify("NAM_PARAM_MFSHALLn", "XSIGMA_MF","1.71745449617201")
+    self.modify("NAM_PARAM_MFSHALLn", "XSIGMA_ENV","7.940088358003")
+    self.modify("NAM_PARAM_MFSHALLn", "XALPHA_MF","2.6163724485754")
+    self.modify("NAM_PARAM_MFSHALLn", "CWET_MIXING",    "'LR01'")
+    self.modify("NAM_PARAM_MFSHALLn", "LPZ_EXP_LOG",    ".TRUE.")
+    self.modify("NAM_PARAM_MFSHALLn", "CKIC_COMPUTE",   "'RS08'")
+    self.modify("NAM_PARAM_MFSHALLn", "CDETR_DRY_LUP",  "'UPDR'")
+    self.modify("NAM_PARAM_MFSHALLn", "XABUO","0.671885975609157")
+    self.modify("NAM_PARAM_MFSHALLn", "XDETR_DRY","0.100478994406288")
+    self.modify("NAM_PARAM_MFSHALLn", "XENTR_DRY","0.33382656172427")
+    self.modify("NAM_PARAM_MFSHALLn", "XBRIO","0.148315150622263")
+    self.modify("NAM_PARAM_MFSHALLn", "XAADVEC","0.146655604534058")
+    self.modify("NAM_PARAM_MFSHALLn", "LRELAX_ALPHA_MF",".TRUE.")
+    
+    self.modify("NAM_NEBn", "CCONDENS", "'GAUS'")
+    self.modify("NAM_NEBn", "CLAMBDA3", "'NONE'")
+
+    self.modify("NAM_TURBn", "CTURBLEN", "'HM21'")
+    self.modify("NAM_TURBn", "LDYNMF",   ".TRUE.")
+    self.modify("NAM_TURBn", "XCED", "0.175951638125672")
+
+  def set_microphysics_scheme(self, scheme): 
+    self.modify("NAM_PARAMn", "CCLOUD", scheme if "'" in scheme else "'%s'"%scheme)

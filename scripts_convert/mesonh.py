@@ -11,7 +11,7 @@ LES_deltav = 25.    # vertical   resolution in m
 
 CRM_Nhoriz = 100    # npoints
 CRM_Nverti = 160    # npoints
-CRM_deltah = 2500.  # horizontal resolution in m
+CRM_deltah = 1000.  # horizontal resolution in m
 CRM_deltav = 25     # vertical   resolution in m
 # pour les cas de transition on veut adapter la grille verticale
 

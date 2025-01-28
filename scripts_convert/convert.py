@@ -41,9 +41,13 @@ add_opt_arg("-i", "Input files directory",  "input_dir",   "./")
 add_opt_arg("-g", "Grids (zhat) file",      "grid_file",   None)
 add_opt_arg("-o", "Output directory",       "output_dir",  "./")
 add_opt_arg("-v", "Verbosity level [0-3]",  "verbosity",   0)
+add_opt_arg("-x", "Horizontal grid size",   "delta_x",     None)
+add_opt_arg("-L", "Horizontal domain size", "ngrid_x",     None)
 add_opt_swt("-z", "Use zorog from case def") # switch
-add_opt_swt("-e", "Deactivate EDKF") # switch
+add_opt_swt("-e", "Deactivate EDKF")      # switch
 add_opt_swt("-r", "ECMW instead of ECRA") # switch
+add_opt_swt("-a", "Adrien Marcel modifs") # switch
+add_opt_swt("-I", "ICE3 instead of LIMA") # switch
 
 ## parse command line arguments
 args = parser.parse_args()
@@ -55,10 +59,14 @@ sim_mode    = args.m
 input_dir   = args.i
 grid_file   = args.g
 output_dir  = args.o
+delta_x     = args.x
+ngrid_x     = args.L
 verbosity   = int(args.v)
 read_zorog  = args.z
 deac_edkf   = args.e
 radi_ecmw   = args.r
+adri_vers   = args.a
+acti_ice3   = args.I
 
 ## check arguments validity
 if not casename in listCases: 
@@ -157,6 +165,12 @@ preid.set_surface_forcings(cas)
 preid.freeformat_zhat(cas)
 preid.freeformat_rsou(cas)
 preid.freeformat_zfrc(cas)
+
+if delta_x is not None:
+  preid.horizontal_resolution(delta_x)
+if ngrid_x is not None:
+  preid.horizontal_domain(ngrid_x)
+
 preid.write("%s/conf_PRE_IDEA_%s_%s.nam"%(output_dir, 
     cas.shortname, sim_mode))
 
@@ -168,12 +182,21 @@ exseg.set_forcing_flags(cas)
 exseg.set_buffer_layer(cas)
 exseg.set_def_budget_zone(cas)
 
+if ngrid_x is not None: # for budgets
+  exseg.horizontal_domain(ngrid_x)
+
 if "dryshcv" in cas.type: 
   exseg.set_adjust_microphysics()
 elif "shcv" in cas.type:
   exseg.set_warm_microphysics()
 else:
   exseg.set_cold_microphysics()
+
+if adri_vers:
+  exseg.set_adrien_version()
+
+if acti_ice3:
+  exseg.set_microphysics_scheme("ICE3")
 
 if deac_edkf:
   exseg.deactivate_edkf()

@@ -1,6 +1,6 @@
 set -e
 
-out=../simuls_ama_km_namelists_FIRE_MESONH
+out=../simuls_ama_km_namelists/
 mkdir -p $out
 
 rename() {
@@ -9,11 +9,11 @@ rename() {
   mv conf_EXSEG00_${ccas}*_${mode}.nam $out/conf_EXSEG00_${cas}${1}${MNH}_${mode}${2}.nam 
 }
 
-for cas in FIRE #RICO ARMCU 
+for cas in FIRE RICO ARMCU 
 do
   case $cas in 
     ARMCU|RICO) scas=MESONH;;
-    *) scas=MESONH;;
+    *) scas=REF;;
   esac
   cmd="python convert.py -c $cas -i ../../dephy-scm -s $scas"
   for MNH in "571-LIMA" #"571-ICE3" "ADR-LIMA" "ADR-ICE3"
@@ -24,7 +24,7 @@ do
       "ADR-LIMA") opt="-a";;
       "ADR-ICE3") opt="-a -I";;
     esac
-    for mode in SCM #CRM
+    for mode in SCM CRM
     do
       echo $cas $mode $MNH
 
