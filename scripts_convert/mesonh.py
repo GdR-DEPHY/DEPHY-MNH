@@ -112,8 +112,7 @@ exseg_SCM = {
                   "LLES_CS_MASK"        : ".FALSE.",
                 },
   "NAM_CONDSAMP": { "LCONDSAMP"    : ".FALSE."    },
-  "NAM_BUDGET"  : { "CBUTYPE"      : "'NONE'",
-                    "NBUIH"        : "%i"%SCM_Nhoriz,
+  "NAM_BUDGET"  : { "NBUIH"        : "%i"%SCM_Nhoriz,
                     "NBUJH"        : "%i"%SCM_Nhoriz, 
                     "NBUKH"        : "%i"%SCM_Nverti},
 }

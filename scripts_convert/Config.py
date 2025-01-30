@@ -504,7 +504,7 @@ class Config:
       rel_times=rel_times_f; list_=list_f;
       if var is not None :
         # not the right dim, or constant forcing => take only the first value
-        if (len(var) != nrf and len(var) != ntf) or (var.min()==var.max()): var = [var[0]]*ntf
+        if (len(var) != nrf and len(var) != nrt) or (var.min()==var.max()): var = [var[0]]*ntf
         if key == "XZ0":
             self.modify("NAM_IDEAL_FLUX", "CUSTARTYPE", "'Z0'")
             self.modify("NAM_IDEAL_FLUX", "XZ0", "%.3f"%(forc(var)[0]))
@@ -584,8 +584,8 @@ class Config:
 
   def deactivate_radiation(self):
     self.modify("NAM_PARAMn", "CRAD", "'NONE'")
-  def activate_radiation(self, rad='ECRA'):
-    self.modify("NAM_PARAMn", "CRAD", "%s"%rad)
+  def activate_radiation(self, rad="'ECRA'"):
+    self.modify("NAM_PARAMn", "CRAD", rad if "'" in rad else "'%s'"%rad)
 
   def deactivate_edkf(self):
     self.modify("NAM_PARAMn", "CSCONV", "'NONE'")
