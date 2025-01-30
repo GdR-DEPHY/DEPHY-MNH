@@ -311,6 +311,8 @@ class Config:
       self.modify("NAM_FRAC", "LECOCLIMAP", ".TRUE.") 
       self.modify("NAM_FRAC", "XUNIF_NATURE", "1.")
       self.modify("NAM_DATA_TSZ0", "NTIME", "%i"%nts)
+      ## EXIT IF LANDNONE
+      if "none" in sf: return
       for it in range(nts-1):
         dts = cas.var_ts[it+1] - cas.var_ts[it]
         self.modify("NAM_DATA_TSZ0", "XUNIF_DTS(%i)"%(it+1), "%f"%dts)
@@ -462,6 +464,9 @@ class Config:
         if list_t is None: list_t = [i-1]
         list_t += [i]
         if t >= self.seg_end : break
+
+    ### EXIT IF NO FORCINGS !
+    if list_f is None: return
 
     # forcing times relative to the beginning of the segment
     rel_times_f = [t - self.seg_beg for t in all_tim_forc[list_f]]
@@ -637,3 +642,6 @@ class Config:
 
   def set_microphysics_scheme(self, scheme): 
     self.modify("NAM_PARAMn", "CCLOUD", scheme if "'" in scheme else "'%s'"%scheme)
+
+  def set_mosai_surface(self):
+    self.modify("NAM_PGD_SCHEMES","CNATURE", "'MOSAI'")

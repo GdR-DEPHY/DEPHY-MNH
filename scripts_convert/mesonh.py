@@ -724,6 +724,22 @@ NAM_ISBA =  {
   "NPATCH"            : "1",
   "NGROUND_LAYER"     : "2",
 }
+NAM_MOSAIn = {
+  "NGROUND_LAYER" : "11",
+  "CCDRAG"        : "'SURFEX'"
+}
+NAM_DATA_MOSAI = {
+  "XUNIF_Z0"      : "0.079",
+  "XUNIF_ALB"     : "0.194",
+  "XUNIF_EMIS"    : "1.0  ",
+  "XUNIF_Z0_O_Z0H": "10.  ",
+  "XUNIF_BETA"    : "0.72 ",
+  "XUNIF_ITHGRD"  : "600. ",
+}
+NAM_PREP_MOSAI = {
+  "XTG"           : "286.4",
+  "XTS"           : "286.4",
+}
 NAM_PREP_SURF_ATM =  {
   "NYEAR"             : "1980",
   "NMONTH"            : "1",
@@ -774,6 +790,9 @@ default_preidea = {
   "NAM_DATA_TSZ0": NAM_DATA_TSZ0,
   "NAM_DATA_ISBA": NAM_DATA_ISBA,
   "NAM_ISBA": NAM_ISBA,
+  "NAM_MOSAIn": NAM_MOSAIn,
+  "NAM_DATA_MOSAI": NAM_DATA_MOSAI,
+  "NAM_PREP_MOSAI": NAM_PREP_MOSAI,
   "NAM_PREP_SURF_ATM": NAM_PREP_SURF_ATM,
   "NAM_PREP_ISBA": NAM_PREP_ISBA,
   "NAM_DEEPSOIL": NAM_DEEPSOIL,
@@ -794,6 +813,7 @@ default_exseg = {
   "NAM_ADVn" : NAM_ADVn,
   "NAM_PARAMn" : NAM_PARAMn,
   "NAM_TURBn" : NAM_TURBn,
+  "NAM_MOSAIn" : NAM_MOSAIn,
   "NAM_PARAM_RADn" : NAM_PARAM_RADn,
   "NAM_NEBn": NAM_NEBn,
   "NAM_PARAM_KAFRn" : NAM_PARAM_KAFRn,

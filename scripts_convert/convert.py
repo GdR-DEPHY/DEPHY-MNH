@@ -44,10 +44,11 @@ add_opt_arg("-v", "Verbosity level [0-3]",  "verbosity",   0)
 add_opt_arg("-x", "Horizontal grid size",   "delta_x",     None)
 add_opt_arg("-L", "Horizontal domain size", "ngrid_x",     None)
 add_opt_swt("-z", "Use zorog from case def") # switch
-add_opt_swt("-e", "Deactivate EDKF")      # switch
-add_opt_swt("-r", "ECMW instead of ECRA") # switch
-add_opt_swt("-a", "Adrien Marcel modifs") # switch
-add_opt_swt("-I", "ICE3 instead of LIMA") # switch
+add_opt_swt("-e", "Deactivate EDKF")         # switch
+add_opt_swt("-r", "ECMW instead of ECRA")    # switch
+add_opt_swt("-a", "Adrien Marcel modifs")    # switch
+add_opt_swt("-I", "ICE3 instead of LIMA")    # switch
+add_opt_swt("-M", "MOSAI instead of TSZ0")   # switch
 
 ## parse command line arguments
 args = parser.parse_args()
@@ -67,6 +68,7 @@ deac_edkf   = args.e
 radi_ecmw   = args.r
 adri_vers   = args.a
 acti_ice3   = args.I
+acti_mosa   = args.M
 
 ## check arguments validity
 if not casename in listCases: 
@@ -170,6 +172,11 @@ if delta_x is not None:
   preid.horizontal_resolution(delta_x)
 if ngrid_x is not None:
   preid.horizontal_domain(ngrid_x)
+
+if acti_mosa:
+  if not "land" in cas.surface_forcing:
+    arg_error("mosai surf can only be activated if surface is land")
+  else: preid.set_mosai_surface()
 
 preid.write("%s/conf_PRE_IDEA_%s_%s.nam"%(output_dir, 
     cas.shortname, sim_mode))

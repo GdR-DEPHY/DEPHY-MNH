@@ -398,8 +398,9 @@ class Case:
         var_ts = np.array([int(s*100)/100. for s in var_ts])
         tim_rad_ts = tim_sst
     elif attributes['surface_forcing_temp'] == 'none':
-      var_z0h, tim_z0h = gettvar('z0h') # ? this is never used ??
-      tim_forc_ts = tim_z0h
+      #var_z0h, tim_z0h = gettvar('z0h') # ? this is never used ??
+      #tim_forc_ts = tim_z0h
+      tim_forc_ts = []
     else: log(ERROR, "No surface condition for temperature?", verbosity)
     
     ## prescribed momentum flux or roughness length
