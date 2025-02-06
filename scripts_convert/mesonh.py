@@ -485,9 +485,9 @@ NAM_LES     = { # compute horizontal statistics
   "LLES_SPECTRA"        : ".FALSE.",
   "CLES_NORM_TYPE"      : "'NONE'",
   "CBL_HEIGHT_DEF"      : "'KE'",
-  "XLES_TEMP_SAMPLING"  : "300.",
+  "XLES_TEMP_SAMPLING"  : "1800.",
   "XLES_TEMP_MEAN_START": "0.",
-  "XLES_TEMP_MEAN_STEP" : "3600.",
+  "XLES_TEMP_MEAN_STEP" : "1800.",
   "LLES_CART_MASK"      : ".FALSE.",
   "LLES_NEB_MASK"       : ".TRUE.",
   "LLES_CORE_MASK"      : ".TRUE.",
@@ -728,11 +728,11 @@ NAM_MOSAIn = {
   "CCDRAG"        : "'SURFEX'"
 }
 NAM_DATA_MOSAI = {
-  "XUNIF_Z0"      : "0.079",
-  "XUNIF_ALB"     : "0.194",
-  "XUNIF_EMIS"    : "1.0  ",
-  "XUNIF_Z0_O_Z0H": "10.  ",
-  "XUNIF_BETA"    : "0.72 ",
+  "XUNIF_Z0"      : "0.035",
+  "XUNIF_ALB"     : "0.164",
+  "XUNIF_EMIS"    : "0.99 ",
+  "XUNIF_Z0_O_Z0H": "1.   ",
+  "XUNIF_BETA"    : "0.32 ",
   "XUNIF_ITHGRD"  : "600. ",
 }
 NAM_PREP_MOSAI = {

@@ -51,12 +51,14 @@ class Case:
     """ Initialize case specific config
     .casename 
     .subcasename
+    .name
     .shortname
     .type ["moistshcv", "dryshcv", "stable", "dcv"]
     .name_var_t, name_var_q, name_var_u, name_var_v, name_var_w = {}
     """
     self.casename    = casename
     self.subcasename = subcasename
+    self.name = casename+"_"+subcasename
     # si sous cas n'est pas REF (sauf SANDU) ou MESONH, combine cas / sous-cas
     if subcasename != "MESONH" and subcasename != "REF" or casename == "SANDU":
       # si le sous cas est long ; 3 premières lettres du cas + 2 premières du sous cas

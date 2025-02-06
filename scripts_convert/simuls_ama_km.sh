@@ -12,7 +12,7 @@ rename() {
 for cas in FIRE RICO ARMCU 
 do
   case $cas in 
-    ARMCU|RICO) scas=MESONH;;
+    FIRE|ARMCU|RICO) scas=MESONH;;
     *) scas=REF;;
   esac
   cmd="python convert.py -c $cas -i ../../dephy-scm -s $scas"

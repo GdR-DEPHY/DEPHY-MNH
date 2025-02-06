@@ -645,3 +645,13 @@ class Config:
 
   def set_mosai_surface(self):
     self.modify("NAM_PGD_SCHEMES","CNATURE", "'MOSAI'")
+    self.modify("NAM_FRAC","LECOCLIMAP", ".FALSE.")
+    self.modify("NAM_FRAC","XUNIF_SEA", "0")
+    self.modify("NAM_FRAC","XUNIF_WATER", "0")
+    self.modify("NAM_FRAC","XUNIF_TOWN", "0")
+    self.modify("NAM_FRAC","XUNIF_NATURE", "1")
+
+  def htexplo_set_parameter(self, param, value):
+    for nam in self.config:
+      if param in self.config[nam]:
+        self.modify(nam, param, value)

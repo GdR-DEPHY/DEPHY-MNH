@@ -43,6 +43,7 @@ add_opt_arg("-o", "Output directory",       "output_dir",  "./")
 add_opt_arg("-v", "Verbosity level [0-3]",  "verbosity",   0)
 add_opt_arg("-x", "Horizontal grid size",   "delta_x",     None)
 add_opt_arg("-L", "Horizontal domain size", "ngrid_x",     None)
+add_opt_arg("-P", "File to generate PPE",   "htexplo",     None)
 add_opt_swt("-z", "Use zorog from case def") # switch
 add_opt_swt("-e", "Deactivate EDKF")         # switch
 add_opt_swt("-r", "ECMW instead of ECRA")    # switch
@@ -62,6 +63,7 @@ grid_file   = args.g
 output_dir  = args.o
 delta_x     = args.x
 ngrid_x     = args.L
+htexplo     = args.P
 verbosity   = int(args.v)
 read_zorog  = args.z
 deac_edkf   = args.e
@@ -155,7 +157,7 @@ log(INFO, "vertical grid: "+str(cas.zgrid), verbosity)
 cas.setup_outputs(verbosity, max_seg_dur = 4)
 
 ####################
-# WRITE DATA INTO NAMELISTS
+# SETUP AND WRITE DATA INTO NAMELISTS
 
 ## initialize namelist PRE_IDEA
 preid = Config(casename, "PRE", sim_mode)
@@ -179,7 +181,22 @@ if acti_mosa:
   else: preid.set_mosai_surface()
 
 preid.write("%s/conf_PRE_IDEA_%s_%s.nam"%(output_dir, 
-    cas.shortname, sim_mode))
+    cas.name, sim_mode))
+
+if htexplo is not None:
+  import numpy as np
+  save_preid = Config(casename, "PRE", sim_mode)
+  save_preid.copy_config_from(preid)
+  dat = np.genfromtxt(htexplo, dtype=str)
+  param_names = dat[0][1:]
+  for d in dat[1:]: # loop on PPE members 
+    # reset preid from saved control
+    preid.copy_config_from(save_preid)
+    simu_name = d[0]
+    for param, value in zip(param_names, d[1:]):
+      preid.htexplo_set_parameter(param, value)
+    preid.write("%s/conf_PRE_IDEA_%s_%s.nam_%s"%(output_dir, 
+        cas.name, sim_mode, simu_name))
 
 ## initialize namelist EXSEG
 exseg = Config(casename, "EXS", sim_mode)
@@ -213,13 +230,38 @@ if attributes["radiation"] == "on":
 else:
   exseg.deactivate_radiation()
 
+if htexplo is not None:
+  save_exseg = Config(casename, "EXS", sim_mode)
+  save_exseg.copy_config_from(exseg)
+
 for i in range(cas.nseg+1):
   exseg.set_outputs(cas, i)
   log(INFO, "iseg %i from hour %02i to %02i ; is hf ? %1i"%(i,
       exseg.seg_beg/3600, exseg.seg_end/3600, exseg.is_hf), verbosity)
   exseg.reset_seg_surface_forcings(cas, i)
   exseg.write("%s/conf_EXSEG%02i_%s_%s.nam"%(output_dir,
-      i, cas.shortname, sim_mode))
+      i, cas.name, sim_mode))
   if sim_mode == "SCM" : break # only do 00 in SCM mode
+
+# syntax in htexplo file
+# first line = param names, 
+# other lines = simu_name, param_values
+# one line per PPE member
+if htexplo is not None:
+  import numpy as np
+  dat = np.genfromtxt(htexplo, dtype=str)
+  param_names = dat[0][1:]
+  for d in dat[1:]: # loop on PPE members 
+    # reset exseg from saved control
+    exseg.copy_config_from(save_exseg)
+    simu_name = d[0]
+    for param, value in zip(param_names, d[1:]):
+      exseg.htexplo_set_parameter(param, value)
+    for i in range(cas.nseg+1):
+      exseg.set_outputs(cas, i)
+      exseg.reset_seg_surface_forcings(cas, i)
+      exseg.write("%s/conf_EXSEG%02i_%s_%s.nam_%s"%(output_dir,
+          i, cas.name, sim_mode, simu_name))
+      if sim_mode == "SCM" : break # only do 00 in SCM mode
 
 exit()
