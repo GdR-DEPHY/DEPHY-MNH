@@ -397,7 +397,10 @@ class Config:
         out_fir = spinup_secs ; out_frq = 1800. if self.mode=="LES" else 3600.
         is_hf = 0
       else: # >= 2
-        if iseg == 2 or iseg-2 in cas.hourhf: nbak_in_prev = 1
+        # if last seg was backup (iseg=2 => iseg prec=1=backup = only one backup)
+        # restart from SEGXX.001
+        if iseg == 2 : nbak_in_prev = 1
+        # else, restart from SEGXX.number_of_hours_in_last_seg
         else: nbak_in_prev = lseg[iseg-1]-lseg[iseg-2]
         prev_name = "%s.1.%s.%03i"%(cas.shortname, "SEG%02i"%(iseg-1),
                 nbak_in_prev)

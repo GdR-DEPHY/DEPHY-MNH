@@ -161,7 +161,7 @@ def interp_zlev_to_plev(pp, zz, zlev):
       if z[ilev] <= zlev and z[ilev+1] > zlev: # zlev is between ilev and ilev+1
         plev = p[ilev] + (p[ilev+1]-p[ilev])/(z[ilev+1]-z[ilev])*(zlev-z[ilev])
         break
-    print(z[ilev], z[ilev+1], zlev, plev)
+    #print(z[ilev], z[ilev+1], zlev, plev)
     return plev
 
 def bilin_interp(var, t, z, newt, newz):

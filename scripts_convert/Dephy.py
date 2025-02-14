@@ -140,6 +140,7 @@ class Case:
     begin_seg.sort()
     self.nseg = len(begin_seg)
     self.begin_seg = begin_seg
+    log(INFO, "beginning of segments"+str(begin_seg), verbosity)
 
   def set_init_and_forcing_types(self, attributes):
     """ set the type of variables that define initial profiles, advection and
