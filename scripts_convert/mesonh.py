@@ -154,6 +154,8 @@ SURF_IDEAL_FLUX = { # surfex default namelist
   "NFORCT"            : "2", # default number of temp forcings
   "CSFTQ"             : "'W/m2'", #'kg/m2/s'",
   "CUSTARTYPE"        : "'Z0'",
+  "XALB"              : "0.17",
+  "XEMIS"             : "0.994",
 }
 
 NAM_CONF   = { # general config
