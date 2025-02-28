@@ -507,7 +507,10 @@ class Config:
       rel_times=rel_times_f; list_=list_f;
       if var is not None :
         # not the right dim, or constant forcing => take only the first value
-        if (len(var) != nrf and len(var) != nrt) or (var.min()==var.max()): var = [var[0]]*ntf
+        # ntf, ntt = total forcing times (the whole simulation)
+        # nrf, nrt = only for this segment
+        if (len(var) != ntf and len(var) != ntt) or (var.min()==var.max()): 
+            var = [var[0]]*ntf
         if key == "XZ0":
             self.modify("NAM_IDEAL_FLUX", "CUSTARTYPE", "'Z0'")
             self.modify("NAM_IDEAL_FLUX", "XZ0", "%.3f"%(forc(var)[0]))
