@@ -231,6 +231,7 @@ else:
   exseg.set_cold_microphysics()
 
 if adri_vers:
+  #exseg.set_adrien_version(accr="'PRFR'")
   exseg.set_adrien_version()
 
 if acti_ice3:

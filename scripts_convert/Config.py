@@ -362,6 +362,8 @@ class Config:
       self.modify("NAM_FRC", "XRELAX_TIME_FRC", "%f"%cas.xrelax_time_frc)
 
   def set_buffer_layer(self, cas):
+    if cas.zgrid is not None: 
+      cas.zbot = min(cas.zbot, cas.zgrid[-2])
     self.modify("NAM_DYN", "XALZBOT", "%f"%cas.zbot)
 
   def set_def_budget_zone(self, cas, is_3D=0):
@@ -625,8 +627,10 @@ class Config:
       self.modify("NAM_DIMn_PRE", "NIMAX", ni)
       self.modify("NAM_DIMn_PRE", "NJMAX", ni)
 
-  def set_adrien_version(self):
-    self.modify("NAM_PARAM_ICEn", "CSUBG_RC_RR_ACCR",   "'PRFR'")
+  def set_adrien_version(self, accr="'NONE'"):
+    #self.modify("NAM_PARAM_ICEn", "CSUBG_RC_RR_ACCR",   "'PRFR'")
+    self.modify("NAM_PARAM_ICEn", "CSUBG_RC_RR_ACCR", 
+            accr if "'" in accr else "'%s'"%accr)
     self.modify("NAM_PARAM_ICEn", "CSUBG_RR_EVAP",      "'PRFR'")
     self.modify("NAM_PARAM_ICEn", "CSUBG_AUCV_RC",      "'ADJU'")
     self.modify("NAM_PARAM_ICEn", "CSUBG_AUCV_RI",      "'ADJU'")
