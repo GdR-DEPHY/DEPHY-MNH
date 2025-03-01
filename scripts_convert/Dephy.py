@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from Utils import parse_time, log
+from Utils import parse_time, log, error
 from Utils import T_to_theta, P_to_z, interp_plev_to_zlev, interp_zlev_to_plev, H_atm, p0
 from Utils import bilin_interp
 from Utils import ERROR, WARNING, INFO, DEBUG
@@ -167,7 +167,7 @@ class Case:
       self.name_var_v["frc"] = "vg"
     elif attributes["nudging_ua"]:
       if attributes["nudging_va"]==0: 
-          print("error: nudging u but not v ?"); exit()
+          error("set_init_and_forcing_types", "nudging u but not v ?")
       self.name_var_u["frc"] = "ua_nud"
       self.name_var_v["frc"] = "va_nud"
       self.xrelax_time_frc = attributes["nudging_ua"]
@@ -195,11 +195,19 @@ class Case:
   def set_vertical_grid(self, inp_grid_file, read_zorog=0):
     if self.type == "dcv" or (inp_grid_file is not None):
       if os.path.isfile(inp_grid_file):
-        self.zgrid = np.genfromtxt(inp_grid_file, dtype=None,skip_header=0,usecols=0)
+        self.zgrid = np.genfromtxt(inp_grid_file, dtype=float, usecols=0)
         self.nz    = len(self.zgrid)
-      else: print("error: vertical grid file %s not found for case %s/%s"%(
-          inp_grid_file, self.casename, self.subcasename)); exit()
-      if read_zorog: self.zgrid += self.zs
+      else: 
+        error("set_vertical_grid", 
+          "vertical grid file %s not found for case %s/%s"%(
+          inp_grid_file, self.casename, self.subcasename))
+      if read_zorog:
+        if (self.zgrid[0] == 0): self.zgrid += self.zs
+        elif (self.zgrid[0] != self.zs): 
+            error("set_vertical_grid",  
+              "vertical grid must start at 0 m (defined relative to simulation surface level) or at zs")
+      else: 
+          if (self.zgrid[0] != 0): error("set_vertical_grid", "first level must be 0 m if there is no orography")
     else: self.zgrid = None
 
   def read_initial_profiles_and_forcings(self, attributes, ds, verbosity, read_zorog=0):
