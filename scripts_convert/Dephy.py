@@ -390,7 +390,7 @@ class Case:
     
     # surface forcings
     var_ts   = None; var_hfls = None; var_hfss = None; var_z0h  = None
-    var_ustar= None; var_z0   = None
+    var_ustar= None; var_z0   = None ; var_surf_alb = None ; var_surf_emis = None
     tim_rad_ts = None
 
     ## prescribed surface temperature or turbulent fluxes
@@ -425,6 +425,14 @@ class Case:
     else:
       tim_forc_uv = None
       log(WARNING, "No surface condition for momentum?", verbosity)
+
+    ## prescribed surface albedo and emissivity 
+    if attributes['radiation'] == "on":
+      var_surf_alb, tim_surf_alb = gettvar('alb')
+      var_surf_emis, tim_surf_emis = gettvar('emis')
+      if (var_surf_alb.min() != var_surf_alb.max()) or \
+      (var_surf_emis.min() != var_surf_emis.max()):
+          error("set_surface_forcings", "surface albedo and emissivity must be constant in time")
     
     # make lev, tim grid that includes all forcings lev/tim
     # for each type of forcing and variable, bilinear interpolation on new grid
@@ -494,6 +502,8 @@ class Case:
     self.var_z0h   = var_z0h
     self.var_z0    = var_z0
     self.var_ustar = var_ustar
+    self.var_surf_alb = var_surf_alb
+    self.var_surf_emis = var_surf_emis
 
   def set_none_to_zero_and_interp_to_grid(self, var, tgrid, zgrid, verbosity):
     if var is None: var = np.zeros((self.ntime_forcings, self.nlevs_forcings))

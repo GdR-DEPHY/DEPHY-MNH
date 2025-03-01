@@ -149,13 +149,11 @@ NAM_BACKUP = { # backup files for restarts
   "XBAK_TIME_FREQ(1)" : "3600.0",
 }
 
-SURF_IDEAL_FLUX = { # surfex default namelist
+NAM_IDEAL_FLUX = { # surfex default namelist
   "NFORCF"            : "2", # default number of flux forcings
   "NFORCT"            : "2", # default number of temp forcings
   "CSFTQ"             : "'W/m2'", #'kg/m2/s'",
   "CUSTARTYPE"        : "'Z0'",
-  "XALB"              : "0.17",
-  "XEMIS"             : "0.994",
 }
 
 NAM_CONF   = { # general config
@@ -804,7 +802,7 @@ default_exseg = {
   "NAM_CONFZ": NAM_CONFZ,
   "NAM_LUNITn": NAM_LUNITn,
   "NAM_BACKUP": NAM_BACKUP,
-  "NAM_IDEAL_FLUX": SURF_IDEAL_FLUX,
+  "NAM_IDEAL_FLUX": NAM_IDEAL_FLUX,
   "NAM_CONF": NAM_CONF,
   "NAM_CONFn": NAM_CONFn,
   "NAM_FRC" : NAM_FRC,

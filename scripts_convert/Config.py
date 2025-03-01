@@ -500,8 +500,9 @@ class Config:
         else: self.modify("NAM_IDEAL_FLUX", key+"(%i)"%(i+1), "%f"%f)
 
     list_vars = [cas.var_hfls, cas.var_hfss, cas.var_ts, cas.var_z0,
-            cas.var_ustar, [0.]]
-    list_keys = ["XSFTQ", "XSFTH", "XTSRAD", "XZ0", "XUSTAR", "XSFCO2"]
+            cas.var_ustar, cas.var_surf_alb, cas.var_surf_emis, [0.]]
+    list_keys = ["XSFTQ", "XSFTH", "XTSRAD", "XZ0", "XUSTAR", "XALB", "XEMIS",
+            "XSFCO2"]
 
     for var,key in zip(list_vars, list_keys):
       rel_times=rel_times_f; list_=list_f;
@@ -515,6 +516,10 @@ class Config:
             self.modify("NAM_IDEAL_FLUX", "CUSTARTYPE", "'Z0'")
             self.modify("NAM_IDEAL_FLUX", "XZ0", "%.3f"%(forc(var)[0]))
             continue # ne dépend pas du temps
+        if key == "XALB" or key =="XEMIS":
+            self.modify("NAM_IDEAL_FLUX", key, "%.3f"%(forc(var)[0]))
+            continue # ne dépend pas du temps
+
         if key == "XUSTAR":
             self.modify("NAM_IDEAL_FLUX", "CUSTARTYPE", "'USTAR'")
         if key == "XTSRAD":
