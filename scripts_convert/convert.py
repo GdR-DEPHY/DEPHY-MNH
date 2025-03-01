@@ -50,6 +50,7 @@ add_opt_swt("-r", "ECMW instead of ECRA")    # switch
 add_opt_swt("-a", "Adrien Marcel modifs")    # switch
 add_opt_swt("-I", "ICE3 instead of LIMA")    # switch
 add_opt_swt("-M", "MOSAI instead of TSZ0")   # switch
+add_opt_swt("-B", "3D budgets instead of 1D")# switch
 
 ## parse command line arguments
 args = parser.parse_args()
@@ -64,13 +65,14 @@ output_dir  = args.o
 delta_x     = args.x
 ngrid_x     = args.L
 htexplo     = args.P
-verbosity   = int(args.v)
 read_zorog  = args.z
 deac_edkf   = args.e
 radi_ecmw   = args.r
 adri_vers   = args.a
 acti_ice3   = args.I
 acti_mosa   = args.M
+acti_3Dbudg = args.B
+verbosity   = int(args.v)
 
 ## check arguments validity
 if not casename in listCases: 
@@ -93,12 +95,23 @@ if not os.path.isfile(inp_file_FC):
 ###
 
 log(INFO, "####### SETUP SUMMARY #######" , verbosity)
-log(INFO, "casename    : %s"%casename   , verbosity)
-log(INFO, "subcasename : %s"%subcasename, verbosity)
-log(INFO, "sim_mode    : %s"%sim_mode   , verbosity)
-log(INFO, "input_dir   : %s"%input_dir  , verbosity)
-log(INFO, "output_dir  : %s"%output_dir , verbosity)
-log(INFO, "verbosity   : %i"%verbosity  , verbosity)
+log(INFO, "casename           : %s"%casename   , verbosity)
+log(INFO, "subcasename        : %s"%subcasename, verbosity)
+log(INFO, "sim_mode           : %s"%sim_mode   , verbosity)
+log(INFO, "input_dir          : %s"%input_dir  , verbosity)
+log(INFO, "output_dir         : %s"%output_dir , verbosity)
+log(INFO, "grid_file          : %s"%grid_file  , verbosity)
+if delta_x is not None: log(INFO, "delta_x            : %s"%delta_x, verbosity)
+if ngrid_x is not None: log(INFO, "ngrid_x            : %s"%ngrid_x, verbosity)
+log(INFO, "htexplo PPE file   : %s"%htexplo    , verbosity)
+log(INFO, "read_zorog?        : %i"%read_zorog , verbosity)
+log(INFO, "deactivate EDKF?   : %i"%deac_edkf  , verbosity)
+log(INFO, "ECMWF rad scheme?  : %i"%radi_ecmw  , verbosity)
+log(INFO, "A. Marcel version? : %i"%adri_vers  , verbosity)
+log(INFO, "ICE3 microphysics? : %i"%acti_ice3  , verbosity)
+log(INFO, "A. Maison surface? : %i"%acti_mosa  , verbosity)
+log(INFO, "3D budgets?        : %i"%acti_3Dbudg, verbosity)
+log(INFO, "verbosity          : %i"%verbosity  , verbosity)
 
 ##################
 # INITIALIZE CASE 
@@ -205,6 +218,7 @@ exseg.set_ini_filenames(cas)
 exseg.set_forcing_flags(cas)
 exseg.set_buffer_layer(cas)
 exseg.set_def_budget_zone(cas)
+exseg.activate_budgets(acti_3Dbudg)
 
 if ngrid_x is not None: # for budgets
   exseg.horizontal_domain(ngrid_x)

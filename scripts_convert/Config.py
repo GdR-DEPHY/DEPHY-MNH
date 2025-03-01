@@ -364,7 +364,7 @@ class Config:
   def set_buffer_layer(self, cas):
     self.modify("NAM_DYN", "XALZBOT", "%f"%cas.zbot)
 
-  def set_def_budget_zone(self, cas):
+  def set_def_budget_zone(self, cas, is_3D=0):
     if cas.zgrid is not None:  
         self.modify("NAM_BUDGET", "NBUKH", "%i"%(cas.nz-1))
 
@@ -600,8 +600,13 @@ class Config:
 
   def deactivate_budgets(self):
     self.modify("NAM_BUDGET", "CBUTYPE", "'NONE'")
-  def activate_budgets(self):
+  def activate_budgets(self, is_3D):
     self.modify("NAM_BUDGET", "CBUTYPE", "'CART'")
+    if is_3D:
+      self.modify("NAM_BUDGET", "LBU_ICP", ".FALSE.")
+      self.modify("NAM_BUDGET", "LBU_JCP", ".FALSE.")
+      self.modify("NAM_BUDGET", "XBULEN", "300")
+      self.modify("NAM_BUDGET", "XBUWRI", "300")
 
   def horizontal_resolution(self, delta_x):
     self.modify("NAM_GRIDH_PRE", "XDELTAX", delta_x)
