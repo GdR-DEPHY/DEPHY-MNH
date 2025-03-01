@@ -427,7 +427,7 @@ class Case:
       log(WARNING, "No surface condition for momentum?", verbosity)
 
     ## prescribed surface albedo and emissivity 
-    if attributes['radiation'] == "on":
+    if attributes['radiation'] == "on" and "alb" in ds.variables:
       var_surf_alb, tim_surf_alb = gettvar('alb')
       var_surf_emis, tim_surf_emis = gettvar('emis')
       if (var_surf_alb.min() != var_surf_alb.max()) or \
