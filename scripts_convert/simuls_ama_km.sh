@@ -30,13 +30,14 @@ do
     *) grille="";;
   esac
   cmd="python convert.py -c $cas -i ../../dephy-scm -s $scas"
-  for MNH in "571-LIMA" "ADR-ICE3" #"571-ICE3" "ADR-LIMA" "ADR-ICE3"
+  for MNH in "571-LIMA" "ADR-ICE3" "ADR-NOAC" #"571-ICE3" "ADR-LIMA" "ADR-ICE3"
   do
     case $MNH in
       "571-LIMA") opt=;;
       "571-ICE3") opt="-I";;
-      "ADR-LIMA") opt="-a";;
-      "ADR-ICE3") opt="-a -I";;
+      "ADR-NOAC") opt="-a 1 -I";;
+      "ADR-ICE3") opt="-a 2 -I";;
+      "ADR-LIMA") opt="-a 2";;
     esac
     for modd in SCM CRM1 CRM2
     do
@@ -59,6 +60,10 @@ do
       # no edkf, grille AROME (5 m en bas)
       $cmd -m ${mode}  -g ../grilles/grille_AROME_CL$grille.txt -e $opts
       rename _noedkf_ $ext
+
+      # no rain, grille AROME (5 m en bas)
+      $cmd -m ${mode}  -g ../grilles/grille_AROME_CL$grille.txt -R $opts
+      rename _norain_ $ext
 
       ### TEST RADIATION SCHEME ###
       case $cas in 

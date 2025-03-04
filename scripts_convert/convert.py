@@ -33,7 +33,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-c", help="Case name", metavar="casename", required=True)
 
 ## add optional arguments
-def add_opt_arg(m, h, var, d, a=None): parser.add_argument(m, help=h, metavar=var, default=d, action=a)
+def add_opt_arg(m, h, var, d, a=None): 
+    parser.add_argument(m, help=h, metavar=var, default=d, action=a)
 def add_opt_swt(m, h): parser.add_argument(m, help=h, action="store_true")
 add_opt_arg("-s", "Subcase name",           "subcasename", "REF")
 add_opt_arg("-m", "Simulation mode",        "sim_mode",    "LES")
@@ -44,13 +45,14 @@ add_opt_arg("-v", "Verbosity level [0-3]",  "verbosity",   0)
 add_opt_arg("-x", "Horizontal grid size",   "delta_x",     None)
 add_opt_arg("-L", "Horizontal domain size", "ngrid_x",     None)
 add_opt_arg("-P", "File to generate PPE",   "htexplo",     None)
+add_opt_arg("-a", "Adrien Marcel modifs",   "Adrien",      0)
 add_opt_swt("-z", "Use zorog from case def") # switch
 add_opt_swt("-e", "Deactivate EDKF")         # switch
 add_opt_swt("-r", "ECMW instead of ECRA")    # switch
-add_opt_swt("-a", "Adrien Marcel modifs")    # switch
 add_opt_swt("-I", "ICE3 instead of LIMA")    # switch
 add_opt_swt("-M", "MOSAI instead of TSZ0")   # switch
 add_opt_swt("-B", "3D budgets instead of 1D")# switch
+add_opt_swt("-R", "deactivate rain")         # switch
 
 ## parse command line arguments
 args = parser.parse_args()
@@ -68,10 +70,11 @@ htexplo     = args.P
 read_zorog  = args.z
 deac_edkf   = args.e
 radi_ecmw   = args.r
-adri_vers   = args.a
+adri_vers   = int(args.a)
 acti_ice3   = args.I
 acti_mosa   = args.M
 acti_3Dbudg = args.B
+deac_rain   = args.R
 verbosity   = int(args.v)
 
 ## check arguments validity
@@ -111,6 +114,7 @@ log(INFO, "A. Marcel version? : %i"%adri_vers  , verbosity)
 log(INFO, "ICE3 microphysics? : %i"%acti_ice3  , verbosity)
 log(INFO, "A. Maison surface? : %i"%acti_mosa  , verbosity)
 log(INFO, "3D budgets?        : %i"%acti_3Dbudg, verbosity)
+log(INFO, "Rain deactivated?  : %i"%deac_rain  , verbosity)
 log(INFO, "verbosity          : %i"%verbosity  , verbosity)
 
 ##################
@@ -231,14 +235,17 @@ else:
   exseg.set_cold_microphysics()
 
 if adri_vers:
-  #exseg.set_adrien_version(accr="'PRFR'")
-  exseg.set_adrien_version()
+  if adri_vers == 1: exseg.set_adrien_version() # no accr
+  if adri_vers == 2: exseg.set_adrien_version(accr="'PRFR'")
 
 if acti_ice3:
   exseg.set_microphysics_scheme("ICE3")
 
 if deac_edkf:
   exseg.deactivate_edkf()
+
+if deac_rain:
+  exseg.set_adjust_microphysics()
 
 if attributes["radiation"] == "on":
   exseg.activate_radiation(rad='ECMW' if radi_ecmw else 'ECRA')
