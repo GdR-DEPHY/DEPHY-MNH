@@ -38,8 +38,8 @@ exseg_LES = {
   "NAM_TURBn"  : { "XIMPL"      : "1.",
                    "CTURBLEN"   : "'DEAR'",
                    "CTURBDIM"   : "'3DIM'",     },
-  "NAM_PARAM_RADn"  : { "XDTRAD"        : "1.",
-                        "XDTRAD_CLONLY" : "1.",},
+  #"NAM_PARAM_RADn"  : { "XDTRAD"        : "1.",
+  #                      "XDTRAD_CLONLY" : "1.",},
   "NAM_LES" :   { "LLES_NEB_MASK"  : ".TRUE.", 
                   "LLES_CORE_MASK" : ".TRUE.", 
                   "LLES_CS_MASK"   : ".TRUE.",
@@ -69,8 +69,8 @@ exseg_CRM = {
   "NAM_DYNn"   : { "XTSTEP"     : "10.",
                    "XT4DIFU"    : "3000.",          # convention 300xtime_step
                    "CPRESOPT"   : "'ZRESI'",     }, # parallel CRESI
-  "NAM_PARAM_RADn"  : { "XDTRAD"        : "10.",
-                        "XDTRAD_CLONLY" : "10.",},
+  #"NAM_PARAM_RADn"  : { "XDTRAD"        : "10.",
+  #                      "XDTRAD_CLONLY" : "10.",},
   "NAM_NEBn"  : { "LSUBG_COND" : ".TRUE.",      },# activate subrid condensation
   "NAM_LES"    : { "XLES_TEMP_SAMPLING"   : "300.",
                    "XLES_TEMP_MEAN_STEP"  : "3600."},
@@ -96,8 +96,8 @@ exseg_SCM = {
   "NAM_TURBn"  : { "CTURBLEN"   :"'BL89'",
                    "CTURBDIM"   :"'1DIM'"     },
   "NAM_NEBn"  : { "LSUBG_COND" : ".TRUE.",      },# activate subrid condensation
-  "NAM_PARAM_RADn"  : { "XDTRAD"        : "30.",
-                        "XDTRAD_CLONLY" : "30.",},
+  #"NAM_PARAM_RADn"  : { "XDTRAD"        : "30.",
+  #                      "XDTRAD_CLONLY" : "30.",},
   "NAM_PARAM_MFSHALLn" : {"CMF_UPDRAFT"    :"'EDKF'",
                           "CMF_CLOUD"      :"'DIRE'", 
                           "LMIXUV"         :".TRUE.", 
@@ -304,8 +304,8 @@ NAM_TURBn  = { # config turbulence
 }
 
 NAM_PARAM_RADn   = { # config radiation
-  "XDTRAD"            : "60.",
-  "XDTRAD_CLONLY"     : "60.",
+  "XDTRAD"            : "1800.",
+  "XDTRAD_CLONLY"     : "600.",
   "LCLEAR_SKY"        :".FALSE.",
   "NRAD_COLNBR"       : "1000",
   "NRAD_DIAG"         : "0",

@@ -2,10 +2,10 @@
 
 # On a trois cas ARMCU, RICO et FIRE (3)
 # en SCM, CRM 1km, CRM 2.5km         (x3)
-# avec EDKF, sans EDKF, sans pluie, avec les modifs d'Adrien   (x4)
+# avec EDKF, sans EDKF, sans pluie, avec dz=25m en bas,
+# avec les modifs d'Adrien avec et sans accrétion (x6)
 
 # pour FIRE, on fait des tests de sensibilité en plus 
-# grille verticale proche de la surface 
 # schéma de rayonnement
 # forçages ?
 
