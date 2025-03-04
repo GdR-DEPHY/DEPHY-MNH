@@ -29,7 +29,7 @@ do
     FIRE) grille=_top1200;;
     *) grille="";;
   esac
-  cmd="python convert.py -c $cas -i ../../dephy-scm -s $scas"
+  cmd="python convert.py -c $cas -i ../../dephy-scm -s $scas -B"
   for MNH in "571-LIMA" "ADR-ICE3" "ADR-NOAC" #"571-ICE3" "ADR-LIMA" "ADR-ICE3"
   do
     case $MNH in
