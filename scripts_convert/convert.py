@@ -53,6 +53,7 @@ add_opt_swt("-I", "ICE3 instead of LIMA")    # switch
 add_opt_swt("-M", "MOSAI instead of TSZ0")   # switch
 add_opt_swt("-B", "3D budgets instead of 1D")# switch
 add_opt_swt("-R", "deactivate rain")         # switch
+add_opt_swt("-p", "modif precips Catherine") # switch
 
 ## parse command line arguments
 args = parser.parse_args()
@@ -75,6 +76,7 @@ acti_ice3   = args.I
 acti_mosa   = args.M
 acti_3Dbudg = args.B
 deac_rain   = args.R
+plui_cath   = args.p
 verbosity   = int(args.v)
 
 ## check arguments validity
@@ -115,6 +117,7 @@ log(INFO, "ICE3 microphysics? : %i"%acti_ice3  , verbosity)
 log(INFO, "A. Maison surface? : %i"%acti_mosa  , verbosity)
 log(INFO, "3D budgets?        : %i"%acti_3Dbudg, verbosity)
 log(INFO, "Rain deactivated?  : %i"%deac_rain  , verbosity)
+log(INFO, "Precip for Cath?   : %i"%plui_cath  , verbosity)
 log(INFO, "verbosity          : %i"%verbosity  , verbosity)
 
 ##################
@@ -246,6 +249,9 @@ if deac_edkf:
 
 if deac_rain:
   exseg.set_adjust_microphysics()
+elif plui_cath:
+  if not acti_ice3: log(ERROR, "error: Option -p should be used with -I to activate ICE3", verbosity)
+  exseg.set_modifs_pluie()
 
 if attributes["radiation"] == "on":
   exseg.activate_radiation(rad='ECMW' if radi_ecmw else 'ECRA')

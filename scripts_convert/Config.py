@@ -671,6 +671,12 @@ class Config:
     self.modify("NAM_FRAC","XUNIF_TOWN", "0")
     self.modify("NAM_FRAC","XUNIF_NATURE", "1")
 
+  def set_modifs_pluie(self):
+    self.modify("NAM_NEBn", "CCONDENS", "'GAUS'")
+    self.modify("NAM_NEBn", "CLAMBDA3", "'NONE'")
+    self.modify("NAM_PARAM_ICEn", "CSUBG_AUCV_RC", "'ADJU'")
+    self.modify("NAM_PARAM_ICEn", "CSUBG_AUCV_RI", "'ADJU'")
+
   def htexplo_set_parameter(self, param, value):
     for nam in self.config:
       if param in self.config[nam]:
