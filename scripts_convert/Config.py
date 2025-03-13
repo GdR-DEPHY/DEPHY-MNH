@@ -440,18 +440,18 @@ class Config:
 
     ntf = len(all_tim_forc)
     ntt = len(all_tim_rad)
-    if cas.var_ustar is not None and (cas.tim_forc_uv[:] != all_tim_forc).any():
+    if cas.var_ustar is not None:
+     if len(cas.tim_forc_uv) != len(all_tim_forc) or (cas.tim_forc_uv[:] != all_tim_forc[:]).any():
       # interp ???
-      print(cas.tim_forc_uv[:], all_tim_forc)
-      print(cas.var_ustar, cas.var_z0)
       nus=len(cas.var_ustar)
       nth=len(cas.var_hfss)
-      print('nus',nus,np.min(cas.var_ustar),np.max(cas.var_ustar))
       if (np.min(cas.var_ustar) == np.max(cas.var_ustar)):
-          cas.var_ustar=np.zeros(nth)
-          cas.var_ustar[:]=cas.var_ustar[0]
+        ustar_cst = cas.var_ustar[0]
+        cas.var_ustar=np.zeros(nth)
+        cas.var_ustar[:]=ustar_cst
       else :
-          print("problemo ???",ntf); exit()
+        print("problemo ???",ntf); exit()
+        print('nus',nus,np.min(cas.var_ustar),np.max(cas.var_ustar))
     
     # select only times that are needed for the segment
     ## for fluxes
