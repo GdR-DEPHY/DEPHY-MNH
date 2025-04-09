@@ -45,6 +45,7 @@ add_opt_arg("-v", "Verbosity level [0-3]",  "verbosity",   0)
 add_opt_arg("-x", "Horizontal grid size",   "delta_x",     None)
 add_opt_arg("-L", "Horizontal domain size", "ngrid_x",     None)
 add_opt_arg("-P", "File to generate PPE",   "htexplo",     None)
+add_opt_arg("-t", "Maximum seg length",     "max_seg",     4)
 add_opt_arg("-a", "Adrien Marcel modifs",   "Adrien",      0)
 add_opt_swt("-z", "Use zorog from case def") # switch
 add_opt_swt("-e", "Deactivate EDKF")         # switch
@@ -68,6 +69,7 @@ output_dir  = args.o
 delta_x     = args.x
 ngrid_x     = args.L
 htexplo     = args.P
+max_seg_len = args.t
 read_zorog  = args.z
 deac_edkf   = args.e
 radi_ecmw   = args.r
@@ -173,8 +175,9 @@ log(INFO, "forcings and initial profiles have been read", verbosity)
 cas.set_vertical_grid(grid_file, read_zorog=read_zorog)
 log(INFO, "vertical grid: "+str(cas.zgrid), verbosity)
 
-## output files ## each seg lasts 4h max
-cas.setup_outputs(verbosity, max_seg_dur = 4)
+## output files 
+## each seg lasts at most max_seg_len hours (default 4h ; option -t) 
+cas.setup_outputs(verbosity, max_seg_dur = max_seg_len)
 
 ####################
 # SETUP AND WRITE DATA INTO NAMELISTS
@@ -259,6 +262,8 @@ else:
   exseg.deactivate_radiation()
 
 if htexplo is not None:
+  exseg.modify("NAM_LES", "XLES_TEMP_SAMPLING", "3600")
+  exseg.modify("NAM_LES", "XLES_TEMP_MEAN_STEP", "3600")
   save_exseg = Config(casename, "EXS", sim_mode)
   save_exseg.copy_config_from(exseg)
 
