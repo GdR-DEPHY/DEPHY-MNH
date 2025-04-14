@@ -1,8 +1,4 @@
-mkdir -p $HOME/.local/bin 
-mkdir -p $HOME/.local/lib/mypy
-
-pwd=$PWD
-
+# util functions 
 clean_env(){
   mv $HOME/.local/bin/convert_mnh_000 /tmp
   mv $HOME/.local/bin/convert_MNH571_to_DEPHY /tmp
@@ -10,15 +6,31 @@ clean_env(){
   mv $HOME/.local/lib/mypy/mesonh2dephy_variables.py /tmp
 }
 
+change_shebang(){
+  nam=$(hostname)
+  case $nam in 
+    belenos*) shb="#!/opt/softs/anaconda3/bin/python" ;;
+    *) shb="#!/bin/python" ;;
+  esac
+  sed -i "s,^#!.*,$shb,g" convert_MNH571_to_DEPHY
+}
+
 install_env(){
   set -e 
+  pwd=$PWD
+  mkdir -p $HOME/.local/bin 
+  mkdir -p $HOME/.local/lib/mypy
   cd $HOME/.local/bin
   ln -s $pwd/convert_MNH571_to_DEPHY $pwd/convert_mnh_000 .
-  
+  change_shebang
+
   cd $HOME/.local/lib/mypy
   ln -s $pwd/mesonh2dephy_variables.py $pwd/dephy_variables.py .
 }
 
+
+
+### MAIN COMMANDS
 if [ $# -ge 1 ] ; then
   if [[ "$1" == "clean" ]]; then
     ( clean_env ) # do this in child shell
