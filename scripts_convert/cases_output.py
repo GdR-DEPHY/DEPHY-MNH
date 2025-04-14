@@ -6,12 +6,14 @@
 base_cas = {"spinup":4, "hourhf":[]}
 
 CasesOutputs = {
+  "BOTANY":{"spinup":0, "hourhf" : []},
   "ARMCU":{"spinup":4, "hourhf" : [4, 8]},
   "BOMEX":{"spinup":4, "hourhf" : [5, 11]},
   "RICO" :{"spinup":4, "hourhf" : [11, 23]}, #, 35, 47, 59, 71
   "SANDU":base_cas,
   "SCMS":{"spinup":4, "hourhf" : [4, 8]},
   "FIRE":{"spinup":4, "hourhf" : [4, 16, 23]},
+  #"FIRE":{"spinup":0, "hourhf" : []},
   "LBA":{"spinup":4, "hourhf" : [4, 6]},
   "AMMA":{"spinup":4, "hourhf" : [4, 7, 8, 9, 10, 11]},
   "KB2006":{"spinup":4, "hourhf" : [6, 12, 36, 60, 75, 90, 105, 119]},

@@ -1,6 +1,177 @@
-if [ $# -ne 1 ] ; then
-  echo "Usage $0 <input.nc>"
-fi
-inp=$1
+usage() {
+ res=0; if [ $# -eq 1 ]; then res=$1; fi
+ echo "usage: bash $(basename $0) [OPTIONS] <input.nc>" && \
+ grep "[[:space:]].)\ #" $0 | sed 's/#//' | sed -r 's/([a-z])\)/-\1/'
+ exit $res
+}
 
-ncks -O -G : -g LES_budgets/Mean/Cartesian/Time_averaged/Not_normalized/cart $inp ${inp%.nc}_flat.nc
+########################
+# COMMAND-LINE ARGUMENTS
+
+# if no argument at all, exit
+if [ $# -lt 1 ] ; then 
+  usage 1
+fi
+
+# in case mandatory argument is first arg
+first_arg=$1
+if [[ ! $first_arg == *"-"* ]] ; then 
+  inp=$1
+  shift
+fi
+
+## handle optional arguments
+# default values
+time=Time_averaged
+do_budget=1
+do_condsp=0
+
+# for each optional argument
+while getopts "ht:bco:f" arg; do
+  case $arg in
+    t) # time dimension <Time_averaged|Not_time_averaged>
+      time=$OPTARG ;;
+    b) # Do not extract budgets (flag)
+      do_budget=0  ;;
+    c) # Do extract conditional sampled variables
+      do_condsp=1  ;;
+    f) # Force overwritting output file
+      force_ovw=1  ;;
+    o) # Output file name (default = ${inp}_flat.nc)
+      out=$OPTARG  ;;
+    h) # Print help and exit
+      usage ;;
+    *) # Print help and exit with error
+      usage 1 ;;
+  esac
+done
+
+# position next arg after optional arguments
+shift $((OPTIND - 1))
+
+# if input file not already defined and no more args
+if [ -u $inp ] && [ $# -lt 1 ] ; then
+  echo error: missing mandatory argument
+  usage 1
+fi
+
+# if input file not already defined
+test -u $inp && inp=$1
+
+# if file does not exist
+if [ ! -f $inp ] ; then
+  echo "error: file $inp not found"
+  exit 1
+fi
+
+# if output file not already defined
+test -u $out && out=${inp%.nc}_flat.nc
+
+# if file already exists and force_ovw is not set
+test -f $out && test -u $force_ovw && { echo $out exists. Use -f to overwrite ; exit ; }
+
+# helper function
+rename_vars() {
+  suffix=$1
+  file=$2
+  listvars=$(ncdump -h $file |grep "double.*;$"|sed -e "s/double \(.*\)(.*) ;/\1/g")
+  str=
+  for v in $listvars ; do
+    if [[ $v != *"les"* ]] ; then str="-v $v,${suffix}_${v} "$str ; fi
+  done
+  ncrename $str $file > /dev/null 2>&1
+}
+
+#######################
+# EXTRACTION OPERATIONS
+
+tmp=tmp_$$.nc
+
+echo Extract $time from $inp to $out, do_budget=$do_budget
+
+echo LES_budgets Mean
+echo LES_budgets Miscellaneous
+
+# optional variables
+
+ncdump -h $inp > dump
+
+LES_budgets_opt() {
+  set -u
+  grp=$1
+  cs=$2
+  set +e
+  grep $grp dump > /dev/null 2>&1
+  if [ $? -eq 0 ] ; then
+    echo "  "$1
+    list_grp=LES_budgets/$grp/Cartesian/$time/Not_normalized/$cs,$list_grp
+  fi
+  set -e
+}
+
+try_LES_budgets_opt() {
+  cs=$1
+
+  list_grp=
+
+  echo "Find variables for $cs..."
+  LES_budgets_opt Mean          $cs
+  LES_budgets_opt Miscellaneous $cs
+  LES_budgets_opt Resolved      $cs
+  LES_budgets_opt Subgrid       $cs
+  if [[ $cs == "cart" ]] ; then
+    LES_budgets_opt Radiation   $cs
+    LES_budgets_opt Surface     $cs
+  fi
+
+  echo "Extract..."
+  ncks -O -G : -g ${list_grp:0: -1} $inp $tmp
+  if [[ $cs != "cart" ]] ; then 
+    echo "Rename..."
+    rename_vars $cs $tmp
+    echo "Add to file..."
+    ncks $tmp -A $out
+    rm $tmp
+  else 
+    mv $tmp $out
+  fi
+  echo ""
+}
+
+try_LES_budgets_opt cart
+
+if [ $do_condsp -eq 1 ] ; then
+  try_LES_budgets_opt neb
+  try_LES_budgets_opt core
+  try_LES_budgets_opt clear
+  try_LES_budgets_opt cs1
+  try_LES_budgets_opt env
+fi
+
+ff=$(realpath $inp)
+ncatted -O -a realpath,global,a,c,"$ff" $out
+
+if [ $do_budget -eq 1 ] ; then
+
+  Budgets_opt() {
+    grp=$1
+    grep "group: $grp" dump > /dev/null 2>&1
+    if [ $? -eq 0 ] ; then
+      echo Budgets_opt $1
+      ncks -O -G : -g Budgets/$grp $inp $tmp
+      rename_vars BU_${grp} $tmp
+      ncks $tmp -A $out
+      rm $tmp
+    fi
+  }
+  
+  Budgets_opt UU
+  Budgets_opt VV
+  Budgets_opt TH
+  Budgets_opt RV
+  Budgets_opt RC
+  Budgets_opt RR
+
+fi
+
+rm dump

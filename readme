@@ -4,13 +4,29 @@ Authors: F. Couvreux (fleur.couvreux@meteo.fr) &
          N. Villefranque (najda.villefranque@lmd.ipsl.fr)
 
 Contents:
-- COPYING          GNU GPLv3
-- TODO             ongoing work
-- configs          summary of configurations
-- scripts_convert/ from dephy format (see dephy-scm repo) to MNH namelists
-- namelists/       resulting namelists
-- scripts_mnh/     scripts that were used to run Meso-NH
+- COPYING           GNU GPLv3
+- TODO              ongoing work
+- configs           summary of configurations
+- scripts_convert/  from dephy format (see dephy-scm repo) to MNH namelists
+- output_namelists/ resulting namelists
+- grilles/          resulting namelists
+- scripts_mnh/      scripts that were used to run Meso-NH
 
+Dans scripts_mnh/ 
+- convert_mnh_000 : script ncks pour extraire toutes les variables du 000
+- convert_MNH571_to_DEPHY.py : script python (+ rapide) pour extraire et convertir au format dephy
+- dephy_variables.py et mesonh2dephy_variables.py sont utilisées par convert_MNH571_to_DEPHY
+
+Pour installer les scripts de conversion, faire
+$ source setenv.sh
+
+Ensuite on pourra l'utiliser de n'importe où :
+$ convert_MNH571_to_DEPHY [-h] [-o output] [-f] -i input
+
+Pour désinstaller
+$ source setenv.sh clean
+
+###############
 
 Questions soulevées lors des discussions:
 - lecture des profils initiaux=> création d'un nouvel attribut qui indique sous quelle forme est donné la temperature et l'humidité dans la description des cas

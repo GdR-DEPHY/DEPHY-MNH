@@ -1,4 +1,6 @@
-*poub*
-output_namelists/*
-simuls_ama*
+work/
 logs/
+*pycache*
+*poub*
+simuls*
+namelists*

@@ -28,7 +28,7 @@ do
   echo "$cas"
   for mode in SCM LES 
   do
-    run="/usr/bin/python3 convert.py -c $cas -i $DIR_DEPHY_SCM -v 3 -o ../output_namelists_test/ -m $mode $add >> ../logs/log_cas_$cas 2> ../logs/err_cas_$cas "
+    run="/usr/bin/python3 convert.py -c $cas -i $DIR_DEPHY_SCM -v 3 -o ../output_namelists/ -m $mode $add >> ../logs/log_cas_$cas 2> ../logs/err_cas_$cas "
     echo $run
     eval $run
   done

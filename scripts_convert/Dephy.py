@@ -27,7 +27,7 @@ import os
 # KB2006, DYNAMO, MAGIC, FIRE, ISDAC, MPACE
 
 # To add a case to the database, add its name to one of the lists:
-listCaseMoistShCv = ["ARMCU", "BOMEX", "SANDU", "RICO", "SCMS", "FIRE"] # moist shallow conv
+listCaseMoistShCv = ["ARMCU", "BOMEX", "SANDU", "RICO", "SCMS", "FIRE", "BOTANY"] # moist shallow conv
 listCaseDCv       = ["LBA", "AMMA", "KB2006", "EUROCS"]         # deep conv
 listCaseStable    = ["GABLS1", "GABLS4"]                        # stable
 listCaseDryShCv   = ["AYOTTE", "IHOP", "BLLAST", "MOSAI"]       # dry shallow conv
@@ -36,7 +36,7 @@ listCaseDryShCv   = ["AYOTTE", "IHOP", "BLLAST", "MOSAI"]       # dry shallow c
 listCases = listCaseMoistShCv+listCaseDryShCv+listCaseStable+listCaseDCv
 
 # should this be defined in mesonh rather than here?
-cas_type = {"moistshcv" : {"dx" : 25,  "dy" : 25,  "dz" : 25,   "zbot": 3500}, 
+cas_type = {"moistshcv" : {"dx" : 25,  "dy" : 25,  "dz" : 25,   "zbot": 3500},
             "dcv"       : {"dx" : 200, "dy" : 200, "dz" : None, "zbot": 16500},
             "stable"    : {"dx" : 5,   "dy" : 5,   "dz" : None, "zbot": None},
             "dryshcv"   : {"dx" : 25,  "dy" : 25,  "dz" : 25,   "zbot": 3000},
