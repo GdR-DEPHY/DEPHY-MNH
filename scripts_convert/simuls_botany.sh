@@ -1,6 +1,8 @@
 set -e
 
-listcas="RUN006b RUN006 RUN037 RUN040 RUN045 RUN066 RUN084"
+sim=SHORT
+sim=RADFRC
+listcas="006b " #006 037 040 045 066 084"
 
 MNH=
 out=../namelists_botany/
@@ -16,11 +18,11 @@ cas=BOTANY
 
 for scas in $listcas 
 do
-  cmd="python convert.py -c $cas -i ../../dephy-scm -s $scas -g ../grilles/grille_BOTANY.txt"
+  cmd="python convert.py -c $cas -S -i ../../dephy-scm -s ${sim}$scas -g ../grilles/grille_BOTANY.txt"
   for mode in SCM 
   do
-    echo $cas $scas $mode 
+    echo $cas ${sim}$scas $mode 
     $cmd -m ${mode}
-    rename -$scas
+    rename -${sim}$scas
   done
 done

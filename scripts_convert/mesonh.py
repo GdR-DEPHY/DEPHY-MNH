@@ -690,6 +690,11 @@ NAM_SEABATHY =  {
   "XUNIF_SEABATHY"    : "5.",
 }
 
+NAM_SEAFLUXn = {
+  "CSEA_FLUX" : "ECUME",
+  "CSEA_ALB"  : "TA96",
+}
+
 NAM_PREP_SEAFLUX =  {
   "XSST_UNIF"         : "280.", # random default
 }
@@ -815,6 +820,7 @@ default_exseg = {
   "NAM_MOSAIn" : NAM_MOSAIn,
   "NAM_PARAM_RADn" : NAM_PARAM_RADn,
   "NAM_NEBn": NAM_NEBn,
+  "NAM_SEAFLUXn": NAM_SEAFLUXn,
   "NAM_PARAM_KAFRn" : NAM_PARAM_KAFRn,
   "NAM_PARAM_MFSHALLn" : NAM_PARAM_MFSHALLn,
   "NAM_PARAM_ECRADn" : NAM_PARAM_ECRADn,
