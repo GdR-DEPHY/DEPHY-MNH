@@ -366,6 +366,7 @@ class Config:
   def set_buffer_layer(self, cas):
     if cas.zgrid is not None: 
       cas.zbot = min(cas.zbot, cas.zgrid[-2])
+      cas.zbot = max(cas.zbot, cas.zgrid[-1]-1000)
     self.modify("NAM_DYN", "XALZBOT", "%f"%cas.zbot)
 
   def set_def_budget_zone(self, cas, is_3D=0):
@@ -675,7 +676,6 @@ class Config:
 
   def set_idealized_seaflux(self):
     self.modify("NAM_SEAFLUXn", "CSEA_FLUX", "'DIRECT'")
-    self.modify("NAM_SEAFLUXn", "CSEA_ALB", "'UNIF'")
 
   def set_modifs_pluie(self):
     self.modify("NAM_NEBn", "CCONDENS", "'GAUS'")

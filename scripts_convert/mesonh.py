@@ -691,8 +691,8 @@ NAM_SEABATHY =  {
 }
 
 NAM_SEAFLUXn = {
-  "CSEA_FLUX" : "ECUME",
-  "CSEA_ALB"  : "TA96",
+  "CSEA_FLUX" : "'ECUME'",
+  "CSEA_ALB"  : "'UNIF'", # !! DEFAULT = TA96
 }
 
 NAM_PREP_SEAFLUX =  {

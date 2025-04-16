@@ -2,7 +2,11 @@ set -e
 
 sim=SHORT
 sim=RADFRC
-listcas="006b " #006 037 040 045 066 084"
+sim=ALLFRC
+sim=SFCFRC
+sim=REF
+listcas="006b 006 037 040 045 066 084"
+listcas="006 037 040 045 066 084"
 
 MNH=
 out=../namelists_botany/
@@ -18,11 +22,15 @@ cas=BOTANY
 
 for scas in $listcas 
 do
-  cmd="python convert.py -c $cas -S -i ../../dephy-scm -s ${sim}$scas -g ../grilles/grille_BOTANY.txt"
+  cmd="python convert.py -c $cas -i ../../dephy-scm -s ${sim}$scas -g ../grilles/grille_BOTANY.txt"
   for mode in SCM 
   do
     echo $cas ${sim}$scas $mode 
-    $cmd -m ${mode}
+    if [[ $sim == REF ]]  ; then
+      $cmd -m ${mode}
+      rename -ECUM${sim}$scas
+    fi
+    $cmd -m ${mode} -S
     rename -${sim}$scas
   done
 done
