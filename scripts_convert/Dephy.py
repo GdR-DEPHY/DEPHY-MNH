@@ -171,7 +171,8 @@ class Case:
       self.name_var_u["frc"] = "ua_nud"
       self.name_var_v["frc"] = "va_nud"
       self.xrelax_time_frc = attributes["nudging_ua"]
-      self.xrelax_height_frc = attributes["zh_nudging_ua"]
+      if self.xrelax_time_frc > -1: self.xrelax_height_frc = attributes["zh_nudging_ua"]
+      else: print("cannot handle vertical profile of nudging tau ... yet"); exit(1)
     else:
       self.name_var_u["frc"] = "none"
       self.name_var_v["frc"] = "none"
@@ -318,7 +319,10 @@ class Case:
     ## T
     if self.name_var_t["nudging"] != "none":
       self.xrelax_time_frc = attributes["nudging_"+self.name_var_t["nudging"]]
-      self.xrelax_height_frc = attributes["zh_nudging_"+self.name_var_t["nudging"]]
+      if self.xrelax_time_frc > -1: 
+        self.xrelax_height_frc = attributes["zh_nudging_"+self.name_var_t["nudging"]]
+      else:
+        print("cannot handle vertical profile of nudging tau ... yet"); exit(1)
       name_var_t = self.name_var_t["nudging"]+"_nud"
       var_t_frc, lev_t_frc, tim_t_frc = get2dvar(name_var_t)
     else:
@@ -328,7 +332,10 @@ class Case:
     ## q
     if self.name_var_q["nudging"] != "none":
       self.xrelax_time_frc = attributes["nudging_"+self.name_var_q["nudging"]]
-      self.xrelax_height_frc = attributes["zh_nudging_"+self.name_var_q["nudging"]]
+      if self.xrelax_time_frc > -1:
+        self.xrelax_height_frc = attributes["zh_nudging_"+self.name_var_q["nudging"]]
+      else:
+        print("cannot handle vertical profile of nudging tau ... yet"); exit(1)
       name_var_q = self.name_var_q["nudging"]+"_nud"
       var_q_frc, lev_q_frc, tim_q_frc = get2dvar(name_var_q)
       if "q" in name_var_q: 

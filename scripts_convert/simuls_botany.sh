@@ -5,7 +5,15 @@ sim=RADFRC
 sim=ALLFRC
 sim=SFCFRC
 sim=REF
+sim=NONUDGING
+
+listsim="REF SHORT RADFRC ALLFRC SFCFRC NONUDGING"
+listsim="NONUDGING"
+
+listsim="NONUDGING NUDGINGABOVE"
+
 listcas="006b 006 037 040 045 066 084"
+listcas="006 040 045 066 084"
 listcas="006 037 040 045 066 084"
 
 MNH=
@@ -19,18 +27,19 @@ rename() {
 }
 
 cas=BOTANY
+grille="grille_BOTANY_4km"
 
-for scas in $listcas 
-do
-  cmd="python convert.py -c $cas -i ../../dephy-scm -s ${sim}$scas -g ../grilles/grille_BOTANY.txt"
-  for mode in SCM 
-  do
-    echo $cas ${sim}$scas $mode 
-    if [[ $sim == REF ]]  ; then
+for sim in $listsim ; do
+  for scas in $listcas  ; do
+    cmd="python convert.py -c $cas -i ../../dephy-scm -s ${sim}$scas -g ../grilles/$grille.txt"
+    for mode in SCM 
+    do
+      echo $cas ${sim}$scas $mode 
       $cmd -m ${mode}
       rename -ECUM${sim}$scas
-    fi
-    $cmd -m ${mode} -S
-    rename -${sim}$scas
+      
+      $cmd -m ${mode} -S
+      rename -${sim}${scas}
+    done
   done
 done
