@@ -8,9 +8,7 @@ sim=REF
 sim=NONUDGING
 
 listsim="REF SHORT RADFRC ALLFRC SFCFRC NONUDGING"
-listsim="NONUDGING"
-
-listsim="NONUDGING NUDGINGABOVE"
+listsim="MNH"
 
 listcas="006b 006 037 040 045 066 084"
 listcas="006 040 045 066 084"
@@ -38,8 +36,17 @@ for sim in $listsim ; do
       $cmd -m ${mode}
       rename -ECUM${sim}$scas
       
+      $cmd -m ${mode} -I 
+      rename -ICE3${sim}${scas}
+      
+      $cmd -m ${mode} -I -p
+      rename -PLUIE${sim}${scas}
+
+      $cmd -m ${mode} -r
+      rename -RRTM${sim}${scas}
+
       $cmd -m ${mode} -S
-      rename -${sim}${scas}
+      rename -NOECUM${sim}${scas}
     done
   done
 done
