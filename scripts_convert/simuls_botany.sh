@@ -33,19 +33,22 @@ for sim in $listsim ; do
     for mode in SCM 
     do
       echo $cas ${sim}$scas $mode 
-      $cmd -m ${mode}
+      $cmd -m ${mode} -S ECUME
       rename -ECUM${sim}$scas
       
-      $cmd -m ${mode} -I 
+      $cmd -m ${mode} -S ECUME6
+      rename -ECUM6${sim}$scas
+      
+      $cmd -m ${mode} -I -S ECUME6
       rename -ICE3${sim}${scas}
       
-      $cmd -m ${mode} -I -p
+      $cmd -m ${mode} -I -p -S ECUME6
       rename -PLUIE${sim}${scas}
 
-      $cmd -m ${mode} -r
+      $cmd -m ${mode} -r -S ECUME6
       rename -RRTM${sim}${scas}
 
-      $cmd -m ${mode} -S
+      $cmd -m ${mode} -S DIRECT
       rename -NOECUM${sim}${scas}
     done
   done

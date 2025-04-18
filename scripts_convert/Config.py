@@ -677,6 +677,9 @@ class Config:
   def set_idealized_seaflux(self):
     self.modify("NAM_SEAFLUXn", "CSEA_FLUX", "'DIRECT'")
 
+  def set_seaflux_model(self, model):
+    self.modify("NAM_SEAFLUXn", "CSEA_FLUX", "'%s'"%model)
+
   def set_modifs_pluie(self):
     self.modify("NAM_NEBn", "CCONDENS", "'GAUS'")
     self.modify("NAM_NEBn", "CLAMBDA3", "'NONE'")

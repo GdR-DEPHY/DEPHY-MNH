@@ -47,6 +47,7 @@ add_opt_arg("-L", "Horizontal domain size", "ngrid_x",     None)
 add_opt_arg("-P", "File to generate PPE",   "htexplo",     None)
 add_opt_arg("-t", "Maximum seg length",     "max_seg",     4)
 add_opt_arg("-a", "Adrien Marcel modifs",   "Adrien",      0)
+add_opt_arg("-S", "SEAFLUX model",          "seaflux",     None)
 add_opt_swt("-z", "Use zorog from case def") # switch
 add_opt_swt("-e", "Deactivate EDKF")         # switch
 add_opt_swt("-r", "ECMW instead of ECRA")    # switch
@@ -55,7 +56,6 @@ add_opt_swt("-M", "MOSAI instead of TSZ0")   # switch
 add_opt_swt("-B", "3D budgets instead of 1D")# switch
 add_opt_swt("-R", "deactivate rain")         # switch
 add_opt_swt("-p", "modif precips Catherine") # switch
-add_opt_swt("-S", "SEAFLUX idealized")       # switch
 
 ## parse command line arguments
 args = parser.parse_args()
@@ -80,7 +80,7 @@ acti_mosa   = args.M
 acti_3Dbudg = args.B
 deac_rain   = args.R
 plui_cath   = args.p
-idea_seaf   = args.S
+seafux_mo   = args.S
 verbosity   = int(args.v)
 
 ## check arguments validity
@@ -122,7 +122,7 @@ log(INFO, "A. Maison surface? : %i"%acti_mosa  , verbosity)
 log(INFO, "3D budgets?        : %i"%acti_3Dbudg, verbosity)
 log(INFO, "Rain deactivated?  : %i"%deac_rain  , verbosity)
 log(INFO, "Precip for Cath?   : %i"%plui_cath  , verbosity)
-log(INFO, "Idealized seaflux? : %i"%idea_seaf  , verbosity)
+log(INFO, "Seaflux model      : %s"%seafux_mo  , verbosity)
 log(INFO, "verbosity          : %i"%verbosity  , verbosity)
 
 ##################
@@ -259,8 +259,10 @@ elif plui_cath:
   if not acti_ice3: log(ERROR, "error: Option -p should be used with -I to activate ICE3", verbosity)
   exseg.set_modifs_pluie()
 
-if idea_seaf:
-  exseg.set_idealized_seaflux()
+if seafux_mo is not None:
+  if not seafux_mo in ["ECUME", "ECUME6", "DIRECT"]:
+    log(ERROR, "error: invalid seaflux model %s for option -S"%model, verbosity)
+  exseg.set_seaflux_model(seafux_mo)
 
 if attributes["radiation"] == "on":
   exseg.activate_radiation(rad='ECMW' if radi_ecmw else 'ECRA')
