@@ -246,7 +246,8 @@ class Config:
       str_zfrc += "%.8f \n"%cas.var_q[0][0]
       str_zfrc += "%i   \n"%cas.nlevs_forcings
       for ik in range(cas.nlevs_forcings):
-        str_zfrc += "%14.1f %14.2f %14.2f %14.2f %14.5f %14.5f %14.10f %14.10f %4.1f %4.1f\n"%(
+        #            z      u_frc  v_frc  th_frc rv_frc w_frc   dth_adv drv_adv du_adv dv_adv
+        str_zfrc += "%14.5f %14.5f %14.5f %14.5f %14.5e %14.10e %14.10e %14.10e %14.10e %14.10e\n"%(
         cas.lev_forcings[ik], cas.var_u_frc[it,ik], cas.var_v_frc[it,ik],
         cas.var_t_frc[it,ik], cas.var_q_frc[it,ik], cas.var_w_frc[it,ik],
         cas.var_t_ten[it,ik], cas.var_q_ten[it,ik], 0., 0.)
