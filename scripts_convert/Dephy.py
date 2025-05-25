@@ -451,6 +451,8 @@ class Case:
     lev_forcings = []
     if self.name_var_t["adv"]!="none": tim_forcings += list(tim_t_ten); lev_forcings+=list(lev_t_ten)
     if self.name_var_q["adv"]!="none": tim_forcings += list(tim_q_ten); lev_forcings+=list(lev_q_ten)
+    if self.name_var_t["nudging"]!="none": tim_forcings += list(tim_t_frc); lev_forcings+=list(lev_t_frc)
+    if self.name_var_q["nudging"]!="none": tim_forcings += list(tim_q_frc); lev_forcings+=list(lev_q_frc)
     if attributes["forc_geo"]: tim_forcings += list(tim_u_frc); lev_forcings+=list(lev_u_frc)
     tim_forcings = np.unique(tim_forcings)
     lev_forcings = np.unique(lev_forcings)

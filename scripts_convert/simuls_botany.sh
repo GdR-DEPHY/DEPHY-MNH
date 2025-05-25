@@ -45,6 +45,21 @@ for sim in $listsim ; do
       $cmd -m ${mode} -S ECUME6 -a 2
       rename -ADRI2${sim}$scas
       
+      $cmd -m ${mode} -S ECUME6 -a 3
+      rename -ADRI3${sim}$scas
+      
+      $cmd -m ${mode} -S ECUME6 -a 4
+      rename -ADRI4${sim}$scas
+      
+      $cmd -m ${mode} -S ECUME6 -a 1 -x 1300
+      rename -ADRI1DX1300${sim}$scas
+      
+      $cmd -m ${mode} -S ECUME6 -a 3 -x 1300
+      rename -ADRI3DX1300${sim}$scas
+      
+      $cmd -m ${mode} -S ECUME6 -a 4 -x 1300
+      rename -ADRI4DX1300${sim}$scas
+      
       $cmd -m ${mode} -S ECUME6 -g ../grilles/grille_BOTANY.txt
       rename -ZTOP7${sim}$scas
       

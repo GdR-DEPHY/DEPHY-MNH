@@ -95,6 +95,11 @@ if not os.path.isdir(output_dir):
   os.system("mkdir -p %s"%output_dir)
 if not sim_mode in ["LES", "CRM", "SCM"]:
   arg_error("invalid simulation mode %s"%sim_mode)
+if (adri_vers == 1 or adri_vers == 2) and acti_ice3 : 
+  arg_error("AM versions 1 and 2 use LIMA microphysics\nSet AM version to 3 or 4 to use ICE3")
+
+# force ICE3 with AM version 3 and 4
+if (adri_vers == 3 or adri_vers == 4) : acti_ice3 = True
 
 inp_file_FC = FC_filename(input_dir, casename, subcasename)
 
@@ -246,6 +251,8 @@ else:
 if adri_vers:
   if adri_vers == 1: exseg.set_adrien_version() # no accr
   if adri_vers == 2: exseg.set_adrien_version(accr="'PRFR'")
+  if adri_vers == 3: exseg.set_adrien_version()
+  if adri_vers == 4: exseg.set_adrien_version(accr="'PRFR'")
 
 if acti_ice3:
   exseg.set_microphysics_scheme("ICE3")

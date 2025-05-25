@@ -57,7 +57,8 @@ dataOut = nc.Dataset(ncfileout,'w')
 
 #Variable pour recuperer les dimensions (= doit toujours etre present)
 varDate = dataIn.variables['time_les'][:]
-varDateB = dataIn.variables['time_budget'][:]
+try: varDateB = dataIn.variables['time_budget'][:]
+except: varDateB=varDate
 varLevel = dataIn.variables['level_les'][:] #Suppression du halo sur la verticale
 #varLevel = dataIn.variables['level_les'][0:95] #Suppression du halo sur la verticale
 
