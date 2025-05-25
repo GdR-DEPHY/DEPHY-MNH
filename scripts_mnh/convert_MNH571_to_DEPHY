@@ -110,9 +110,9 @@ def get_longname(new_var_name):
 
   return longname
 
-def create_var(new_var_name, old_var, vardims, data=None):
+def create_var(new_var_name, old_var, vardims, data=None, units=None):
   vartype = old_var.dtype
-  varunits = old_var.units
+  varunits = old_var.units if units is None else units
   longname = get_longname(new_var_name)
   new_var = dataOut.createVariable(new_var_name, vartype, vardims, fill_value=999)
   if data is None : new_var[:] = old_var[:]
@@ -176,6 +176,12 @@ for var_tot in list_var_tot:
   except (KeyError, IndexError):
     continue
 
+try:
+    dat = Dict_new_var['rv'][:,:,:,:] / (1+Dict_new_var['rt'][:,:,:,:])
+    new_var = create_var("qv", Dict_new_var['rv'], vardims4D, data=dat)
+except KeyError:
+    print("warning: Missing key variable for computation of specific humidity")
+    
 try:
     dat = Dict_new_var['theta'][:,:,:,:] * (Dict_new_var['pf'][:,:,:,:] / 100000.0)**0.286
     new_var = create_var("temp", Dict_new_var['theta'], vardims4D, data=dat)
