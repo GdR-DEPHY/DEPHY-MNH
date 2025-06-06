@@ -36,8 +36,8 @@ listCaseDryShCv   = ["AYOTTE", "IHOP", "BLLAST", "MOSAI"]       # dry shallow c
 listCases = listCaseMoistShCv+listCaseDryShCv+listCaseStable+listCaseDCv
 
 # should this be defined in mesonh rather than here?
-cas_type = {"moistshcv" : {"dx" : 25,  "dy" : 25,  "dz" : 25,   "zbot": 3500},
-            "dcv"       : {"dx" : 200, "dy" : 200, "dz" : None, "zbot": 16500},
+cas_type = {"moistshcv" : {"dx" : 25,  "dy" : 25,  "dz" : 25,   "zbot": 3500}, 
+            "dcv"       : {"dx" : 100, "dy" : 100, "dz" : None, "zbot": 16500},
             "stable"    : {"dx" : 5,   "dy" : 5,   "dz" : None, "zbot": None},
             "dryshcv"   : {"dx" : 25,  "dy" : 25,  "dz" : 25,   "zbot": 3000},
             }
@@ -209,6 +209,7 @@ class Case:
             error("set_vertical_grid",  
               "vertical grid must start at 0 m (defined relative to simulation surface level) or at zs")
       else: 
+          print('self.zgrid',self.zgrid[0],self.zs)
           if (self.zgrid[0] != 0): error("set_vertical_grid", "first level must be 0 m if there is no orography")
     else: self.zgrid = None
 
