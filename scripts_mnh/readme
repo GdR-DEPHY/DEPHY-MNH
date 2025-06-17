@@ -1,7 +1,7 @@
 Mettre le script run_dephy_scm_cases.sh dans un répertoire sous MY_RUN par
 exemple 
 
-WD=$HOME/work/mesonh/MNH-V5-7-1/MY_RUN/DEPHY_SCM/
+WD=$HOME/MNH_new/MNH-V5-7-1-Mosai/MY_RUN/DEPHY_SCM/
 
 mkdir -p $WD
 cp run_dephy_scm_cases.sh $WD
@@ -12,6 +12,10 @@ DIR_NAMElISTS=~/work/dephy/dephy-mnh/output_namelists/
 Copier le script convert_mnh_000 dans ~/.local/bin ou dans le répertoire $WD
 
 cp convert_mnh_000 $WD/
+cp convertMNH570_to_DEPHY_SCM_simple_sans_budget.py $WD/
 
 Aller dans $WD et lancer 
 bash run_dephy_scm_cases.sh > out_run_dephy_scm_cases.log 2>&1 &
+
+Ajout des scripts python qui permettent de faire la conversion des fichiers *000*nc au format commun et en enlevant tous les sous-repertoires
+Attention il y a différents scripts selon qu'on veut ou non activer les bilans (différents pour ICE3 et pour LIMA) et si ou non il  y a de la microphysique froide
