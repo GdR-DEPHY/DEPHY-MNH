@@ -250,7 +250,7 @@ class Config:
         str_zfrc += "%14.5f %14.5f %14.5f %14.5f %14.5e %14.10e %14.10e %14.10e %14.10e %14.10e\n"%(
         cas.lev_forcings[ik], cas.var_u_frc[it,ik], cas.var_v_frc[it,ik],
         cas.var_t_frc[it,ik], cas.var_q_frc[it,ik], cas.var_w_frc[it,ik],
-        cas.var_t_ten[it,ik], cas.var_q_ten[it,ik], 0., 0.)
+        cas.var_t_ten[it,ik], cas.var_q_ten[it,ik], cas.var_u_ten[it,ik], cas.var_v_ten[it,ik])
     self.config["freeformat"]["ZFRC"] = str_zfrc
 
   def set_domain_grid(self, cas):
@@ -689,6 +689,7 @@ class Config:
     self.modify("NAM_PARAM_ICEn", "CSUBG_AUCV_RI", "'ADJU'")
 
   def htexplo_set_parameter(self, param, value):
+    if param == "XCCN_CONC" : param ="XCCN_CONC(:)"
     for nam in self.config:
       if param in self.config[nam]:
         self.modify(nam, param, value)

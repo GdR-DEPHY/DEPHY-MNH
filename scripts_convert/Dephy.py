@@ -162,6 +162,10 @@ class Case:
     # forcing can be either geostrophic or nudging or none
     self.name_var_u["ini"]   = "ua"
     self.name_var_v["ini"]   = "va"
+    
+    self.name_var_u["adv"] = "tnua_adv" if attributes["adv_ua"] else "none"
+    self.name_var_v["adv"] = "tnva_adv" if attributes["adv_ua"] else "none"
+
     if attributes["forc_geo"]: 
       self.name_var_u["frc"] = "ug"
       self.name_var_v["frc"] = "vg"
@@ -314,6 +318,15 @@ class Case:
     else:
       var_u_frc, lev_u_frc, tim_u_frc = None, None, None
       var_v_frc, lev_v_frc, tim_v_frc = None, None, None
+    
+    name_var_u = self.name_var_u["adv"]
+    name_var_v = self.name_var_v["adv"]
+    if name_var_u != "none": 
+      var_u_ten, lev_u_ten, tim_u_ten = get2dvar(name_var_u)
+      var_v_ten, lev_v_ten, tim_v_ten = get2dvar(name_var_v)
+    else:
+      var_u_ten, lev_u_ten, tim_u_ten = None, None, None
+      var_v_ten, lev_v_ten, tim_v_ten = None, None, None
     
     # thermodynamics : frc = nudging | none ; tend = adv | rad | none
     ## T
@@ -505,6 +518,10 @@ class Case:
             tim_t_ten, lev_t_ten, verbosity)
     self.var_q_ten = self.set_none_to_zero_and_interp_to_grid(var_q_ten,
             tim_q_ten, lev_q_ten, verbosity)
+    self.var_u_ten = self.set_none_to_zero_and_interp_to_grid(var_u_ten,
+            tim_u_ten, lev_u_ten, verbosity)
+    self.var_v_ten = self.set_none_to_zero_and_interp_to_grid(var_v_ten,
+            tim_v_ten, lev_v_ten, verbosity)
     # forcings surf
     self.tim_forc_ts = tim_forc_ts
     self.tim_rad_ts = tim_rad_ts
