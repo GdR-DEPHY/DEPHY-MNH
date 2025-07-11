@@ -237,7 +237,6 @@ NAM_DYN    = { # general dynamics
 NAM_DYNn   = { # dynamics for model n (nesting)
   "XTSTEP"            : "60.",
   "CPRESOPT"          : "'CRESI'",
-  "NITR"              : "4",
   "LITRADJ"           : ".TRUE.",
   "LRES"              : ".FALSE.",
   "XRES"              : "1.E-07",
