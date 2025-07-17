@@ -7,6 +7,7 @@ base_cas = {"spinup":4, "hourhf":[]}
 
 CasesOutputs = {
   "BOTANY":{"spinup":0, "hourhf" : []},
+  "CASS":{"spinup":4, "hourhf" : [4, 8]},
   "ARMCU":{"spinup":4, "hourhf" : [4, 8]},
   "BOMEX":{"spinup":4, "hourhf" : [5, 11]},
   "RICO" :{"spinup":4, "hourhf" : [11, 23]}, #, 35, 47, 59, 71

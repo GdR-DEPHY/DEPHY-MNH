@@ -27,7 +27,7 @@ import os
 # KB2006, DYNAMO, MAGIC, FIRE, ISDAC, MPACE
 
 # To add a case to the database, add its name to one of the lists:
-listCaseMoistShCv = ["ARMCU", "BOMEX", "SANDU", "RICO", "SCMS", "FIRE", "BOTANY"] # moist shallow conv
+listCaseMoistShCv = ["ARMCU", "BOMEX", "SANDU", "RICO", "SCMS", "FIRE", "BOTANY","CASS"] # moist shallow conv
 listCaseDCv       = ["LBA", "AMMA", "KB2006", "EUROCS"]         # deep conv
 listCaseStable    = ["GABLS1", "GABLS4"]                        # stable
 listCaseDryShCv   = ["AYOTTE", "IHOP", "BLLAST", "MOSAI"]       # dry shallow conv
@@ -83,6 +83,7 @@ class Case:
     elif casename in listCaseDCv       : self.type = "dcv" 
     elif casename in listCaseStable    : self.type = "stable"
     elif casename in listCaseDryShCv   : self.type = "dryshcv"
+    print('casename',casename,'self.type',self.type)
 
     # name of variable use for initialisation, advection and nudging
     # e.g. for temperature : name_var_t["ini"] = "ta" name_var_t["adv"] = "theta"

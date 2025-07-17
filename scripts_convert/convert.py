@@ -185,6 +185,7 @@ log(INFO, "vertical grid: "+str(cas.zgrid), verbosity)
 
 ## output files 
 ## each seg lasts at most max_seg_len hours (default 4h ; option -t) 
+print('max_seg_len',max_seg_len)
 cas.setup_outputs(verbosity, max_seg_dur = max_seg_len)
 
 ####################

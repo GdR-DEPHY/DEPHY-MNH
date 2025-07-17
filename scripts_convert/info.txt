@@ -24,6 +24,8 @@ python3 convert.py -c LBA -s REF -v 2 -m SCM -i ../../DEPHY-SCM -g ../grilles/gr
 
 python3 convert.py -c MPACE -s REF -v 2 -m LES -i ../../DEPHY-SCM 
 
+python3 convert.py -c CASS -s REF -v 2 -m SCM -i ../../DEPHY-SCM -g ../grilles/grille_mosai.txt -o output_namelists
+
 si orographie alors utilisé l'option -z
 python3 convert.py -c MOSAI -s MAIZE_ADV -v 2 -m LES -i ../../DEPHY-SCM -z -g ../grilles/grille_mosai.txt -o output_namelists
 python3 convert.py -c MOSAI -s MAIZE_ADV_REF -v 2 -m SCM -i ../../DEPHY-SCM -z -g ../grilles/grille_mosai_0.txt -o output_namelists
