@@ -349,7 +349,7 @@ class Config:
               self.modify("NAM_FRC", "LRELAX_UVMEAN_FRC", ".TRUE.")
           self.modify("NAM_FRC", "XRELAX_HEIGHT_FRC", "%f"%cas.xrelax_height_frc)
           self.modify("NAM_FRC", "XRELAX_TIME_FRC", "%f"%cas.xrelax_time_frc)
-    if cas.name_var_u["adv"] == "none" :
+    if cas.name_var_t["adv"] == "none" :
       self.modify("NAM_FRC", "LTEND_THRV_FRC", ".FALSE.")
     else:
       self.modify("NAM_FRC", "LTEND_THRV_FRC", ".TRUE.")
