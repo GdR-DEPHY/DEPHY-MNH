@@ -164,8 +164,8 @@ class Case:
     self.name_var_u["ini"]   = "ua"
     self.name_var_v["ini"]   = "va"
     
-    self.name_var_u["adv"] = "tnua_adv" if attributes["adv_ua"] else "none"
-    self.name_var_v["adv"] = "tnva_adv" if attributes["adv_ua"] else "none"
+    self.name_var_u["adv"] = "tnua_adv" if "adv_ua" in attributes and attributes["adv_ua"] else "none"
+    self.name_var_v["adv"] = "tnva_adv" if "adv_ua" in attributes and attributes["adv_ua"] else "none"
 
     if attributes["forc_geo"]: 
       self.name_var_u["frc"] = "ug"
