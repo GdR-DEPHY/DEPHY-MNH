@@ -11,6 +11,7 @@ contient toutes les namelists
 casename=ARMCU/....
 
 A lancer:
+python3 convert.py -c IHOP -s REF -v 2 -m SCM -i ../../DEPHY-SCM  -o output_namelists
 python3 convert.py -c MOSAI -s MAIZE_ADV -v 2 -m SCM -i ../../DEPHY-SCM -g
 ../grilles/grille_mosai.txt -o output_namelists
 python3 convert.py -c ARMCU -s MESONH -v 2 -m SCM -i ../../DEPHY-SCM -g
