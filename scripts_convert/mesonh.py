@@ -33,7 +33,7 @@ preidea_LES = {
 }
 exseg_LES = {
   "NAM_DYNn"   : { "XTSTEP"     : "1.",
-                   "XT4DIFU"    : "300.",
+                   "XT4DIFU"    : "900.",
                    "CPRESOPT"   : "'ZRESI'",     }, # parallel CRESI
   "NAM_TURBn"  : { "XIMPL"      : "1.",
                    "CTURBLEN"   : "'DEAR'",
@@ -93,7 +93,7 @@ exseg_SCM = {
                    "CDCONV"     : "'KAFR'"      },
   "NAM_DYNn"   : { "XTSTEP"     : "30.",
                    "XT4DIFU"    : "9000."        },# convention 300xtime_step
-  "NAM_TURBn"  : { "CTURBLEN"   :"'BL89'",
+  "NAM_TURBn"  : { "CTURBLEN"   :"'RM17'",
                    "CTURBDIM"   :"'1DIM'"     },
   "NAM_NEBn"  : { "LSUBG_COND" : ".TRUE.",      },# activate subrid condensation
   #"NAM_PARAM_RADn"  : { "XDTRAD"        : "30.",
