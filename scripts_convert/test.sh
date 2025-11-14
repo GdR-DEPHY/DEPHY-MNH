@@ -15,26 +15,27 @@ fi
 set -e
 for cas in $listallcas
 do
+  echo ${listcas[@]}|grep -w -q $cas || continue
   case $cas in 
     RICO|ARMCU) add="-s MESONH";;
     GABLS4) add="-s STAGE3";;
     AYOTTE) add="-s 00SC";;
     MOSAI) add="-s MAIZE";;
     EUROCS|AMMA|KB2006|LBA) add="-z -g ../grilles/grille_dcv.txt" ;;
-    dephycf|GABLS1|ARPEGE|DYNAMO|ISDAC|MAGIC|MPACE|ASTEX|SCMS) echo "$cas -- skip"; continue ;;
+    dephycf|GABLS1|ARPEGE|DYNAMO|ISDAC|MAGIC|MPACE|ASTEX|SCMS) echo "$cas undefined -- skip"; continue ;;
     *) add="";;
   esac
-  echo ${listcas[@]}|grep -w -q $cas || continue
-  echo "$cas"
+  echo "$cas -- try"
   for mode in SCM LES 
   do
-    run="/usr/bin/python3 convert.py -c $cas -i $DIR_DEPHY_SCM -v 3 -o ../output_namelists/ -m $mode $add >> ../logs/log_cas_$cas 2> ../logs/err_cas_$cas "
-    echo $run
+    run="/usr/bin/python3 convert.py -c $cas -i $DIR_DEPHY_SCM -v 3 -t 12 -S ECUME6 -o ../output_namelists/ -m $mode $add >> ../logs/log_cas_$cas 2> ../logs/err_cas_$cas "
+    echo $run >> ../logs/commands
     eval $run
   done
+  echo "$cas -- ok"
 done 
 
-echo "--- test OK ---"
+#echo "--- test OK ---"
 
 ## BOMEX : ok interpolation des forçages sur grille commune à partir des profils du papier
 ## cas pas interpolés en grilles de forçages :
