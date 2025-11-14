@@ -13,6 +13,7 @@ listsim="MNH"
 listcas="006b 006 037 040 045 066 084"
 listcas="006 040 045 066 084"
 listcas="006 037 040 045 066 084"
+listcas="045 066"
 
 MNH=
 out=../namelists_botany/
@@ -20,8 +21,8 @@ mkdir -p $out
 
 rename() {
   ccas=${cas:0:3}
-  #mv conf_PRE_IDEA_${ccas}*_${mode}.nam $out/conf_PRE_IDEA_${cas}${1}${MNH}_${mode}${2}.nam
-  #mv conf_EXSEG00_${ccas}*_${mode}.nam $out/conf_EXSEG00_${cas}${1}${MNH}_${mode}${2}.nam 
+  mv conf_PRE_IDEA_${ccas}*_${mode}.nam $out/conf_PRE_IDEA_${cas}${1}${MNH}_${mode}${2}.nam
+  mv conf_EXSEG00_${ccas}*_${mode}.nam $out/conf_EXSEG00_${cas}${1}${MNH}_${mode}${2}.nam 
 }
 
 cas=BOTANY
@@ -29,8 +30,8 @@ grille="grille_BOTANY_4km"
 
 for sim in $listsim ; do
   for scas in $listcas  ; do
-    cmd="echo python convert.py -v -c $cas -i ../../dephy-scm -s ${sim}$scas -g ../grilles/$grille.txt"
-    for mode in SCM 
+    cmd="python convert.py -c $cas -i ../../dephy-scm -s ${sim}$scas -g ../grilles/$grille.txt"
+    for mode in SCM CRM
     do
       echo $cas ${sim}$scas $mode 
       $cmd -m ${mode} -S ECUME6
@@ -59,6 +60,9 @@ for sim in $listsim ; do
       
       $cmd -m ${mode} -S ECUME6 -a 4 -x 1300
       rename -ADRI4DX1300${sim}$scas
+      
+      $cmd -m ${mode} -S ECUME6 -a 4 -g ../grilles/grille_BOTANY.txt
+      rename -ZTOP7-ADRI${sim}$scas
       
       $cmd -m ${mode} -S ECUME6 -g ../grilles/grille_BOTANY.txt
       rename -ZTOP7${sim}$scas

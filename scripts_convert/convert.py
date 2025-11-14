@@ -70,7 +70,7 @@ output_dir  = args.o
 delta_x     = args.x
 ngrid_x     = args.L
 htexplo     = args.P
-max_seg_len = args.t
+max_seg_len = int(args.t)
 read_zorog  = args.z
 deac_edkf   = args.e
 radi_ecmw   = args.r
@@ -269,7 +269,7 @@ elif plui_cath:
 
 if seafux_mo is not None:
   if not seafux_mo in ["ECUME", "ECUME6", "DIRECT"]:
-    log(ERROR, "error: invalid seaflux model %s for option -S"%model, verbosity)
+    log(ERROR, "error: invalid seaflux model %s for option -S"%seafux_mo, verbosity)
   exseg.set_seaflux_model(seafux_mo)
 
 if attributes["radiation"] == "on":
