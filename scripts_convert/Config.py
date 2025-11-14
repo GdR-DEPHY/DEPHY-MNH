@@ -394,7 +394,7 @@ class Config:
     if iseg == 0:          duration = cas.duration_hour
     elif iseg < len(lseg): duration = lseg[iseg]-lseg[iseg-1]
     else : duration = cas.duration_hour - lseg[iseg-1]
-    spinup_secs = lseg[1]*3600.
+    spinup_secs = cas.do_spinup*3600.
     seg_dur = duration*3600.
 
     self.modify("NAM_CONF",   "CSEG", "'SEG%02i'"%iseg)
@@ -405,20 +405,25 @@ class Config:
       out_frq = -999 ; out_fir = 0 ; bak_frq = seg_dur; bak_fir = 0 
       is_hf = 0
     else:
-      if iseg in [0,1]:   # 0 = mother config, the whole simulation ; 1 = spinup
+      if iseg == 0 :   # 0 = mother config, the whole simulation 
         bak_fir = spinup_secs ; bak_frq = 3600. if self.mode=="LES" else seg_dur
         out_fir = spinup_secs ; out_frq = 1800. if self.mode=="LES" else 3600.
         is_hf = 0
-      else: # >= 2
-        # if last seg was backup (iseg=2 => iseg prec=1=backup = only one backup)
-        # restart from SEGXX.001
-        if iseg == 2 : nbak_in_prev = 1
+      elif iseg == 1 and cas.do_spinup:
+        bak_fir = spinup_secs ; bak_frq = 3600. if self.mode=="LES" else seg_dur
+        out_fir = spinup_secs ; out_frq = 1800. if self.mode=="LES" else 3600.
+        is_hf = 0
+      else: # 1 and no spinup, or >= 2
+        # if last seg was spinup (iseg=2 => iseg prec=1=spinup = only one backup)
+        # restart from SEG01.001
         # else, restart from SEGXX.number_of_hours_in_last_seg
+        if iseg == 2 and cas.do_spinup: nbak_in_prev = 1
         else: nbak_in_prev = lseg[iseg-1]-lseg[iseg-2]
-        prev_name = "%s.1.%s.%03i"%(cas.shortname, "SEG%02i"%(iseg-1),
-                nbak_in_prev)
-        self.modify("NAM_CONF",   "CCONF", "'RESTA'")
-        self.modify("NAM_LUNITn", "CINIFILE", "'%s'"%prev_name)
+        if iseg > 1:  # change resta and ini name 
+          prev_name = "%s.1.%s.%03i"%(cas.shortname, "SEG%02i"%(iseg-1),
+              nbak_in_prev)
+          self.modify("NAM_CONF",   "CCONF", "'RESTA'")
+          self.modify("NAM_LUNITn", "CINIFILE", "'%s'"%prev_name)
         if lseg[iseg-1] in cas.hourhf: # heure d'intérêt
           bak_fir = 3600. ; bak_frq = 3600.
           out_fir = 60.   ; out_frq = 60.

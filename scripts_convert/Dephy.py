@@ -139,6 +139,7 @@ class Case:
         log(WARNING, "will be cut into more segs", verbosity)
     begin_seg = np.unique(begin_seg+more_segs)
     begin_seg.sort()
+    self.do_spinup= caseoutput["spinup"]
     self.nseg = len(begin_seg)
     self.begin_seg = begin_seg
     log(INFO, "beginning of segments"+str(begin_seg), verbosity)
