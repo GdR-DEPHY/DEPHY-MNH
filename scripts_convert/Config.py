@@ -369,10 +369,12 @@ class Config:
       self.modify("NAM_FRC", "XRELAX_TIME_FRC", "%f"%cas.xrelax_time_frc)
 
   def set_buffer_layer(self, cas):
-    if cas.zgrid is not None: 
+    print("zbot=",cas.zbot)
+    if cas.zbot is not None: 
       cas.zbot = min(cas.zbot, cas.zgrid[-2])
-      cas.zbot = max(cas.zbot, cas.zgrid[-1]-1000)
+      #cas.zbot = max(cas.zbot, cas.zgrid[-1]-1000) J'ai commenté parce que je ncomprends pas
       if cas.zgrid[-1] < 2000 : cas.zbot = 1400
+    print("zbot après=",cas.zbot,cas.zgrid[-1])
     self.modify("NAM_DYN", "XALZBOT", "%f"%cas.zbot)
 
   def set_def_budget_zone(self, cas, is_3D=0):
