@@ -20,8 +20,8 @@ mkdir -p $out
 
 rename() {
   ccas=${cas:0:3}
-  mv conf_PRE_IDEA_${ccas}*_${mode}.nam $out/conf_PRE_IDEA_${cas}${1}${MNH}_${mode}${2}.nam
-  mv conf_EXSEG00_${ccas}*_${mode}.nam $out/conf_EXSEG00_${cas}${1}${MNH}_${mode}${2}.nam 
+  #mv conf_PRE_IDEA_${ccas}*_${mode}.nam $out/conf_PRE_IDEA_${cas}${1}${MNH}_${mode}${2}.nam
+  #mv conf_EXSEG00_${ccas}*_${mode}.nam $out/conf_EXSEG00_${cas}${1}${MNH}_${mode}${2}.nam 
 }
 
 cas=BOTANY
@@ -29,15 +29,15 @@ grille="grille_BOTANY_4km"
 
 for sim in $listsim ; do
   for scas in $listcas  ; do
-    cmd="python convert.py -c $cas -i ../../dephy-scm -s ${sim}$scas -g ../grilles/$grille.txt"
+    cmd="echo python convert.py -v -c $cas -i ../../dephy-scm -s ${sim}$scas -g ../grilles/$grille.txt"
     for mode in SCM 
     do
       echo $cas ${sim}$scas $mode 
-      $cmd -m ${mode} -S ECUME
-      rename -ECUM${sim}$scas
-      
       $cmd -m ${mode} -S ECUME6
       rename -ECUM6${sim}$scas
+      
+      $cmd -m ${mode} -S ECUME
+      rename -ECUM${sim}$scas
       
       $cmd -m ${mode} -S ECUME6 -a 1
       rename -ADRI1${sim}$scas
