@@ -21,6 +21,7 @@ do
     GABLS4) add="-s STAGE3";;
     AYOTTE) add="-s 00SC";;
     MOSAI) add="-s MAIZE";;
+    FIRE) add="-s MESONH -g ../grilles/grille_FIRE_10m_1200m_50m_3000m.txt" ;;
     EUROCS|AMMA|KB2006|LBA) add="-z -g ../grilles/grille_dcv.txt" ;;
     dephycf|GABLS1|ARPEGE|DYNAMO|ISDAC|MAGIC|MPACE|ASTEX|SCMS) echo "$cas undefined -- skip"; continue ;;
     *) add="";;
@@ -28,7 +29,7 @@ do
   echo "$cas -- try"
   for mode in SCM LES 
   do
-    run="/usr/bin/python3 convert.py -c $cas -i $DIR_DEPHY_SCM -v 3 -t 12 -S ECUME6 -o ../output_namelists/ -m $mode $add >> ../logs/log_cas_$cas 2> ../logs/err_cas_$cas "
+    run="/usr/bin/python3 convert.py -c $cas -i $DIR_DEPHY_SCM -v 3 -t 12 -S ECUME6 -r -a 4 -o ../output_namelists/ -m $mode $add >> ../logs/log_cas_$cas 2> ../logs/err_cas_$cas "
     echo $run >> ../logs/commands
     eval $run
   done
