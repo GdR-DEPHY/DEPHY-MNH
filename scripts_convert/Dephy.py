@@ -177,7 +177,12 @@ class Case:
       self.name_var_u["frc"] = "ua_nud"
       self.name_var_v["frc"] = "va_nud"
       self.xrelax_time_frc = attributes["nudging_ua"]
-      if self.xrelax_time_frc > -1: self.xrelax_height_frc = attributes["zh_nudging_ua"]
+      if self.xrelax_time_frc > -1:
+        if "zh_nudging_ua" in attributes:
+          self.xrelax_height_frc = attributes["zh_nudging_ua"]
+        elif "pa_nudging_ua" in attributes:
+          #self.xrelax_height_frc = 0  # ? Default 0 ?
+          print("warning: !! cannot read pressure level for nudging yet"); exit(1)
       else: print("cannot handle vertical profile of nudging tau ... yet"); exit(1)
     else:
       self.name_var_u["frc"] = "none"

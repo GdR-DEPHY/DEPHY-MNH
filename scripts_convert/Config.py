@@ -370,11 +370,11 @@ class Config:
 
   def set_buffer_layer(self, cas):
     if cas.zgrid is not None: 
+      print("zbot=",cas.zbot)
       cas.zbot = min(cas.zbot, cas.zgrid[-2])
-      cas.zbot = max(cas.zbot, cas.zgrid[-1]-1000)
-      # PAS TRES SATISFAISANT !!
+      #cas.zbot = max(cas.zbot, cas.zgrid[-1]-1000) J'ai commenté parce que je ncomprends pas
       if cas.zgrid[-1] < 2000 : cas.zbot = 1400
-      if cas.zgrid[-1] < 1500 : cas.zbot = 1100
+      print("zbot après=",cas.zbot,cas.zgrid[-1])
     self.modify("NAM_DYN", "XALZBOT", "%f"%cas.zbot)
 
   def set_def_budget_zone(self, cas, is_3D=0):

@@ -27,7 +27,6 @@
 
 &NAM_DYNn_PRE
   CPRESOPT = 'CRESI',
-  NITR = 4,
   XRELAX = 1.,
   LRES = .FALSE.,
   XRES = 1.E-07,

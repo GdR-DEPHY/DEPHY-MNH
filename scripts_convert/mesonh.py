@@ -597,7 +597,6 @@ NAM_DIMn_PRE = { # pre_idea dimensions
 
 NAM_DYNn_PRE = { # pressure solver
   "CPRESOPT"          : "'CRESI'",
-  "NITR"              : "4",
   "XRELAX"            : "1.",
   "LRES"              : ".FALSE.",
   "XRES"              : "1.E-07",

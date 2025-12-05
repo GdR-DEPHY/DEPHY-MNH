@@ -12,7 +12,6 @@ else
   listcas=$listallcas
 fi
 
-set -e
 for cas in $listallcas
 do
   echo ${listcas[@]}|grep -w -q $cas || continue
@@ -23,17 +22,19 @@ do
     MOSAI) add="-s MAIZE";;
     FIRE) add="-s MESONH -g ../grilles/grille_FIRE_10m_1200m_50m_3000m.txt" ;;
     EUROCS|AMMA|KB2006|LBA) add="-z -g ../grilles/grille_dcv.txt" ;;
-    dephycf|GABLS1|ARPEGE|DYNAMO|ISDAC|MAGIC|MPACE|ASTEX|SCMS) echo "$cas undefined -- skip"; continue ;;
+    dephycf|poub|DICE|DCS|GABLS1|ARPEGE|DYNAMO|ISDAC|MAGIC|MPACE|ASTEX|SCMS) echo "$cas undefined -- skip"; continue ;;
     *) add="";;
   esac
   echo "$cas -- try"
+  err=0
   for mode in SCM LES 
   do
     run="/usr/bin/python3 convert.py -c $cas -i $DIR_DEPHY_SCM -v 3 -t 12 -S ECUME6 -r -a 4 -o ../output_namelists/ -m $mode $add >> ../logs/log_cas_$cas 2> ../logs/err_cas_$cas "
     echo $run >> ../logs/commands
     eval $run
+    err=$(($err+$?))
   done
-  echo "$cas -- ok"
+  if [ $err -eq 0 ] ; then echo "$cas -- ok" ; else echo "$cas -- FAILED"; fi
 done 
 
 #echo "--- test OK ---"

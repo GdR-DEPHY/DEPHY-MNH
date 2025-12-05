@@ -15,7 +15,7 @@ CasesOutputs = {
   "SCMS":{"spinup":4, "hourhf" : [4, 8]},
   "FIRE":{"spinup":4, "hourhf" : [4, 16, 23]},
   #"FIRE":{"spinup":0, "hourhf" : []},
-  "LBA":{"spinup":4, "hourhf" : [4, 6]},
+  "LBA":{"spinup":1, "hourhf" : [4, 6]},
   "AMMA":{"spinup":4, "hourhf" : [4, 7, 8, 9, 10, 11]},
   "KB2006":{"spinup":4, "hourhf" : [6, 12, 36, 60, 75, 90, 105, 119]},
   "EUROCS":base_cas,
