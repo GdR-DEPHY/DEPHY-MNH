@@ -181,8 +181,9 @@ class Case:
         if "zh_nudging_ua" in attributes:
           self.xrelax_height_frc = attributes["zh_nudging_ua"]
         elif "pa_nudging_ua" in attributes:
-          #self.xrelax_height_frc = 0  # ? Default 0 ?
-          print("warning: !! cannot read pressure level for nudging yet"); exit(1)
+          # save pressure in xrelax_height_frc for now, will be converted later
+          # when initial profiles are read and can be used to converted P to z
+          self.xrelax_height_frc = attributes["pa_nudging_ua"]
       else: print("cannot handle vertical profile of nudging tau ... yet"); exit(1)
     else:
       self.name_var_u["frc"] = "none"
@@ -288,6 +289,16 @@ class Case:
       else:
         # use basic exponential function and atmospheric length scale
         lev_u = -H_atm*np.log(-lev_pre_u/p0)
+
+      # if previously stored pa_nudging_ua, needs to be converted
+      if "pa_nudging_ua" in attributes: 
+        pa_nud = self.xrelax_height_frc 
+        if pa_nud > ps:
+          self.xrelax_height_frc = zs
+        elif pa_nud <= np.max(lev_pre_t) and pa_nud >= np.min(lev_pre_t):
+          self.xrelax_height_frc = interp_plev_to_zlev(lev_t, lev_pre_t, pa_nud) 
+        else:
+          self.xrelax_height_frc = -H_atm*np.log(-pa_nud/p0)
 
       #import matplotlib.pyplot as plt
       #plt.plot(lev_pre_t, lev_t, ls="", marker="o")
