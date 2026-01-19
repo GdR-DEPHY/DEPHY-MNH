@@ -1,3 +1,9 @@
+grilles/grille_FIRE_10m_1200m_50m_3000m.txt
+old_namelists_botany/
+output_namelists_save/
+save_namelists_botany/
+save_output_namelists/
+
 pousse_partout.sh
 work/
 logs/
