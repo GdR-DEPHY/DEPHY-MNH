@@ -597,6 +597,11 @@ class Config:
     self.modify("NAM_OUTPUT", "COUT_VAR(1,8)", "'RCT'")
     self.modify("NAM_OUTPUT", "COUT_VAR(1,9)", "'RRT'")
     self.modify("NAM_OUTPUT", "COUT_VAR(1,10)", "'INPRR'")
+    if (moment==2):
+       self.modify("NAM_PARAM_LIMA", "LACTI", ".TRUE.")
+       self.modify("NAM_PARAM_LIMA", "LACTIT", ".TRUE.")
+       self.modify("NAM_PARAM_LIMA", "LKESSLERAC", ".FALSE.")
+       self.modify("NAM_PARAM_LIMA", "NMOD_CCN", "1")
     self.unset_cold_microphysics()
 
   def set_cold_microphysics(self, moment=1):
@@ -610,6 +615,8 @@ class Config:
     self.modify("NAM_OUTPUT", "COUT_VAR(1,11)", "'RIT'")
     self.modify("NAM_OUTPUT", "COUT_VAR(1,12)", "'RST'")
     self.modify("NAM_OUTPUT", "COUT_VAR(1,13)", "'RGT'")
+    if (moment==2):
+       self.modify("NAM_PARAM_LIMA", "NMOD_IFN", "1")
 
   def deactivate_radiation(self):
     self.modify("NAM_PARAMn", "CRAD", "'NONE'")

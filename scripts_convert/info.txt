@@ -10,6 +10,30 @@ est décrit dans le fichier config.py
 contient toutes les namelists
 casename=ARMCU/....
 
+
+OPTIONS pour le convert.py:
+= = = = = = = = = = = = = =
+add_opt_arg("-s", "Subcase name",           "subcasename", "REF")
+add_opt_arg("-m", "Simulation mode",        "sim_mode",    "LES")
+add_opt_arg("-i", "Input files directory",  "input_dir",   "./")
+add_opt_arg("-g", "Grids (zhat) file",      "grid_file",   None)
+add_opt_arg("-o", "Output directory",       "output_dir",  "./")
+add_opt_arg("-v", "Verbosity level [0-3]",  "verbosity",   0)
+add_opt_arg("-x", "Horizontal grid size",   "delta_x",     None)
+add_opt_arg("-L", "Horizontal domain size", "ngrid_x",     None)
+add_opt_arg("-P", "File to generate PPE",   "htexplo",     None)
+add_opt_arg("-t", "Maximum seg length",     "max_seg",     4)
+add_opt_arg("-a", "Adrien Marcel modifs",   "Adrien",      0)
+add_opt_arg("-S", "SEAFLUX model",          "seaflux",     None)
+add_opt_swt("-z", "Use zorog from case def") # switch
+add_opt_swt("-e", "Deactivate EDKF")         # switch
+add_opt_swt("-r", "ECMW instead of ECRA")    # switch
+add_opt_swt("-I", "ICE3 instead of LIMA")    # switch
+add_opt_swt("-M", "MOSAI instead of TSZ0")   # switch
+add_opt_swt("-B", "3D budgets instead of 1D")# switch
+add_opt_swt("-R", "deactivate rain")         # switch
+add_opt_swt("-p", "modif precips Catherine")
+
 A lancer:
 python3 convert.py -c IHOP -s REF -v 2 -m SCM -i ../../DEPHY-SCM  -o output_namelists
 python3 convert.py -c MOSAI -s MAIZE_ADV -v 2 -m SCM -i ../../DEPHY-SCM -g
@@ -19,6 +43,7 @@ python3 convert.py -c ARMCU -s MESONH -v 2 -m SCM -i ../../DEPHY-SCM -g
 python3 convert.py -c ARMCU -s MESONH -v 3 -m CRM -i ../../DEPHY-SCM
 python3 convert.py -c AMMA -s REF -v 2 -m LES -i ../../DEPHY-SCM -g ../grilles/grille_dcv.txt -o output_namelists
 python3 convert.py -c EUROCS -s REF -v 2 -m SCM -i ../../DEPHY-SCM -g ../grilles/grille_dcv.txt   
+python3 convert.py -c KB2006 -s MESONH -v 2 -m LES -i ../../DEPHY-SCM -g ../grilles/grille_dcv.txt    -o output_namelists
 python3 convert.py -c KB2006 -s MESONH -v 2 -m LES -i ../../DEPHY-SCM -g ../grilles/grille_dcv.txt    -o output_namelists
 python3 convert.py -c AMMA -s REF -v 2 -m SCM -i ../../DEPHY-SCM -g ../grilles/grille_dcv.txt -o output_namelists
 python3 convert.py -c LBA -s REF -v 2 -m SCM -i ../../DEPHY-SCM -g ../grilles/grille_dcv.txt -o output_namelists
@@ -37,6 +62,11 @@ pour FIRE CAS SIMPLIFIE
 python3 convert.py -c FIRE -s TESTmnh -v 2 -m SCM -i ../../DEPHY-SCM -g ../grilles/grille_FIRE_10m_1200m_50m_3500m.txt -o output_namelists -S ECUME6 -a 3
 python3 convert.py -c FIRE -s TESTmnh -v 2 -m LES -i ../../DEPHY-SCM -g ../grilles/grille_FIRE_10m_1200m_50m_3500m.txt -o output_namelists -S ECUME6 
 
+A faire
+=> simu LES petit domaine pour voir si ca fait qqchose a l'équilibre.
+2.5kmx2.5km maille 50m 50x50 avec la meme grille verticale
+=> 120hr
+-0.4cm/s
 
 TEST de tous les cas:
 
