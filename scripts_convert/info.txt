@@ -41,6 +41,12 @@ python3 convert.py -c MOSAI -s MAIZE_ADV -v 2 -m SCM -i ../../DEPHY-SCM -g
 python3 convert.py -c ARMCU -s MESONH -v 2 -m SCM -i ../../DEPHY-SCM -g
 ../grilles/grille_mosai.txt -o output_namelists
 python3 convert.py -c ARMCU -s MESONH -v 3 -m CRM -i ../../DEPHY-SCM
+# info pour differents choix de microphysiques
+python3 convert.py -c AMMA -s REF -v 2 -m LES -i ../../DEPHY-SCM -g ../grilles/grille_dcv.txt -o output_namelists
+python3 convert.py -c AMMA -s REF -v 2 -m LES -I -i  ../../DEPHY-SCM -g ../grilles/grille_dcv.txt -o output_namelists # OK pour ICE3
+python3 convert.py -c AMMA -s REF -v 2 -m LES -n 2 -i  ../../DEPHY-SCM -g ../grilles/grille_dcv.txt -o output_namelists # pour LIMA 2 moments
+python3 convert.py -c KB2006 -s REF -v 2 -m LES -I -i  ../../DEPHY-SCM -g ../grilles/grille_dcv.txt -o output_namelists # OK pour ICE3
+python3 convert.py -c KB2006 -s REF -v 2 -m LES -n 2 -i  ../../DEPHY-SCM -g ../grilles/grille_dcv.txt -o output_namelists # pour LIMA 2 moments
 python3 convert.py -c AMMA -s REF -v 2 -m LES -i ../../DEPHY-SCM -g ../grilles/grille_dcv.txt -o output_namelists
 python3 convert.py -c EUROCS -s REF -v 2 -m SCM -i ../../DEPHY-SCM -g ../grilles/grille_dcv.txt   
 python3 convert.py -c KB2006 -s MESONH -v 2 -m LES -i ../../DEPHY-SCM -g ../grilles/grille_dcv.txt    -o output_namelists

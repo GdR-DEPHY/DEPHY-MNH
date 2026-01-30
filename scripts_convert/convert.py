@@ -84,6 +84,7 @@ deac_rain   = args.R
 plui_cath   = args.p
 seafux_mo   = args.S
 verbosity   = int(args.v)
+mpscheme    = ''
 
 ## check arguments validity
 if not casename in listCases: 
@@ -109,6 +110,13 @@ if not os.path.isfile(inp_file_FC):
   arg_error("input FC file %s does not exist"%inp_file_FC)
 
 ###
+if (acti_ice3==True):
+    mpscheme='ICE3'
+else:
+    if (mom == 2):
+      mpscheme='LIMA2M'
+    else:
+      mpscheme=''
 
 log(INFO, "####### SETUP SUMMARY #######" , verbosity)
 log(INFO, "casename           : %s"%casename   , verbosity)
@@ -299,8 +307,8 @@ for i in range(cas.nseg+1):
   log(INFO, "iseg %i from hour %02i to %02i ; is hf ? %1i"%(i,
       exseg.seg_beg/3600, exseg.seg_end/3600, exseg.is_hf), verbosity)
   exseg.reset_seg_surface_forcings(cas, i)
-  exseg.write("%s/conf_EXSEG%02i_%s_%s.nam"%(output_dir,
-      i, cas.name, sim_mode))
+  exseg.write("%s/conf_EXSEG%02i_%s_%s_%s.nam"%(output_dir,
+      i, cas.name, sim_mode, mpscheme))
   if sim_mode == "SCM" : break # only do 00 in SCM mode
 
 # syntax in htexplo file
@@ -320,8 +328,8 @@ if htexplo is not None:
     for i in range(cas.nseg+1):
       exseg.set_outputs(cas, i)
       exseg.reset_seg_surface_forcings(cas, i)
-      exseg.write("%s/conf_EXSEG%02i_%s_%s.nam_%s"%(output_dir,
-          i, cas.name, sim_mode, simu_name))
+      exseg.write("%s/conf_EXSEG%02i_%s_%s_%s.nam_%s"%(output_dir,
+          i, cas.name, sim_mode, mpscheme, simu_name))
       if sim_mode == "SCM" : break # only do 00 in SCM mode
 
 exit()
