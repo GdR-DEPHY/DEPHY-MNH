@@ -48,6 +48,7 @@ add_opt_arg("-P", "File to generate PPE",   "htexplo",     None)
 add_opt_arg("-t", "Maximum seg length",     "max_seg",     4)
 add_opt_arg("-a", "Adrien Marcel modifs",   "Adrien",      0)
 add_opt_arg("-S", "SEAFLUX model",          "seaflux",     None)
+add_opt_arg("-n", "Moment microphysique",   "mom",      1)
 add_opt_swt("-z", "Use zorog from case def") # switch
 add_opt_swt("-e", "Deactivate EDKF")         # switch
 add_opt_swt("-r", "ECMW instead of ECRA")    # switch
@@ -68,6 +69,7 @@ input_dir   = args.i
 grid_file   = args.g
 output_dir  = args.o
 delta_x     = args.x
+mom         = int(args.n)
 ngrid_x     = args.L
 htexplo     = args.P
 max_seg_len = int(args.t)
@@ -117,6 +119,7 @@ log(INFO, "output_dir         : %s"%output_dir , verbosity)
 log(INFO, "grid_file          : %s"%grid_file  , verbosity)
 if delta_x is not None: log(INFO, "delta_x            : %s"%delta_x, verbosity)
 if ngrid_x is not None: log(INFO, "ngrid_x            : %s"%ngrid_x, verbosity)
+if mom is not None: log(INFO, "moments            : %s"%mom, verbosity)
 log(INFO, "htexplo PPE file   : %s"%htexplo    , verbosity)
 log(INFO, "read_zorog?        : %i"%read_zorog , verbosity)
 log(INFO, "deactivate EDKF?   : %i"%deac_edkf  , verbosity)
@@ -245,9 +248,17 @@ if ngrid_x is not None: # for budgets
 if "dryshcv" in cas.type: 
   exseg.set_adjust_microphysics()
 elif "shcv" in cas.type:
-  exseg.set_warm_microphysics()
+  if mom == 2:
+    exseg.set_warm_microphysics(moment=mom)
+    print('set warm microphysics',mom)
+  else:
+    exseg.set_warm_microphysics()
 else:
-  exseg.set_cold_microphysics()
+  if mom == 2:
+    exseg.set_cold_microphysics(moment=mom)
+    print('set cold microphysics',mom)
+  else:
+     exseg.set_cold_microphysics()
 
 if adri_vers:
   if adri_vers == 1: exseg.set_adrien_version() # no accr

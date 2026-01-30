@@ -607,8 +607,8 @@ class Config:
   def set_cold_microphysics(self, moment=1):
     self.set_warm_microphysics(moment=moment)
     self.modify("NAM_PARAM_LIMA", "NMOM_I", "%i"%moment)
-    self.modify("NAM_PARAM_LIMA", "NMOM_S", "%i"%moment)
-    self.modify("NAM_PARAM_LIMA", "NMOM_G", "%i"%moment)
+    self.modify("NAM_PARAM_LIMA", "NMOM_S", "1")
+    self.modify("NAM_PARAM_LIMA", "NMOM_G", "1")
     self.modify("NAM_BU_RRI", "LBU_RRI", ".TRUE.")
     self.modify("NAM_BU_RRS", "LBU_RRS", ".TRUE.")
     self.modify("NAM_BU_RRG", "LBU_RRG", ".TRUE.")
