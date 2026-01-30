@@ -32,7 +32,7 @@ preidea_LES = {
   "NAM_CONFZ"    : { "MPI_BUFFER_SIZE" : "400", },
 }
 exseg_LES = {
-  "NAM_DYNn"   : { "XTSTEP"     : "1.",
+  "NAM_DYNn"   : { "XTSTEP"     : "5.",
                    "XT4DIFU"    : "900.",
                    "CPRESOPT"   : "'ZRESI'",     }, # parallel CRESI
   "NAM_TURBn"  : { "XIMPL"      : "1.",
