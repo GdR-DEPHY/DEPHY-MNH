@@ -68,7 +68,7 @@ exseg_CRM = {
   "NAM_PARAMn" : { "CSCONV"     : "'EDKF'",      }, # activate shallow conv param
   "NAM_DYNn"   : { "XTSTEP"     : "10.",
                    "XT4DIFU"    : "3000.",          # convention 300xtime_step
-                   "CPRESOPT"   : "'ZRESI'",     }, # parallel CRESI
+                   "CPRESOPT"   : "'CRESI'",     }, # parallel CRESI
   #"NAM_PARAM_RADn"  : { "XDTRAD"        : "10.",
   #                      "XDTRAD_CLONLY" : "10.",},
   "NAM_NEBn"  : { "LSUBG_COND" : ".TRUE.",      },# activate subrid condensation
