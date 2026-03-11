@@ -75,6 +75,8 @@ exseg_CRM = {
   "NAM_LES"    : { "XLES_TEMP_SAMPLING"   : "300.",
                    "XLES_TEMP_MEAN_STEP"  : "3600."},
   "NAM_CONDSAMP": { "LCONDSAMP"    : ".TRUE."    },
+  "NAM_PARAM_ICEn": {"CSUBG_AUCV_RC"   : "'PDF'",
+                    "CSUBG_MF_PDF"    : "'TRIANGLE'"},
   "NAM_BUDGET"  : { "NBUIH"        : "%i"%CRM_Nhoriz,
                     "NBUJH"        : "%i"%CRM_Nhoriz, 
                     "NBUKH"        : "%i"%CRM_Nverti,},
@@ -98,6 +100,8 @@ exseg_SCM = {
   "NAM_NEBn"  : { "LSUBG_COND" : ".TRUE.",      },# activate subrid condensation
   #"NAM_PARAM_RADn"  : { "XDTRAD"        : "30.",
   #                      "XDTRAD_CLONLY" : "30.",},
+  "NAM_PARAM_ICEn": {"CSUBG_AUCV_RC"   : "'PDF'",
+                    "CSUBG_MF_PDF"    : "'TRIANGLE'"},
   "NAM_PARAM_MFSHALLn" : {"CMF_UPDRAFT"    :"'EDKF'",
                           "CMF_CLOUD"      :"'DIRE'", 
                           "LMIXUV"         :".TRUE.", 
