@@ -297,7 +297,7 @@ class Config:
         self.modify("NAM_DATA_SEAFLUX", "LSST_DATA", ".TRUE.")
         self.modify("NAM_DATA_SEAFLUX", "NTIME_SST", "%i"%nts)
 # SI MAX /MIN mettre LSST_DATA = .FALSE
-        if (np.min(%cas.var_ts)>= np.max(%cas.var_ts):
+        if (np.min(cas.var_ts)==np.max(cas.var_ts)):
           self.modify("NAM_DATA_SEAFLUX", "LSST_DATA", ".FALSE.")
         for it in range(nts):
           date = cas.start_date + timedelta(seconds = int(cas.tim_forc_ts[it]))
