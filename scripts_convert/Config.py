@@ -296,6 +296,9 @@ class Config:
         self.modify("NAM_PREP_SEAFLUX", "XSST_UNIF", "%f"%cas.var_ts[0])
         self.modify("NAM_DATA_SEAFLUX", "LSST_DATA", ".TRUE.")
         self.modify("NAM_DATA_SEAFLUX", "NTIME_SST", "%i"%nts)
+# SI MAX /MIN mettre LSST_DATA = .FALSE
+        if (np.min(%cas.var_ts)>= np.max(%cas.var_ts):
+          self.modify("NAM_DATA_SEAFLUX", "LSST_DATA", ".FALSE.")
         for it in range(nts):
           date = cas.start_date + timedelta(seconds = int(cas.tim_forc_ts[it]))
           date_secs = time_to_secs(date)
