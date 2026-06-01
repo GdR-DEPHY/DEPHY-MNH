@@ -37,7 +37,7 @@ listCases = listCaseMoistShCv+listCaseDryShCv+listCaseStable+listCaseDCv
 
 # should this be defined in mesonh rather than here?
 cas_type = {"moistshcv" : {"dx" : 25,  "dy" : 25,  "dz" : 25,   "zbot": 3500}, 
-            "dcv"       : {"dx" : 100, "dy" : 100, "dz" : None, "zbot": 16500},
+            "dcv"       : {"dx" : 100, "dy" : 100, "dz" : None, "zbot": 18500},
             "stable"    : {"dx" : 5,   "dy" : 5,   "dz" : None, "zbot": None},
             "dryshcv"   : {"dx" : 25,  "dy" : 25,  "dz" : 25,   "zbot": 3000},
             }
