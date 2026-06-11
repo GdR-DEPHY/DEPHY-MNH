@@ -49,10 +49,12 @@ add_opt_arg("-t", "Maximum seg length",     "max_seg",     4)
 add_opt_arg("-a", "Adrien Marcel modifs",   "Adrien",      0)
 add_opt_arg("-S", "SEAFLUX model",          "seaflux",     None)
 add_opt_arg("-n", "Moment microphysique",   "mom",      1)
+add_opt_arg("-l", "Mixing length for  turbulence", "mix_len",None)
 add_opt_swt("-z", "Use zorog from case def") # switch
 add_opt_swt("-e", "Deactivate EDKF")         # switch
 add_opt_swt("-r", "ECMW instead of ECRA")    # switch
 add_opt_swt("-I", "ICE3 instead of LIMA")    # switch
+add_opt_swt("-K", "KHKO instead of LIMA")    # switch
 add_opt_swt("-M", "MOSAI instead of TSZ0")   # switch
 add_opt_swt("-B", "3D budgets instead of 1D")# switch
 add_opt_swt("-R", "deactivate rain")         # switch
@@ -69,6 +71,7 @@ input_dir   = args.i
 grid_file   = args.g
 output_dir  = args.o
 delta_x     = args.x
+mix_len     = args.l
 mom         = int(args.n)
 ngrid_x     = args.L
 htexplo     = args.P
@@ -78,6 +81,7 @@ deac_edkf   = args.e
 radi_ecmw   = args.r
 adri_vers   = int(args.a)
 acti_ice3   = args.I
+acti_khko   = args.K
 acti_mosa   = args.M
 acti_3Dbudg = args.B
 deac_rain   = args.R
@@ -97,6 +101,9 @@ if not os.path.isdir(output_dir):
   os.system("mkdir -p %s"%output_dir)
 if not sim_mode in ["LES", "CRM", "SCM"]:
   arg_error("invalid simulation mode %s"%sim_mode)
+mix_len_list = ["BL89", "RM17", "DEAR", "HM21","DELT"]
+if mix_len is not None and not mix_len in mix_len_list:
+  arg_error("invalid mixing length %s"%mix_len)
 if (adri_vers == 1 or adri_vers == 2) and acti_ice3 : 
   arg_error("AM versions 1 and 2 use LIMA microphysics\nSet AM version to 3 or 4 to use ICE3")
 
@@ -125,6 +132,8 @@ log(INFO, "deactivate EDKF?   : %i"%deac_edkf  , verbosity)
 log(INFO, "ECMWF rad scheme?  : %i"%radi_ecmw  , verbosity)
 log(INFO, "A. Marcel version? : %i"%adri_vers  , verbosity)
 log(INFO, "ICE3 microphysics? : %i"%acti_ice3  , verbosity)
+log(INFO, "mixing length? : %s"%mix_len  , verbosity)
+log(INFO, "KHKO microphysics? : %i"%acti_khko  , verbosity)
 log(INFO, "A. Maison surface? : %i"%acti_mosa  , verbosity)
 log(INFO, "3D budgets?        : %i"%acti_3Dbudg, verbosity)
 log(INFO, "Rain deactivated?  : %i"%deac_rain  , verbosity)
@@ -244,6 +253,9 @@ exseg.activate_budgets(acti_3Dbudg)
 if ngrid_x is not None: # for budgets
   exseg.horizontal_domain(ngrid_x)
 
+if mix_len is not None :
+  exseg.set_mixinglength(mix_len)
+
 if "dryshcv" in cas.type: 
   exseg.set_adjust_microphysics()
 elif "shcv" in cas.type:
@@ -267,6 +279,10 @@ if adri_vers:
 
 if acti_ice3:
   exseg.set_microphysics_scheme("ICE3")
+
+if acti_khko:
+  exseg.set_microphysics_scheme("KHKO")
+ 
 
 if deac_edkf:
   exseg.deactivate_edkf()

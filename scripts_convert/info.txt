@@ -32,14 +32,22 @@ add_opt_swt("-I", "ICE3 instead of LIMA")    # switch
 add_opt_swt("-M", "MOSAI instead of TSZ0")   # switch
 add_opt_swt("-B", "3D budgets instead of 1D")# switch
 add_opt_swt("-R", "deactivate rain")         # switch
+add_opt_swt("-r", "RM17 instead of BL89")         # switch
 add_opt_swt("-p", "modif precips Catherine")
 
 Pour Quentin
+Deja envoyé: (mais a refaire pour avoir BLL89 par defaut)
 python3 convert.py -c IHOP -s REF -v 2 -m SCM -i ../../DEPHY-SCM  -o output_namelists
 python3 convert.py -c ARMCU -s MESONH -v 2 -m SCM -i ../../DEPHY-SCM  -o output_namelists
 python3 convert.py -c BOMEX -s MESONH -v 2 -m SCM -i ../../DEPHY-SCM -o output_namelists
-python3 convert.py -c FIRE -s MESONH -v 2 -m SCM -i ../../DEPHY-SCM --o output_namelists -S ECUME6 -a 3
+python3 convert.py -c FIRE -s MESONH -v 2 -m SCM -i ../../DEPHY-SCM -o output_namelists -S ECUME6
+python3 convert.py -c FIRE -s MESONH -v 2 -m SCM -K -i ../../DEPHY-SCM -o output_namelists -S ECUME6 # pour avoir KHKO
 python3 convert.py -c GABLS1 -s MESONH -v 2 -m SCM -i ../../DEPHY-SCM  -o output_namelists
+
+New:
+python3 convert.py -c IHOP -s REF -v 2 -m SCM -l RM17 -i ../../DEPHY-SCM  -o output_namelists # RM17 IHOP
+python3 convert.py -c FIRE -s MESONH -v 2 -m SCM -i -r ../../DEPHY-SCM -o output_namelists -S ECUME6 #ECMWF FIRE
+python3 convert.py -c FIRE -s MESONH -v 2 -m SCM -K -r -i ../../DEPHY-SCM -o output_namelists -S ECUME6 # ECMWF KHKO FIRE
 
 A lancer:
 python3 convert.py -c ARMCU -s MESONH -v 2 -m SCM -i ../../DEPHY-SCM -g ../grilles/grille_mosai.txt -o output_namelists

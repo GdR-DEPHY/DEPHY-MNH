@@ -686,6 +686,9 @@ class Config:
   def set_microphysics_scheme(self, scheme): 
     self.modify("NAM_PARAMn", "CCLOUD", scheme if "'" in scheme else "'%s'"%scheme)
 
+  def set_mixinglength(self, scheme): 
+    self.modify("NAM_TURBn", "CTURBLEN", scheme if "'" in scheme else "'%s'"%scheme)
+
   def set_mosai_surface(self):
     self.modify("NAM_PGD_SCHEMES","CNATURE", "'MOSAI'")
     self.modify("NAM_FRAC","LECOCLIMAP", ".FALSE.")
