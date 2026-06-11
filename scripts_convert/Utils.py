@@ -164,6 +164,17 @@ def interp_zlev_to_plev(pp, zz, zlev):
     #print(z[ilev], z[ilev+1], zlev, plev)
     return plev
 
+def lin_interp(var, z, newz):
+  import numpy as np
+  from scipy.interpolate import interp1d
+  nz = len(z)
+  nnz = len(newz)
+  nvar = np.zeros(nnz)
+  interp = interp1d(z, var, bounds_error=False, fill_value=0.)
+  for j, zz in enumerate(newz):
+    nvar[j] = interp(zz)
+  return nvar
+
 def bilin_interp(var, t, z, newt, newz):
     import numpy as np
     from scipy.interpolate import RegularGridInterpolator

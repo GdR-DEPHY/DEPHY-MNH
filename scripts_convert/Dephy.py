@@ -15,7 +15,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from Utils import parse_time, log, error
-from Utils import T_to_theta, P_to_z, interp_plev_to_zlev, interp_zlev_to_plev, H_atm, p0
+from Utils import T_to_theta, P_to_z, lin_interp, interp_plev_to_zlev, interp_zlev_to_plev, H_atm, p0
 from Utils import bilin_interp
 from Utils import ERROR, WARNING, INFO, DEBUG
 from cases_output import CasesOutputs
@@ -28,7 +28,7 @@ import os
 
 # To add a case to the database, add its name to one of the lists:
 listCaseMoistShCv = ["ARMCU", "BOMEX", "SANDU", "RICO", "SCMS", "FIRE", "BOTANY","CASS"] # moist shallow conv
-listCaseDCv       = ["LBA", "AMMA", "KB2006", "EUROCS"]         # deep conv
+listCaseDCv       = ["LBA", "AMMA", "KB2006", "EUROCS", "CIRRUS"]         # deep conv
 listCaseStable    = ["GABLS1", "GABLS4"]                        # stable
 listCaseDryShCv   = ["AYOTTE", "IHOP", "BLLAST", "MOSAI"]       # dry shallow conv
 
@@ -266,7 +266,14 @@ class Case:
       var_v = 0.*var_u+var_v[0][0]
 
     if len(lev_t) != len(lev_q):
-      log(ERROR, "T and q not initialized on the same grid", verbosity)
+      # interp lineaire sur l'union des niveaux t,q
+      lev_tq = np.unique(list(lev_t)+list(lev_q))
+      new_t = lin_interp(var_t, lev_t, lev_tq)
+      new_q = lin_interp(var_q, lev_q, lev_tq)
+      lev_t = lev_q = lev_tq
+      var_t = np.array([new_t])
+      var_q = np.array([new_q])
+      #log(ERROR, "T and q not initialized on the same grid", verbosity)
     
     nlev_init_uv = len(lev_u)
     nlev_init_tq = len(lev_t)

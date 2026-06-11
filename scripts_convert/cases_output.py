@@ -25,4 +25,5 @@ CasesOutputs = {
   "IHOP":{"spinup":4, "hourhf" : [6]},
   "BLLAST":{"spinup":4, "hourhf" : [6]},
   "MOSAI":base_cas,
+  "CIRRUS": base_cas,
 }
