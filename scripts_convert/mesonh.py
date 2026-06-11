@@ -95,7 +95,7 @@ exseg_SCM = {
                    "CDCONV"     : "'KAFR'"      },
   "NAM_DYNn"   : { "XTSTEP"     : "30.",
                    "XT4DIFU"    : "9000."        },# convention 300xtime_step
-  "NAM_TURBn"  : { "CTURBLEN"   :"'RM17'",
+  "NAM_TURBn"  : { "CTURBLEN"   :"'BL89'",
                    "CTURBDIM"   :"'1DIM'"     },
   "NAM_NEBn"  : { "LSUBG_COND" : ".TRUE.",      },# activate subrid condensation
   #"NAM_PARAM_RADn"  : { "XDTRAD"        : "30.",
@@ -361,6 +361,31 @@ NAM_PARAM_ECRADn = { # config radiation scheme
   "NRADLP"            : "1",
   "NRADIP"            : "1",
   "XCLOUD_FRAC_STD"   : "1.0",
+}
+NAM_PARAM_C2R2 = {#config c2r2 scheme
+                    "HPARAM_CCN": "CPB",
+                    "HINI_CCN":"CCN",
+                    "HTYPE_CCN":"X",
+                    "XCHEN":"0.173E+09",
+                    "XKHEN":"1.403",
+                    "XMUHEN":"0.834",		    
+                    "XBETAHEN":"25.499",
+                    "XCONC_CCN": "0.",
+                    "XR_MEAN_CCN":"0.",
+                    "XLOGSIG_CCN":"0.",
+                    "XFSOLUB_CCN":"1.",
+                    "XACTEMP_CCN":"280.0",
+                    "XALPHAC":"3.0",
+                    "XNUC":"1.0",
+                    "XALPHAR":"1.0",
+                    "XNUR": "2.0",
+                    "LRAIN": ".FALSE.",
+                    "LSEDC": ".FALSE." ,
+                    "LACTIT": ".FALSE.",
+                    "LSUPSAT": ".FALSE." ,
+                    "LDEPOC": ".FALSE." ,
+                    "XVDEPOC": "0.02" ,
+                    "LACTTKE": ".TRUE." ,
 }
 
 NAM_PARAM_LIMA = {  # config microphysics scheme
