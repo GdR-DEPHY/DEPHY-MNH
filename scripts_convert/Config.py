@@ -308,6 +308,8 @@ class Config:
           self.modify("NAM_DATA_SEAFLUX", "XTIME_SST(%i)"%(it+1), "%f"%date_secs)
           self.modify("NAM_DATA_SEAFLUX", "XUNIF_SST(%i)"%(it+1), "%f"%cas.var_ts[it])
     elif "land" in sf:
+      if nts > 1 and nts < 25 :
+        nts = 25
       self.modify("NAM_PGD_SCHEMES", "CSEA", "'NONE'")
       self.modify("NAM_PGD_SCHEMES", "CNATURE", "'TSZ0'")
       self.modify("NAM_COVER", "XUNIF_COVER(1)", "0.")
@@ -318,7 +320,8 @@ class Config:
       ## EXIT IF LANDNONE
       if "none" in sf: return
       for it in range(nts-1):
-        dts = cas.var_ts[it+1] - cas.var_ts[it]
+        try: dts = cas.var_ts[it+1] - cas.var_ts[it]
+        except: dts=0
         self.modify("NAM_DATA_TSZ0", "XUNIF_DTS(%i)"%(it+1), "%f"%dts)
       self.modify("NAM_DATA_TSZ0", "XUNIF_DTS(%i)"%(nts), "0.")
       self.modify("NAM_DATA_ISBA", "NTIME", "1")
