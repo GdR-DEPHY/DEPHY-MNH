@@ -1,0 +1,21 @@
+[project]
+name = "dephymnh"
+version = "0.0.0"
+description = "Dephy tools for Meso-NH model"
+readme = "README.md"
+requires-python = ">=3.7"
+authors = [ {name = "najvlf", email = "najda.villefranque@meteo.fr"}, ]
+dependencies=['xarray', 'argparse', 'netCDF4', 'scipy', 'numpy']
+license = "GPL-3.0-or-later"
+license-files = ["COPYING"]
+
+[project.scripts]
+'dmnh_output_coarse_grain' = "dephymnh.cli:output_coarse_grain"
+'dmnh_output_convert_000'  = "dephymnh.cli:output_convert_000"
+'dmnh_namelist_create'     = "dephymnh.cli:namelist_create"
+
+# also keep old script name for now
+'convert_MNH571_to_DEPHY'  = "dephymnh.cli:output_convert_000"
+
+[tool.setuptools]
+script-files = ["bin/dmnh_run_scm_case"]

@@ -1,0 +1,38 @@
+#!/usr/bin/bash
+
+# call this after sourcing dephy-mnh profile and mesonh profile 
+
+usage(){
+  echo "Usage: dmnh_run_scm_case <prep> <exsg> <expe>" 
+  echo "  <prep> conf_PRE*SCM.nam"
+  echo "  <exsg> conf_EXS*SCM.nam"
+  echo "  <expe> experiment_name"
+}
+
+if [ $# -ne 3 ] ; then 
+  usage
+  exit 1
+fi
+
+prep=$1
+exsg=$2
+repo=$3
+
+if [[ "$prep" != *"SCM"* ]] ; then
+  echo "PRE_IDEA file $prep is not SCM"; exit 1;
+fi
+
+if [[ "$exsg" != *"SCM"* ]] ; then
+  echo "EXSEG file $exsg is not SCM"; exit 1;
+fi
+
+mkdir -p $repo
+cp $prep $exsg $repo
+cd $repo
+ln -sf conf*IDEA* PRE_IDEA1.nam
+ln -sf conf*EXSEG* EXSEG1.nam
+time ${MONORUN} PREP_IDEAL_CASE${XYZ} > log_PREP_IDEAL 2>&1
+time ${MONORUN} MESONH${XYZ} > log_MESONH 2>&1
+res=$(ls *SEG00.000.nc)
+dmnh_output_convert_000 -i $res
+cd ..

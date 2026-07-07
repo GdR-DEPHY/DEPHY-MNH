@@ -1,0 +1,69 @@
+# Questions soulevées lors des discussions:
+- lecture des profils initiaux=> création d'un nouvel attribut qui indique sous quelle forme est donné la temperature et l'humidité dans la description des cas
+
+- autour de l'homogénéisation des cas de convection profonde
+=> choix d'un domaine et d'une résolution identique pour les 4 cas [en esperant que 200m est suffisant pour les cas océaniques]
+=> sans doute interessant d'avoir un test de sensibilité au moins pour les 1D et CRM ou on active ou non le rayt (meme en flux forcé) attention de ne pas compter 2 fois les tendances
+
+-autour du forcage en vent:
+=> besoin de réflechir 2 choix possible zo ou ustar => avtge et inconvenient de chacun
+
+-grille verticale:
+pour les cas de cumulus on a opté pour une grille régulière de 25m
+pour les cas de transition on a opté pour une grille variable avec Dz~50m jusqu'a 2700m puis en croissance jusqu'a 250m a 4000m et constant ensuite jusqu'au sommet du domaine
+pour les cas de stratocumulus=> besoin d'avoir une grille plus fine que 25m au niveau de l'inversion
+
+
+Inventaire des variables utilisées pour l'initialisation des cas et des variables choisies pour définir les forcages=> grande variabilité du coup création d'un nouvel attribut (cf point 1)
+
+Une question sur les forcages:
+Dans MNH on ne sait prescrire que les tendances en theta et en rv
+donc quand les tendances sont prescrites en thetal et en rt on les projete (meme valeur) sur theta et rv
+PBM quand on a des tendances prescrites en qt=> QU EST CE QU ON FAIT???
+PBM quand on a des tendances prescrites en T => QU EST CE QU ON FAIT???
+
+
+###### CONFIGS #######
+
+# 1. Cas de couche limite convective sèche et cumulus
+AYOTTE IHOP ARMCU CASS BOMEX RICO
+
+Domaine       Lx=Ly=25.6km, Lz à lire dans le format commun
+Résolutions   dt=1s, dx=dy=dz=25m
+Microphysique LIMA 1 moment
+Turbulence    3D DEARDORFF, LRMC01=T
+Condensation  tout ou rien
+Rayonnement   désactivé
+
+## Tests de sensibilités envisagés
+1) Lx=Ly=100km  ; dx=dy=100m ; condensation tout ou rien
+2) Lx=Ly=25.6km ; dx=dy=100m ; condensation tout ou rien
+3) Lx=Ly=25.6km ; dx=dy=100m ; condensation sous maille
+4) LIMA1 ; activation du mom2 pour eau liquide (NMOM_C=2)
+5) LIMA2 ; activation du mom2 pour eau liquide + pluie (NMOM_C=2+NMOM_R=2)
+6) LIMA3 ; test a l'autoconversion (celle de LIMA, ICE3, KHKO)
+7) LIMA4 ; test au CCN a 100, 300, 1000
+
+## Définition des temps clés pour les différents cas
+# sortie toutes les minutes
+
+# ARMCU
+- début du cas à 11:30 UTC, dure 15 heures
+- spin up les 4 premières heures
+- temps clés 
+  4e à 5e heure (formation des premiers nuages)
+  7e à 8e heure (max de couverture nuageuse)
+
+# 2. Cas de transition vers la convection profonde
+AMMA LBA KB2006 EUROCS
+
+Domaine       Lx=Ly=204.8km, Lz à lire dans le format commun
+Résolutions   dt=1s, dx=dy=dz=200m
+Microphysique LIMA 1 moment
+Turbulence    3D DEARDORFF, LRMC01=T
+Condensation  tout ou rien
+Rayonnement   désactivé (SAUF EUROCS ?)
+
+## Tests de sensibilité envisagés
+1) avec rayonnement interactif en volume
+2) + avec rayonnement interactif en surface
