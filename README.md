@@ -19,10 +19,9 @@ All available commands are prefixed with dmnh_
 
 # Contents:
 
-- COPYING           GNU GPLv3
-- TODO              ongoing work
+- COPYING           Licence terms (GNU GPLv3)
 - grilles/          available vertical grids
-- src/              dephymnh package
+- src/              dephymnh python sources
 - bin/              dephymnh shell scripts
 - misc/             miscellaneous files
 

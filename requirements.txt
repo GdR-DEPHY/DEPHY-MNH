@@ -1,6 +1,6 @@
 certifi==2026.6.17
 cftime==1.6.5
--e git+ssh://gitlab-edstar/edstar/dephy-mnh@41911e121af669ca1b97160887a5a83edfffaf92#egg=dephymnh
+-e git+ssh://gitlab-edstar/edstar/dephy-mnh@d7d526f4144563e324ad8608a15769bfa4a5ab2f#egg=dephymnh
 netCDF4==1.7.4
 numpy==2.5.1
 packaging==26.2
