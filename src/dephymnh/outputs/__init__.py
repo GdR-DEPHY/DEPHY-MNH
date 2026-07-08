@@ -33,8 +33,8 @@ def convert_000(input_file, output_file):
   import netCDF4 as nc
   import sys
   from datetime import datetime
-  from dephy_variables import Dict_attr
-  from mesonh2dephy_variables import Dict_new_varnames_all
+  from dephymnh.outputs.dephy_variables import Dict_attr
+  from dephymnh.outputs.mesonh2dephy_variables import Dict_new_varnames_all
   
   list_bil = ["UU", "VV", "TH", "RV", "RC"]     # in MesoNH file
   list_cs  = ["cart", "neb", "core", "cs1"]     # in MesoNH file
