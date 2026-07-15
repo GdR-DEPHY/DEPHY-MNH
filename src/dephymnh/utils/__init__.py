@@ -164,13 +164,13 @@ def lin_interp(var, z, newz):
   return nvar
 
 def bilin_interp(var, t, z, newt, newz):
-    import numpy as np
-    from scipy.interpolate import RegularGridInterpolator
-    nt = len(t); nz = len(z)
-    nnt = len(newt); nnz = len(newz)
-    nvar = np.zeros((nnt, nnz))
-    interp = RegularGridInterpolator((t, z), var, bounds_error=False, fill_value=0.)
-    for i, tt in enumerate(newt):
-        for j, zz in enumerate(newz):
-            nvar[i,j] = interp([tt,zz])
-    return nvar
+  import numpy as np
+  from scipy.interpolate import RegularGridInterpolator
+  nt = len(t); nz = len(z)
+  nnt = len(newt); nnz = len(newz)
+  nvar = np.zeros((nnt, nnz))
+  interp = RegularGridInterpolator((t, z), var, bounds_error=False, fill_value=0.)
+  for i, tt in enumerate(newt):
+    for j, zz in enumerate(newz):
+      nvar[i,j] = interp([tt,zz]).item()
+  return nvar
