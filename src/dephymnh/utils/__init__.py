@@ -160,7 +160,7 @@ def lin_interp(var, z, newz):
   nvar = np.zeros(nnz)
   interp = interp1d(z, var, bounds_error=False, fill_value=0.)
   for j, zz in enumerate(newz):
-    nvar[j] = interp(zz)
+    nvar[j] = interp(zz).item()
   return nvar
 
 def bilin_interp(var, t, z, newt, newz):
