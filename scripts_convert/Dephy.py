@@ -39,7 +39,7 @@ listCases = listCaseMoistShCv+listCaseDryShCv+listCaseStable+listCaseDCv
 cas_type = {"moistshcv" : {"dx" : 25,  "dy" : 25,  "dz" : 25,   "zbot": 3500}, 
             "dcv"       : {"dx" : 100, "dy" : 100, "dz" : None, "zbot": 18500},
             "stable"    : {"dx" : 5,   "dy" : 5,   "dz" : None, "zbot": None},
-            "dryshcv"   : {"dx" : 25,  "dy" : 25,  "dz" : 25,   "zbot": 3000},
+            "dryshcv"   : {"dx" : 25,  "dy" : 25,  "dz" : 25,   "zbot": 2200},
             }
 
 def FC_filename(dir, cas, subcas):
