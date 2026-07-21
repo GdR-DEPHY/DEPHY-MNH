@@ -4,6 +4,6 @@ logs/
 *pycache*
 *poub*
 simuls*
-*namelists*
 *egg-info*
 *.swp
+*.nam
