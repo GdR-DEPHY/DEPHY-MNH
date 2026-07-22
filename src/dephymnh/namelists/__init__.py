@@ -77,7 +77,7 @@ def create(parser):
   ngrid_x     = args.L
   htexplo     = args.P
   max_seg_len = int(args.t)
-  xalzbot     = float(args.Z)
+  xalzbot     = args.Z
   read_zorog  = args.z
   deac_edkf   = args.e
   radi_ecmw   = args.r
