@@ -379,7 +379,7 @@ class Config:
       if cas.zgrid is not None: 
         cas.zbot = min(cas.zbot, cas.zgrid[-2]) # if default zbot is > ztop, zbot = last layer
         if cas.zgrid[-1] < 2100 : cas.zbot = 1200 # FIRE case ?
-    else: cas.zbot = xalzbot
+    else: cas.zbot = float(xalzbot)
     self.modify("NAM_DYN", "XALZBOT", "%f"%cas.zbot)
 
   def set_def_budget_zone(self, cas, is_3D=0):
