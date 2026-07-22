@@ -643,6 +643,9 @@ class Config:
       self.modify("NAM_BUDGET", "XBULEN", "300")
       self.modify("NAM_BUDGET", "XBUWRI", "300")
 
+  def time_step(self, delta_t):
+    self.modify("NAM_DYNn", "XTSTEP", delta_t)
+
   def horizontal_resolution(self, delta_x):
     self.modify("NAM_GRIDH_PRE", "XDELTAX", delta_x)
     self.modify("NAM_GRIDH_PRE", "XDELTAY", delta_x)

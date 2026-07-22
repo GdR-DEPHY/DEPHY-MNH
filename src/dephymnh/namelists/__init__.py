@@ -44,6 +44,7 @@ def create(parser):
   add_opt_arg("-L", "Horizontal domain size", "ngrid_x",     None)
   add_opt_arg("-P", "File to generate PPE",   "htexplo",     None)
   add_opt_arg("-t", "Maximum seg length",     "max_seg",     4)
+  add_opt_arg("-T", "Time step",              "delta_t",     None)
   add_opt_arg("-a", "Adrien Marcel modifs",   "Adrien",      0)
   add_opt_arg("-S", "SEAFLUX model",          "seaflux",     None)
   add_opt_arg("-n", "Moment microphysique",   "mom",      1)
@@ -70,6 +71,7 @@ def create(parser):
   grid_file   = args.g
   output_dir  = args.o
   delta_x     = args.x
+  delta_t     = args.T
   mix_len     = args.l
   mom         = int(args.n)
   ngrid_x     = args.L
@@ -126,6 +128,7 @@ def create(parser):
   if xalzbot is not None :log(INFO, "xalzbot            : %s"%xalzbot, verbosity)
   if delta_x is not None: log(INFO, "delta_x            : %s"%delta_x, verbosity)
   if ngrid_x is not None: log(INFO, "ngrid_x            : %s"%ngrid_x, verbosity)
+  if delta_t is not None: log(INFO, "delta_t            : %s"%delta_t, verbosity)
   if mom is not None: log(INFO, "moments            : %s"%mom, verbosity)
   log(INFO, "htexplo PPE file   : %s"%htexplo    , verbosity)
   log(INFO, "read_zorog?        : %i"%read_zorog , verbosity)
@@ -253,6 +256,8 @@ def create(parser):
   
   if ngrid_x is not None: # for budgets
     exseg.horizontal_domain(ngrid_x)
+  if delta_t is not None:
+    exseg.time_step(delta_t)
   
   if mix_len is not None :
     exseg.set_mixinglength(mix_len)
