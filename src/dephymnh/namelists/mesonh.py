@@ -122,16 +122,10 @@ exseg_SCM = {
 }
 
 ######################################
-## DEFAULT CONFIGS IN MESO-NH 5.7.0 ##
+## DEFAULT CONFIGS IN MESO-NH 6.0.0 ##
 # modified to match default config  ##
 # in DEPHY project                  ##
 ######################################
-
-NAM_CONFIO = { # I/O file type
-    "LCDF4"           : ".TRUE.",
-    "LLFIOUT"         : ".FALSE.",
-    "LLFIREAD"        : ".FALSE.",
-}
 
 NAM_LUNITn = { # Init file names
     "CINIFILE"        : "'init'",
@@ -217,8 +211,6 @@ NAM_LBCn   = {  # boundary conditions for model n
   "CLBCX(2)"          :"'CYCL'",
   "CLBCY(1)"          :"'CYCL'",
   "CLBCY(2)"          :"'CYCL'",
-  "NLBLX(:)"          : "1",
-  "NLBLY(:)"          : "1",
   "XCPHASE"           : "20.",
   "XCPHASE_PBL"       : "0.",
   "XPOND"             : "1.0",
@@ -276,7 +268,7 @@ NAM_PARAMn = { # activate params for model n
 
 NAM_TURBn  = { # config turbulence
   "XIMPL"             : "1.",
-  "XTKEMIN"           : "1E-10",
+  "XTKEMIN"           : "1E-6",
   "XCED"              : "0.84",
   "XCTP"              : "4.65",
   "XCEI_MIN"          : "0.001E-6",
@@ -347,20 +339,61 @@ NAM_PARAM_MFSHALLn = { # config shallow mass flux scheme
 }
 
 NAM_PARAM_ECRADn = { # config radiation scheme
-  "NSWSOLVER"         : "0",
-  "NLWSOLVER"         : "0",
-  "LSPEC_ALB"         : ".FALSE.",
-  "LSPEC_EMISS"       : ".FALSE.",
-  "SURF_TYPE"         : "'SNOW'",
-  "NREG"              : "3",
-  "NLWSCATTERING"     : "2",
-  "NAERMACC"          : "0",
-  "NOVLP"             : "1",
-  "NLIQOPT"           : "3",
-  "NICEOPT"           : "3",
-  "NRADLP"            : "1",
-  "NRADIP"            : "1",
-  "XCLOUD_FRAC_STD"   : "1.0",
+  "CSW_SOLVER_NAME"                           : "'Tripleclouds'",
+  "CLW_SOLVER_NAME"                           : "'Tripleclouds'",
+  "LDO_SW"                                    : ".TRUE.",
+  "LDO_LW"                                    : ".TRUE.",
+  "LDO_SW_DIRECT"                             : ".TRUE.",
+  "LDO_CLEAR"                                 : ".TRUE.",
+  "LDO_CLOUD_AEROSOL_PER_SW_G_POINT"          : ".TRUE.",
+  "LDO_CLOUD_AEROSOL_PER_LW_G_POINT"          : ".TRUE.",
+  "CGAS_MODEL_NAME"                           : "'RRTMG-IFS'",
+  "CGAS_OPTICS_SW_OVERRIDE_FILE_NAME"         : "",
+  "CGAS_OPTICS_LW_OVERRIDE_FILE_NAME"         : "",
+  "LUSE_AEROSOLS"                             : ".TRUE.",
+  "LUSE_GENERAL_AEROSOL_OPTICS"               : ".FALSE.",
+  "LDO_LW_AEROSOL_SCATTERING"                 : ".TRUE.",
+  "NAEROSOL_TYPES"                            : "12",
+  "CAEROSOL_OPTICS_OVERRIDE_FILE_NAME"        : "'aerosol_ifs_rrtm_49R1.nc'",
+  "CLIQUID_MODEL_NAME"                        : "'SOCRATES'",
+  "CICE_MODEL_NAME"                           : "'Fu-IFS'",
+  "LUSE_GENERAL_CLOUD_OPTICS"                 : ".TRUE.",
+  "LDO_LW_CLOUD_SCATTERING"                   : ".TRUE.",
+  "CLIQ_OPTICS_OVERRIDE_FILE_NAME"            : "",
+  "CICE_OPTICS_OVERRIDE_FILE_NAME"            : "",
+  "CCLOUD_TYPE_NAME"                          : "'mie_droplet'",
+  "LUSE_THICK_CLOUD_SPECTRAL_AVERAGING(:)"    : ".TRUE.",
+  "COVERLAP_SCHEME_NAME"                      : "'Exp-Ran'",
+  "LUSE_BETA_OVERLAP"                         : ".FALSE.",
+  "XCLOUD_INHOM_DECORR_SCALING"               : "1.0",
+  "XCLOUD_FRACTION_THRESHOLD"                 : "1.0E-6",
+  "XCLOUD_MIXING_RATIO_THRESHOLD"             : "1.0E-9",
+  "CCLOUD_PDF_SHAPE_NAME"                     : "'Gamma'",
+  "CCLOUD_PDF_OVERRIDE_FILE_NAME"             : "",
+  "LDO_SW_DELTA_SCALING_WITH_GASES"           : ".FALSE.",
+  "LDO_3D_EFFECTS"                            : ".TRUE.",
+  "LDO_LW_SIDE_EMISSIVITY"                    : ".TRUE.",
+  "CSW_ENTRAPMENT_NAME"                       : "'Explicit'",
+  "LDO_3D_LW_MULTILAYER_EFFECTS"              : ".FALSE.",
+  "XMAX_3D_TRANSFER_RATE"                     : "10.0",
+  "XMAX_GAS_OD_3D"                            : "8.0",
+  "XMAX_CLOUD_OD"                             : "16.0",
+  "LUSE_EXPM_EVERYWHERE"                      : ".FALSE.",
+  "XCLEAR_TO_THICK_FRACTION"                  : "0.0",
+  "XOVERHEAD_SUN_FACTOR"                      : "0.0",
+  "XOVERHANG_FACTOR"                          : "0.0",
+  "LDO_NEAREST_SPECTRAL_SW_ALBEDO"            : ".FALSE.",
+  "LDO_NEAREST_SPECTRAL_LW_EMISS"             : ".FALSE.",
+  "XSW_ALBEDO_WAVELENGTH_BOUND(:)"            : "-10",
+  "XLW_EMISS_WAVELENGTH_BOUND(:)"             : "-10",
+  "ISW_ALBEDO_INDEX(:)"                       : "0",
+  "ILW_EMISS_INDEX(:)"                        : "0",
+  "LDO_WEIGHTED_SURFACE_MAPPING"              : ".TRUE.",
+  "IVERBOSESETUP"                             : "1",
+  "IVERBOSE"                                  : "1",
+  "LDO_SAVE_SPECTRAL_FLUX"                    : ".FALSE.",
+  "LDO_SAVE_GPOINT_FLUX"                      : ".FALSE.",
+  "LDO_SAVE_RADIATIVE_PROPERTIES"             : ".FALSE.",
 }
 NAM_PARAM_C2R2 = {#config c2r2 scheme
                     "HPARAM_CCN": "CPB",
@@ -552,26 +585,24 @@ NAM_NEBn = { # schéma de nuages
 }
 
 NAM_OUTPUT  = {
-  "XOUT_TIME_FREQ(1)"      : "3600", # "-999.",
-  "XOUT_TIME_FREQ_FIRST(1)": "3600", # "0.",
-  "LOUT_BEG"               : ".FALSE.",
-  "LOUT_END"               : ".FALSE.",
-  "LOUT_REDUCE_FLOAT_PRECISION(1)" : ".TRUE.", 
-  "LOUT_COMPRESS(1)"       : ".FALSE.",
-  "NOUT_COMPRESS_LEVEL(1)" : "4",
-  "COUT_VAR(1,1)"          : "'UT'",
-  "COUT_VAR(1,2)"          : "'VT'",
-  "COUT_VAR(1,3)"          : "'WT'",
-  "COUT_VAR(1,4)"          : "'THT'",
-  "COUT_VAR(1,5)"          : "'TKET'",
-  "COUT_VAR(1,6)"          : "'PABST'",
-  "COUT_VAR(1,7)"          : "'RVT'", 
-  "COUT_VAR(1,8)"          : "'RCT'",
-  "COUT_VAR(1,9)"          : "'RRT'",
-  "COUT_VAR(1,10)"         : "'INPRR'",
-  "COUT_VAR(1,11)"         : "'RIT'",
-  "COUT_VAR(1,12)"         : "'RST'",
-  "COUT_VAR(1,13)"         : "'RGT'",
+  "XOUT_TIME_FREQ(1,1)"      : "3600", # "-999.",
+  "XOUT_TIME_FREQ_FIRST(1,1)": "3600", # "0.",
+  "LOUT_BEG(1)"               : ".FALSE.",
+  "LOUT_END(1)"               : ".FALSE.",
+  "LOUT_REDUCE_FLOAT_PRECISION(1,1)" : ".TRUE.", 
+  "COUT_VAR(1,1,1)"          : "'UT'",
+  "COUT_VAR(1,1,2)"          : "'VT'",
+  "COUT_VAR(1,1,3)"          : "'WT'",
+  "COUT_VAR(1,1,4)"          : "'THT'",
+  "COUT_VAR(1,1,5)"          : "'TKET'",
+  "COUT_VAR(1,1,6)"          : "'PABST'",
+  "COUT_VAR(1,1,7)"          : "'RVT'", 
+  "COUT_VAR(1,1,8)"          : "'RCT'",
+  "COUT_VAR(1,1,9)"          : "'RRT'",
+  "COUT_VAR(1,1,10)"         : "'INPRR'",
+  "COUT_VAR(1,1,11)"         : "'RIT'",
+  "COUT_VAR(1,1,12)"         : "'RST'",
+  "COUT_VAR(1,1,13)"         : "'RGT'",
 }
 
 NAM_BU_RTH = { 
@@ -799,7 +830,6 @@ NAM_DEEPSOIL =  {
 }
 
 default_preidea = {
-  "NAM_CONFIO": NAM_CONFIO,
   "NAM_CONFZ": NAM_CONFZ,
   "NAM_LUNITn": NAM_LUNITn,
   "NAM_DIMn_PRE": NAM_DIMn_PRE,
@@ -830,7 +860,6 @@ default_preidea = {
   "freeformat": {},
 }
 default_exseg = {
-  "NAM_CONFIO": NAM_CONFIO,
   "NAM_CONFZ": NAM_CONFZ,
   "NAM_LUNITn": NAM_LUNITn,
   "NAM_BACKUP": NAM_BACKUP,
