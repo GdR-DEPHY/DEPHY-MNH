@@ -1,86 +1,276 @@
-# init dictionary to empty
-Dict_new_varnames_all = {}
+Dict_new_varnames_all = {
 
-# helper function
-def make_dic(cs):
-  # fills dictionary
-  # from Old_varnames and New_varnames lists
-  dic={}
-  for ov, nv in zip(Old_varnames, New_varnames):
-    dic[ov] = nv
-  Dict_new_varnames_all[cs] = dic
+'cart':{
+  'MEAN_TH'  : 'theta',
+  'MEAN_THV' : 'thetav',
+  'MEAN_THL' : 'thetal',
+  'MEAN_RR'  : 'rr',
+  'MEAN_PRE' : 'pfull',
+  'MEAN_U'   : 'ua',
+  'MEAN_V'   : 'va',
+  'MEAN_RHO' : 'rho',
+  'MEAN_RC'  : 'rl',
+  'MEAN_RV'  : 'rv',
+  'MEAN_CF'  : 'cl',
+  'MEAN_RT'  : 'rt',
+  'MEAN_RI'  : 'ri',
+  'MEAN_RS'  : 'rsn',
+  'MEAN_RG'  : 'rg',
+  'RES_W2'   : 'ww_res',
+  'RES_U2'   : 'uu_res',
+  'RES_V2'   : 'vv_res',
+  'RES_WU'   : 'uw_res',
+  'RES_WV'   : 'vw_res',
+  'RES_THL2' : 'thl2_res',
+  'RES_RT2'  : 'rt2_res',
+  'RES_WTHL' : 'wthl_res',
+  'RES_WTHV' : 'wthv_res',
+  'RES_KE'   : 'tke_res',
+  'RES_WRT'  : 'wrt_res',
+  'RES_RV2'  : 'rv2_res',
+  'RES_WTH'  : 'wth_res',
+  'RES_WRV'  : 'wrv_res',
+  'RES_TH2'  : 'th2_res',
+  'SBG_W2'   : 'ww_sbg',
+  'SBG_U2'   : 'uu_sbg',
+  'SBG_V2'   : 'vv_sbg',
+  'SBG_WU'   : 'uw_sbg',
+  'SBG_WV'   : 'vw_sbg',
+  'SBG_THL2' : 'thl2_sbg',
+  'SBG_RT2'  : 'rt2_sbg',
+  'SBG_WTHL' : 'wthl_sbg',
+  'SBG_WTHV' : 'wthv_sbg',
+  'SBG_TKE'  : 'tke_sbg',
+  'SBG_WRT'  : 'wrt_sbg',
+  'THLUP_MF' : 'thetal_up',
+  'RTUP_MF'  : 'rt_up',
+  'RVUP_MF'  : 'rv_up',
+  'RCUP_MF'  : 'rl_up',
+  'RIUP_MF'  : 'ri_up',
+  'WUP_MF'   : 'wa_up',
+  'MAFLX_MF' : 'mf_up',
+  'DETR_MF'  : 'det_up',
+  'ENTR_MF'  : 'ent_up',
+  'FRCUP_MF' : 'alpha_up',
+  'THVUP_MF' : 'thetav_up',
+  'WTHL_MF'  : 'wthl_up',
+  'WRT_MF'   : 'wrt_up',
+  'WTHV_MF'  : 'wthv_up',
+  'WU_MF'    : 'wu_up',
+  'WV_MF'    : 'wv_up',
+  'Q0'       : 'hfss', # !!! TO CONVERT !!!
+  'E0'       : 'hfls', # !!! TO CONVERT !!!
+  'Ustar'    : 'ustar',
+  'Wstar'    : 'wstar',
+  'L_MO'     : 'lmo',
+  'INST_PREC': 'prl', # !!! TO CONVERT !!!
+  'ACCU_PREC': 'acc_sf_rain',
+  'AVG_PTS'  : 'avg',
+  'BL_H'     : 'hpbl',
+  'ZCF2TOT'  : 'clt',
+  'ZCB'      : 'zcb',
+  'LWP'      : 'lwp',
+  'RWP'      : 'rwp',
+  'IWP'      : 'iwp',
+  'LWPVAR'   : 'lwpvar',
+  'SWP'      : 'swp',
+  'GWP'      : 'gwp',
+  'ZMAXCF'   : 'zmaxcf',
+  'SWU'      : 'rsu',
+  'SWD'      : 'rsd',
+  'LWU'      : 'rlu',
+  'LWD'      : 'rld'
+},
 
-# cart (entire domain, no conditional sampling)
-Old_varnames = ['MEAN_TH', 'MEAN_THV', 'MEAN_THL', 'MEAN_RR', 'MEAN_PRE', 'MEAN_U', 'MEAN_V', 'MEAN_RHO', 'MEAN_RC', 'MEAN_RV', 'MEAN_CF', 'MEAN_RT', 'MEAN_RI', 'MEAN_RS', 'MEAN_RG']
-Old_varnames+= ['RES_W2', 'RES_U2', 'RES_V2', 'RES_WU', 'RES_WV', 'RES_THL2', 'RES_RT2', 'RES_WTHL', 'RES_WTHV', 'RES_KE', 'RES_WRT', 'RES_RV2', 'RES_WTH', 'RES_WRV', 'RES_TH2']
-Old_varnames+= ['SBG_W2', 'SBG_U2', 'SBG_V2', 'SBG_WU', 'SBG_WV', 'SBG_THL2', 'SBG_RT2', 'SBG_WTHL', 'SBG_WTHV', 'SBG_TKE', 'SBG_WRT' ]
-Old_varnames+= ['THLUP_MF', 'RTUP_MF', 'RVUP_MF', 'RCUP_MF', 'RIUP_MF', 'WUP_MF', 'MAFLX_MF', 'DETR_MF', 'ENTR_MF', 'FRCUP_MF', 'THVUP_MF', 'WTHL_MF', 'WRT_MF', 'WTHV_MF', 'WU_MF', 'WV_MF']
-Old_varnames+= ['Q0','E0', 'Ustar', 'Wstar', 'L_MO','INST_PREC','ACCU_PREC']
-Old_varnames+= ['AVG_PTS', 'BL_H', 'ZCF2TOT', 'ZCB', 'LWP', 'RWP', 'IWP', 'LWPVAR', 'SWP', 'GWP', 'ZMAXCF']
-Old_varnames+= ['SWU', 'SWD', 'LWU', 'LWD']
+'neb':{
+  'AVG_PTS' : 'alpha_cld',
+  'MEAN_TH' : 'theta_cld',
+  'MEAN_THV': 'thetav_cld',
+  'MEAN_THL': 'thetal_cld',
+  'MEAN_RR' : 'rr_cld',
+  'MEAN_PRE': 'pfull_cld',
+  'MEAN_U'  : 'ua_cld',
+  'MEAN_V'  : 'va_cld',
+  'MEAN_RHO': 'rho_cld',
+  'MEAN_RC' : 'rl_cld',
+  'MEAN_RV' : 'rv_cld',
+  'MEAN_RI' : 'ri_cld',
+  'MEAN_RG' : 'rg_cld',
+  'MEAN_RS' : 'rsn_cld',
+  'MEAN_W'  : 'wa_cld',
+  'MEAN_RT' : 'rt_cld'
+},
 
-New_varnames = ['theta', 'thetav', 'thl', 'rr', 'pf', 'u', 'v', 'rho', 'rl', 'rv', 'rneb', 'rt', 'ri', 'rs', 'rg']
-New_varnames+= ['ww_res', 'uu_res', 'vv_res', 'uw_res', 'vw_res', 'thl2_res', 'rt2_res', 'wthl_res', 'wthv_res', 'tke_res', 'wrt_res', 'rv2_res', 'wth_res', 'wrv_res', 'th2_res']
-New_varnames+= ['ww_sbg','uu_sbg','vv_sbg', 'uw_sbg','vw_sbg', 'thl2_sbg','rt2_sbg','wthl_sbg','wthv_sbg', 'tke_sbg', 'wrt_sbg']
-New_varnames+= ['mf_thlup', 'mf_rtup', 'mf_rvup', 'mf_rcup', 'mf_riup', 'mf_wup', 'mf_maflx', 'mf_detr', 'mf_entr', 'mf_frcup', 'mf_thvup', 'mf_wthl', 'mf_wrt', 'mf_wthv', 'mf_wu', 'mf_wv']
-New_varnames+= ['Q0','E0', 'ustar', 'wstar', 'lmo','sfce_rain','acc_sf_rain']
-New_varnames+= ['avg', 'hpbl', 'zcftot', 'zcb', 'lwp', 'rwp', 'iwp', 'lwpvar', 'swp', 'gwp', 'zmaxcf']
-New_varnames+= ['swu', 'swd', 'lwu', 'lwd']
+'core':{
+  'AVG_PTS' : 'alpha_core',
+  'MEAN_TH' : 'theta_core',
+  'MEAN_THV': 'thetav_core',
+  'MEAN_THL': 'thetal_core',
+  'MEAN_RR' : 'rr_core',
+  'MEAN_PRE': 'pfull_core',
+  'MEAN_U'  : 'ua_core',
+  'MEAN_V'  : 'va_core',
+  'MEAN_RHO': 'rho_core',
+  'MEAN_RC' : 'rl_core',
+  'MEAN_RV' : 'rv_core',
+  'MEAN_RI' : 'ri_core',
+  'MEAN_RG' : 'rg_core',
+  'MEAN_RS' : 'rsn_core',
+  'MEAN_W'  : 'wa_core',
+  'MEAN_RT' : 'rt_core'
+},
 
-make_dic("cart")
+'cs1':{
+  'AVG_PTS' : 'alpha_sam',
+  'MEAN_TH' : 'theta_sam',
+  'MEAN_THV': 'thetav_sam',
+  'MEAN_THL': 'thetal_sam',
+  'MEAN_RR' : 'rr_sam',
+  'MEAN_PRE': 'pfull_sam',
+  'MEAN_U'  : 'ua_sam',
+  'MEAN_V'  : 'va_sam',
+  'MEAN_RHO': 'rho_sam',
+  'MEAN_RC' : 'rl_sam',
+  'MEAN_RV' : 'rv_sam',
+  'MEAN_RI' : 'ri_sam',
+  'MEAN_RG' : 'rg_sam',
+  'MEAN_RS' : 'rsn_sam',
+  'MEAN_W'  : 'wa_sam',
+  'MEAN_RT' : 'rt_sam'
+},
 
-# neb, core and cs1: fractions + atmosphere mean variables
-Old_varnames = ['AVG_PTS']
-Old_varnames+= ['MEAN_TH','MEAN_THV','MEAN_THL','MEAN_RR','MEAN_PRE','MEAN_U','MEAN_V','MEAN_RHO','MEAN_RC', 'MEAN_RV','MEAN_RI','MEAN_RG','MEAN_RS','MEAN_W','MEAN_RT']
+'cs2':{
+  'AVG_PTS': 'alpha_cs2'
+},
 
-New_basename = ['avg']
-New_basename+= ['theta','thetav','thl','rr','pf','u','v', 'rho','rl','rv','ri','rg','rs','w','rt']
+'cs3':{
+  'AVG_PTS': 'alpha_cs3'
+},
 
-New_varnames = [var+"_cld" for var in New_basename]
-make_dic("neb")
+'UU':{
+  'AVEF' : 'tnua_avg',
+  'ASSE' : 'tnua_asse',
+  'INIF' : 'tnua_ini',
+  'ENDF' : 'tnua_end',
+  'FRC'  : 'tnua_frc',
+  'ADV'  : 'tnua_adv',
+  'PRES' : 'tnua_pres',
+  'VTURB': 'tnua_turbv',
+  'HTURB': 'tnua_turbh',
+  'MAFL' : 'tnua_shconv',
+},
 
-New_varnames = [var+"_core" for var in New_basename]
-make_dic("core")
+'VV':{
+  'AVEF' : 'tnva_avg',
+  'ASSE' : 'tnva_asse',
+  'INIF' : 'tnva_ini',
+  'ENDF' : 'tnva_end',
+  'FRC'  : 'tnva_frc',
+  'ADV'  : 'tnva_adv',
+  'PRES' : 'tnva_pres',
+  'VTURB': 'tnva_turbv',
+  'HTURB': 'tnva_turbh',
+  'MAFL' : 'tnva_shconv',
+},
 
-New_varnames = [var+"_sam" for var in New_basename]
-make_dic("cs1")
+'TH':{
+  'RAD'  : 'tntheta_rad',
+  'MAFL' : 'tntheta_shconv',
+  'CORR' : 'tntheta_corr',
+  'GMLT' : 'tntheta_gmlt',
+  'DRYG' : 'tntheta_dryg',
+  'SFR'  : 'tntheta_sfr',
+  'NECON': 'tntheta_necon',
+  'DEPI' : 'tntheta_depi',
+  'ADJU' : 'tntheta_adju',
+  'HTURB': 'tntheta_turbh',
+  'VTURB': 'tntheta_turbv',
+  'NETUR': 'tntheta_netur',
+  'DISSH': 'tntheta_dissh',
+  'ADV'  : 'tntheta_adv',
+  'NEGA' : 'tntheta_nega',
+  'NEADV': 'tntheta_neadv',
+  'AVEF' : 'tntheta_avg',
+  'ENDF' : 'tntheta_end',
+  'INIF' : 'tntheta_ini',
+  'ASSE' : 'tntheta_asse',
+  'FRC'  : 'tntheta_frc',
+  'REVA' : 'tntheta_reva',
+  'BERFI': 'tntheta_berfi',
+  'IMLT' : 'tntheta_imlt',
+  'RIM'  : 'tntheta_rim',
+  'WETG' : 'tntheta_wetg',
+  'CFRZ' : 'tntheta_cfrz',
+  'ACC'  : 'tntheta_acc',
+  'HIN'  : 'tntheta_hin',
+  'HON'  : 'tntheta_hon',
+  'DEPG' : 'tntheta_depg',
+  'DEPS' : 'tntheta_deps',
+  'WETH' : 'tntheta_weth',
+  'HMLT' : 'tntheta_hmlt',
+  'CEDS' : 'tntheta_ceds',
+  'HINC' : 'tntheta_hinc',
+  'HIND' : 'tntheta_hind',
+  'HONC' : 'tntheta_honc',
+  'HONR' : 'tntheta_honr'
+},
 
-# cs2, cs3: fractions only
-Old_varnames = ['AVG_PTS']
-New_basename = ['avg']
+'RV':{
+  'MAFL' : 'tnrv_shconv',
+  'AVEF' : 'tnrv_avg',
+  'ASSE' : 'tnrv_asse',
+  'INIF' : 'tnrv_ini',
+  'ENDF' : 'tnrv_end',
+  'FRC'  : 'tnrv_frc',
+  'ADV'  : 'tnrv_adv',
+  'VTURB': 'tnrv_turbv',
+  'HTURB': 'tnrv_turbh',
+  'DEPI' : 'tnrv_depi',
+  'DEPG' : 'tnrv_depg',
+  'DEPS' : 'tnrv_deps',
+  'REVA' : 'tnrv_reva',
+  'CORR' : 'tnrv_corr',
+  'NEADV': 'tnrv_neadv',
+  'NEGA' : 'tnrv_nega',
+  'NECON': 'tnrv_necon',
+  'NETUR': 'tnrv_netur',
+  'HIN'  : 'tnrv_hin',
+  'ADJU' : 'tnrv_adju',
+  'CORR2': 'tnrv_corr2',
+  'CEDS' : 'tnrv_ceds'
+},
 
-New_varnames = [var+"_cs2" for var in New_basename]
-make_dic("cs2")
+'RC':{
+  'AVEF' : 'tnrl_avg',
+  'ASSE' : 'tnrl_asse',
+  'INIF' : 'tnrl_ini',
+  'ENDF' : 'tnrl_end',
+  'FRC'  : 'tnrl_frc',
+  'ADV'  : 'tnrl_adv',
+  'HTURB': 'tnrl_turbh',
+  'VTURB': 'tnrl_turbv',
+  'DRYG' : 'tnrl_dryg',
+  'DEPI' : 'tnrl_depi',
+  'WETG' : 'tnrl_wetg',
+  'IMLT' : 'tnrl_imlt',
+  'ACCR' : 'tnrl_accr',
+  'CORR' : 'tnrl_corr',
+  'NEADV': 'tnrl_neadv',
+  'NEGA' : 'tnrl_nega',
+  'NECON': 'tnrl_necon',
+  'NETUR': 'tnrl_netur',
+  'HON'  : 'tnrl_hon',
+  'ADJU' : 'tnrl_adju',
+  'AUTO' : 'tnrl_auto',
+  'SEDI' : 'tnrl_sedi',
+  'RIM'  : 'tnrl_rim',
+  'CMEL' : 'tnrl_cmel',
+  'BERFI': 'tnrl_berfi',
+  'DEPO' : 'tnrl_depo',
+  'CORR2': 'tnrl_corr2',
+  'HONC' : 'tnrl_honc',
+  'CEDS' : 'tnrl_ceds',
+  'R2C1' : 'tnrl_r2c1'
+},
 
-New_varnames = [var+"_cs3" for var in New_basename]
-make_dic("cs3")
-
-
-# Bilans
-
-# u, v
-Old_varnames =['AVEF', 'ASSE', 'INIF', 'ENDF','FRC','ADV','PRES','VTURB','HTURB']
-
-New_varnames =['U_budget_avg', 'U_budget_asse', 'U_budget_ini', 'U_budget_end','U_budget_frc','U_budget_adv','U_budget_pres','U_budget_vturb','U_budget_hturb']
-make_dic("UU")
-
-New_varnames =['V_budget_avg', 'V_budget_asse', 'V_budget_ini', 'V_budget_end','V_budget_frc','V_budget_adv','V_budget_pres','V_budget_vturb','V_budget_hturb']
-make_dic("VV")
-
-Old_varnames =['RAD', 'MAFL', 'CORR', 'GMLT', 'DRYG', 'SFR', 'NECON', 'DEPI', 'ADJU', 'HTURB', 'NETUR', 'DISSH', 'ADV', 'NEGA', 'NEADV', 'AVEF', 'ENDF', 'INIF', 'ASSE', 'VTURB', 'FRC', 'REVA', 'BERFI', 'IMLT', 'RIM', 'WETG', 'CFRZ', 'ACC', 'HIN', 'HON', 'DEPG', 'DEPS'] 
-Old_varnames+=['WETH', 'HMLT', 'CEDS', 'HINC', 'HIND', 'HONC', 'HONR'] # lima only
-New_varnames =['TH_budget_rad', 'TH_budget_mafl', 'TH_budget_corr', 'TH_budget_gmlt', 'TH_budget_dryg', 'TH_budget_sfr', 'TH_budget_necon', 'TH_budget_depi', 'TH_budget_adju', 'TH_budget_hturb', 'TH_budget_netur', 'TH_budget_dissh', 'TH_budget_adv', 'TH_budget_nega', 'TH_budget_neadv', 'TH_budget_avg', 'TH_budget_end', 'TH_budget_ini', 'TH_budget_asse', 'TH_budget_vturb', 'TH_budget_frc', 'TH_budget_reva', 'TH_budget_berfi', 'TH_budget_imlt', 'TH_budget_rim', 'TH_budget_wetg', 'TH_budget_cfrz', 'TH_budget_acc', 'TH_budget_hin', 'TH_budget_hon', 'TH_budget_depg', 'TH_budget_deps']
-New_varnames+=['TH_budget_weth', 'TH_budget_hmlt', 'TH_budget_ceds', 'TH_budget_hinc', 'TH_budget_hind', 'TH_budget_honc', 'TH_budget_honr']
-make_dic("TH")
-
-Old_varnames = ['MAFL', 'AVEF', 'ASSE', 'INIF', 'ENDF', 'FRC', 'ADV', 'VTURB', 'HTURB', 'DEPI', 'DEPG', 'DEPS', 'REVA', 'CORR', 'NEADV', 'NEGA', 'NECON', 'NETUR', 'HIN', 'ADJU']
-Old_varnames+=['CORR2', 'CEDS'] # lima only
-New_varnames = ['Rv_budget_mafl', 'Rv_budget_avg', 'Rv_budget_asse', 'Rv_budget_ini', 'Rv_budget_end', 'Rv_budget_frc', 'Rv_budget_adv', 'Rv_budget_vturb', 'Rv_budget_hturb', 'Rv_budget_depi', 'Rv_budget_depg', 'Rv_budget_deps', 'Rv_budget_reva', 'Rv_budget_corr', 'Rv_budget_neadv', 'Rv_budget_nega', 'Rv_budget_necon', 'Rv_budget_netur', 'Rv_budget_hin', 'Rv_budget_adju']
-New_varnames+=['Rv_budget_corr2', 'Rv_budget_ceds']
-make_dic("RV")
-
-Old_varnames =['AVEF', 'ASSE', 'INIF', 'ENDF', 'FRC', 'ADV', 'HTURB', 'VTURB', 'DRYG', 'DEPI', 'WETG', 'IMLT', 'ACCR', 'CORR', 'NEADV', 'NEGA', 'NECON', 'NETUR', 'HON', 'ADJU', 'AUTO', 'SEDI', 'RIM', 'CMEL', 'BERFI']
-Old_varnames+=['DEPO', 'CORR2', 'HONC', 'CEDS', 'R2C1'] # lima only
-New_varnames =['Rc_budget_avg', 'Rc_budget_asse', 'Rc_budget_ini', 'Rc_budget_end', 'Rc_budget_frc', 'Rc_budget_adv', 'Rc_budget_hturb', 'Rc_budget_vturb', 'Rc_budget_dryg', 'Rc_budget_depi', 'Rc_budget_wetg', 'Rc_budget_imlt', 'Rc_budget_accr', 'Rc_budget_corr', 'Rc_budget_neadv', 'Rc_budget_nega', 'Rc_budget_necon', 'Rc_budget_netur', 'Rc_budget_hon', 'Rc_budget_adju', 'Rc_budget_auto', 'Rc_budget_sedi', 'Rc_budget_rim', 'Rc_budget_cmel', 'Rc_budget_berfi']
-New_varnames+=['Rc_budget_depo', 'Rc_budget_corr2', 'Rc_budget_honc', 'Rc_budget_ceds', 'Rc_budget_r2c1']
-make_dic("RC")
+}

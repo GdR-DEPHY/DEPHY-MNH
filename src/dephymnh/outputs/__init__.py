@@ -34,13 +34,14 @@ def convert_000(input_file, output_file):
   import sys
   from datetime import datetime
   from dephymnh.outputs.dephy_variables import Dict_attr
-  from dephymnh.outputs.mesonh2dephy_variables import Dict_new_varnames_all
+  from dephymnh.outputs.output_variables import variables as dephy_outvars
+  from dephymnh.outputs.mesonh2dephy_variables_new import Dict_new_varnames_all
   
   list_bil = ["UU", "VV", "TH", "RV", "RC"]     # in MesoNH file
   list_cs  = ["cart", "neb", "core", "cs1"]     # in MesoNH file
   list_cs_name = ["cld", "core", "sam"]         # in var short name
   list_cs_longname = ["cloud sampling ", "core sampling ", "tracer sampling "]
-  list_variables_convert = ["E0", "Q0"]
+  list_variables_convert = ["E0", "Q0", "INST_PREC"]
   
   dataIn = nc.Dataset(input_file,'r')
   dataOut = nc.Dataset(output_file,'w')
@@ -49,54 +50,73 @@ def convert_000(input_file, output_file):
   varDate = dataIn.variables['time_les'][:]
   try: varDateB = dataIn.variables['time_budget'][:]
   except: varDateB=varDate
-  varLevel = dataIn.variables['level_les'][:] #Suppression du halo sur la verticale
-  #varLevel = dataIn.variables['level_les'][0:95] #Suppression du halo sur la verticale
+  varLevel_h = dataIn.variables['level_w'][1:-1]
+  varLevel_f = dataIn.variables['level'][1:-1]
   
   #### Gestion du Temps
-  timeInterval = varDate[1] - varDate[0]
-  initialTimeSince00h = varDate[1] - timeInterval #La 1ere entree de la variable time est deja avance d'un pas de temps
   varTime = varDate.flatten() 
   varTimeB = varDateB.flatten()
   
   #Creation des Dimensions
   dataOut.createDimension('time', None) # unlimited
   dataOut.createDimension('time_budget', None) # unlimited
-  dataOut.createDimension('levf',size=varLevel.size)
-  dataOut.createDimension('S_N_direction',size=1)
-  dataOut.createDimension('W_E_direction',size=1)
+  dataOut.createDimension('levf',size=varLevel_f.size)
+  dataOut.createDimension('levh',size=varLevel_h.size)
   
   #Variables correspondantes aux dimensions
   levf = dataOut.createVariable('levf', float, ('levf'))
-  levf[:] = varLevel[:]
+  levf[:] = varLevel_f[:]
+  
+  levh = dataOut.createVariable('levh', float, ('levh'))
+  levh[:] = varLevel_h[:]
   
   time = dataOut.createVariable('time', float, ('time'))
   time[:] = varTime[:]
   
   time_budget = dataOut.createVariable('time_budget', float, ('time_budget'))
   time_budget[:] = varTimeB[:]
+
   #Attributs des variables dimensions
-  levelForAtt = dataIn.variables['level'] #pas de [:] sinon conversion en array et perte des attributs
-  levf.setncattr('long_name',levelForAtt.getncattr('long_name'))
-  levf.setncattr('units',levelForAtt.getncattr('units'))
+  def attin(var, att):
+    return dataIn.variables[var].getncattr(att)
+  def dephyatt(var, att):
+    return dephy_outvars[var][att]
+
+  levf.setncattr('standard_name', dephyatt("levf", "standard_name"))
+  levf.setncattr('units',         dephyatt("levf", "units"))
+  levf.setncattr('long_name',     attin("level", "long_name"))
+
+  levh.setncattr('standard_name', dephyatt("levh", "standard_name"))
+  levh.setncattr('units',         dephyatt("levh", "units"))
+  levh.setncattr('long_name',     attin("level_w", "long_name"))
   
-  timeForAtt = dataIn.variables['time_les'] ### Edit Roy
-  time.setncattr('long_name',timeForAtt.getncattr('long_name'))
-  time.setncattr('calendar',timeForAtt.getncattr('calendar'))
-  #Time Units : conservation de la chaine "seconds since date" + conversion du temps (seconds) en HH:MM:SS
-  timeFormatted = timeForAtt.getncattr('units')[:25] 
-  time.setncattr('units',timeFormatted)
+  time.setncattr('standard_name', dephyatt("time", "standard_name"))
+  time.setncattr('units',         dephyatt("time", "units"))
+  time.setncattr('calendar',      attin("time_les", "calendar"))
+  time.setncattr('long_name',     attin("time_les", "long_name"))
   
+  time_budget.setncattr('standard_name', dephyatt("time_budget", "standard_name"))
+  time_budget.setncattr('units',         dephyatt("time_budget", "units"))
+  time_budget.setncattr('calendar',      attin("time_les", "calendar"))
+  if "time_budget" in dataIn.variables:
+    time_budget.setncattr('long_name',     attin("time_budget", "long_name"))
+  
+  def lnm(n):
+    if n in dephy_outvars:
+      return dephy_outvars[n]["standard_name"]
+    elif n in Dict_attr:
+      return Dict_attr[n]
+    else: return None
+
   def get_longname(new_var_name):
-    if new_var_name in Dict_attr:
-      longname = Dict_attr[new_var_name]
-    else:
+    longname = lnm(new_var_name)
+    if longname is None:
       for cs,nam in zip(list_cs_name, list_cs_longname):
         if cs in new_var_name:
           cart_name = new_var_name.split("_"+cs)[0]
-          longname = nam+Dict_attr[cart_name]
+          longname = nam+lnm(cart_name)
     try: longname
     except NameError : print(new_var_name); raise
-  
     return longname
   
   def create_var(new_var_name, old_var, vardims, data=None, units=None):
@@ -106,24 +126,36 @@ def convert_000(input_file, output_file):
     new_var = dataOut.createVariable(new_var_name, vartype, vardims, fill_value=999)
     if data is None : new_var[:] = old_var[:]
     else: new_var[:] = data[:]
+    print(new_var_name, longname)
     new_var.long_name = longname
     new_var.units = varunits #setncattr('units', old_var.getncattr('units'))
     return new_var
   
   def convert(var, old_var, new_var):
-    if(var == 'Q0'): #Flux de chaleur sensible surface m K s-1 ==> W/m2
-      new_var[:] = new_var[:] * Dict_new_var['rho'][:,0,0,0] * 1004.9
+    if(var == 'Q0')or(var == 'hfss'):
+      #Flux de chaleur sensible surface m K s-1 ==> W/m2
+      new_var[:] = new_var[:] * Dict_new_var['rho'][:,0] * 1004.9
       new_var.units = 'W m-2'
     
-    if(var == 'E0'): #Flux de chaleur latente surface kg kg-1 ms-1 ==> W/m2
-      new_var[:] = new_var[:] * Dict_new_var['rho'][:,0,0,0] * 2500000.0
+    if(var == 'E0')or(var == 'hfls'):
+      #Flux de chaleur latente surface kg kg-1 ms-1 ==> W/m2
+      new_var[:] = new_var[:] * Dict_new_var['rho'][:,0] * 2500000.0
       new_var.units = 'W m-2'
+
+    if(var == 'INST_PREC')or(var == 'prl'):
+      # Flux de precip surface mm day-1 -> kg m-2 s-1
+      rho_w = 1000.
+      mm_to_m = 1e-3
+      perday_to_persec = 1./86400
+      new_var[:] = new_var[:]*mm_to_m*rho_w*perday_to_persec
   
     return new_var
   
   vardims4D = ('time', 'levf', 'S_N_direction','W_E_direction')
+  vardims2D = ('time', 'levf')
   vardims1D = ('time',)
   buddims4D = ('time_budget', 'levf', 'S_N_direction','W_E_direction')
+  buddims2D = ('time_budget', 'levf')
   buddims1D = ('time_budget',)
   
   def extract_group(groupe, bilan=False):
@@ -131,12 +163,30 @@ def convert_000(input_file, output_file):
       for var in dataIn[groupe].variables:
         if var in Dict_new_varnames.keys():
           old_var = dataIn[groupe].variables[var]
-          vardims = vardims4D if len(old_var.shape)==2 else vardims1D
-          if bilan: vardims=buddims4D
-          new_var = create_var(Dict_new_varnames[var], old_var, vardims)
+
+          # new var name 
+          new_varname = Dict_new_varnames[var]
+
+          # new var dimensions 
+          new_vardims = vardims2D if len(old_var.shape)==2 else vardims1D
+          if bilan: new_vardims=buddims2D
+
+          # new var units
+          if new_varname in dephy_outvars:
+            new_varunits = dephy_outvars[new_varname]["units"]
+          else: new_varunits = None
+
+          # create new var
+          print(var)
+          new_var = create_var(new_varname, old_var, new_vardims, units=new_varunits)
+
+          # convert new var values if necessary
           if var in list_variables_convert:
             new_var = convert(var, old_var, new_var)
+
+          # add new var to dict
           Dict_new_var[Dict_new_varnames[var]] = new_var
+
     except (KeyError,IndexError):
       return
   
@@ -156,26 +206,29 @@ def convert_000(input_file, output_file):
     extract_group(groupe, bilan=True)
   
   # Processing variables
-  list_var_tot = ['wrt', 'wthl', 'uu', 'vv', 'ww', 'tke', 'uw', 'vw', 'thl2', 'rt2', 'wrv', 'wth', 'th2', 'rv2']
+  list_var_tot  = ['wrt', 'wthl', 'wrv', 'wth']
+  list_var_tot += ['uu', 'vv', 'ww', 'tke', 'uw', 'vw']
+  list_var_tot += ['thl2', 'rt2', 'th2', 'rv2']
   for var_tot in list_var_tot:
     try:
       old_var = Dict_new_var[var_tot+"_res"]
-      dat_tot = Dict_new_var[var_tot+"_res"][:,:,:,:]+Dict_new_var[var_tot+"_sbg"][:,:,:,:]
-      create_var(var_tot, old_var, vardims4D, data=dat_tot)
+      dat_tot = Dict_new_var[var_tot+"_res"][:,:]+Dict_new_var[var_tot+"_sbg"][:,:]
+      create_var(var_tot, old_var, vardims2D, data=dat_tot)
     except (KeyError, IndexError):
       continue
-  
+
   try:
-      dat = Dict_new_var['rv'][:,:,:,:] / (1+Dict_new_var['rt'][:,:,:,:])
-      new_var = create_var("qv", Dict_new_var['rv'], vardims4D, data=dat)
+    dat = Dict_new_var['rv'][:,:] / (1+Dict_new_var['rt'][:,:])
+    new_var = create_var("qv", Dict_new_var['rv'], vardims2D, data=dat)
   except KeyError:
-      print("warning: Missing key variable for computation of specific humidity")
+    print("warning: Missing key variable for computation of specific humidity")
       
   try:
-      dat = Dict_new_var['theta'][:,:,:,:] * (Dict_new_var['pf'][:,:,:,:] / 100000.0)**0.286
-      new_var = create_var("temp", Dict_new_var['theta'], vardims4D, data=dat)
+    dat = Dict_new_var['theta'][:,:] * (Dict_new_var['pfull'][:,:] / 100000.0)**0.286
+    new_var = create_var("temp", Dict_new_var['theta'], vardims2D, data=dat)
   except KeyError:
-      print("warning: Missing key variable for computation of temperature")
+    print("warning: Missing key variable for computation of temperature")
+
       
   dataOut.case = output_file
   dataOut.version = "Created on " + str(datetime.now())
@@ -186,6 +239,10 @@ def convert_000(input_file, output_file):
   dataOut.close()
   dataIn.close()
 
+
+##########################
+# COARSE GRAIN 3D FIELDS #
+##########################
 
 def init_coarse_grain(parser):
   parser.add_argument("-i", help="input netCDF file", metavar="input_file", required=True)
