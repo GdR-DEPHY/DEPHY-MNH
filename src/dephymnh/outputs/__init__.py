@@ -96,12 +96,12 @@ def convert_000(input_file, output_file):
   levh.setncattr('long_name',     attin("level_w", "long_name"))
   
   time.setncattr('standard_name', dephyatt("time", "standard_name"))
-  time.setncattr('units',         dephyatt("time", "units"))
+  time.setncattr('units',         attin("time_les", "units"))
   time.setncattr('calendar',      attin("time_les", "calendar"))
   time.setncattr('long_name',     attin("time_les", "long_name"))
   
   time_budget.setncattr('standard_name', dephyatt("time_budget", "standard_name"))
-  time_budget.setncattr('units',         dephyatt("time_budget", "units"))
+  time_budget.setncattr('units',         attin("time_budget", "units"))
   time_budget.setncattr('calendar',      attin("time_les", "calendar"))
   if "time_budget" in dataIn.variables:
     time_budget.setncattr('long_name',     attin("time_budget", "long_name"))
@@ -192,6 +192,9 @@ def convert_000(input_file, output_file):
 
     except (KeyError,IndexError):
       return
+
+  # add variable dimensions 
+  new_var = create_var("zfull", levf, ("levf",), data=levf[:])
   
   Dict_new_var = {}
   
@@ -241,7 +244,11 @@ def convert_000(input_file, output_file):
       for tendname, list_tends in zip(["warm", "cold"], [list_warm, list_cold]): 
         list_vars = ['tn%s_%s'%(vv, tend) for tend in list_tends]
         dat = np.sum(np.array([Dict_new_var[var][:,:] for var in list_vars if var in Dict_new_var]), axis=0)
-        new_var = create_var("tn%s_micro_%s"%(vv, tendname), Dict_new_var['tn%s_adv'%vv], buddims2D, data=dat)
+        new_varname="tn%s_micro_%s"%(vv, tendname)
+        new_var = create_var(new_varname, Dict_new_var['tn%s_adv'%vv], buddims2D, data=dat)
+        Dict_new_var[new_varname] = new_var
+      dat = np.sum(np.array([Dict_new_var["tn%s_micro_%s"%(vv, uu)][:,:] for uu in ["warm", "cold"]]), axis=0)
+      new_var = create_var("tn%s_micro"%(vv), Dict_new_var['tn%s_micro_warm'%vv], buddims2D, data=dat)
     except:
       print("warning: Missing key variable for computation of microphysics budgets for var %s"%vv)
       
