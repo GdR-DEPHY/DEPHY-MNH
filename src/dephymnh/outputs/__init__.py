@@ -31,11 +31,12 @@ def convert_000(input_file, output_file):
   convert 000 outputs from MNH571 to dephy format
   """
   import netCDF4 as nc
+  import numpy as np
   import sys
   from datetime import datetime
   from dephymnh.outputs.dephy_variables import Dict_attr
   from dephymnh.outputs.output_variables import variables as dephy_outvars
-  from dephymnh.outputs.mesonh2dephy_variables_new import Dict_new_varnames_all
+  from dephymnh.outputs.mesonh2dephy_variables import Dict_new_varnames_all
   
   list_bil = ["UU", "VV", "TH", "RV", "RC"]     # in MesoNH file
   list_cs  = ["cart", "neb", "core", "cs1"]     # in MesoNH file
@@ -65,15 +66,19 @@ def convert_000(input_file, output_file):
   
   #Variables correspondantes aux dimensions
   levf = dataOut.createVariable('levf', float, ('levf'))
+  levf.axis="Z"
   levf[:] = varLevel_f[:]
   
   levh = dataOut.createVariable('levh', float, ('levh'))
+  levh.axis="Z"
   levh[:] = varLevel_h[:]
   
   time = dataOut.createVariable('time', float, ('time'))
+  time.axis="T"
   time[:] = varTime[:]
   
   time_budget = dataOut.createVariable('time_budget', float, ('time_budget'))
+  time_budget.axis="T"
   time_budget[:] = varTimeB[:]
 
   #Attributs des variables dimensions
@@ -126,7 +131,6 @@ def convert_000(input_file, output_file):
     new_var = dataOut.createVariable(new_var_name, vartype, vardims, fill_value=999)
     if data is None : new_var[:] = old_var[:]
     else: new_var[:] = data[:]
-    print(new_var_name, longname)
     new_var.long_name = longname
     new_var.units = varunits #setncattr('units', old_var.getncattr('units'))
     return new_var
@@ -177,7 +181,6 @@ def convert_000(input_file, output_file):
           else: new_varunits = None
 
           # create new var
-          print(var)
           new_var = create_var(new_varname, old_var, new_vardims, units=new_varunits)
 
           # convert new var values if necessary
@@ -229,6 +232,18 @@ def convert_000(input_file, output_file):
   except KeyError:
     print("warning: Missing key variable for computation of temperature")
 
+  # each list includes terms from both LIMA and ICE3, the program will
+  # automatically sum over variables that are present in the file
+  list_warm = ['accr', 'auto', 'ceds', 'r2c1', 'sedi', 'acc', 'reva', 'adju']
+  list_cold = ['berfi', 'depg', 'depi', 'deps', 'dryg', 'honc', 'honr', 'hmlt', 'imlt', 'gmlt', 'cfrz', 'rim', 'wetg', 'weth', 'depo']
+  for vv in ['theta', 'rv', 'rl']:
+    try:
+      for tendname, list_tends in zip(["warm", "cold"], [list_warm, list_cold]): 
+        list_vars = ['tn%s_%s'%(vv, tend) for tend in list_tends]
+        dat = np.sum(np.array([Dict_new_var[var][:,:] for var in list_vars if var in Dict_new_var]), axis=0)
+        new_var = create_var("tn%s_micro_%s"%(vv, tendname), Dict_new_var['tn%s_adv'%vv], buddims2D, data=dat)
+    except:
+      print("warning: Missing key variable for computation of microphysics budgets for var %s"%vv)
       
   dataOut.case = output_file
   dataOut.version = "Created on " + str(datetime.now())
