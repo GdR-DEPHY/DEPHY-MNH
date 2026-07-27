@@ -39,8 +39,11 @@ Ls=2.8345e6
 Lf=Ls-Lv
 # Derived constant
 kappa=Rd/Cpd
+eps=Rv/Rd-1.0
 # atmo scale for basic pressure profile (m)
 H_atm = 8000
+# Stefan-Boltzmann constant
+sigma = 5.67e-8 # W m-2 K-4
 
 def log(lev, msg, verb):
   if verb>=lev: print("%s %s"%(">"*(lev), msg))

@@ -4,6 +4,8 @@ dephy mnh outputs
 
 import os
 
+from dephymnh.utils import g, Lv, Cpd
+
 def init_convert_000(parser):
   parser.add_argument("-i", help="input", metavar="input_file", required=True)
   parser.add_argument("-o", help="output file", metavar="output_file")
@@ -138,12 +140,12 @@ def convert_000(input_file, output_file):
   def convert(var, old_var, new_var):
     if(var == 'Q0')or(var == 'hfss'):
       #Flux de chaleur sensible surface m K s-1 ==> W/m2
-      new_var[:] = new_var[:] * Dict_new_var['rho'][:,0] * 1004.9
+      new_var[:] = new_var[:] * Dict_new_var['rho'][:,0] * Cpd
       new_var.units = 'W m-2'
     
     if(var == 'E0')or(var == 'hfls'):
       #Flux de chaleur latente surface kg kg-1 ms-1 ==> W/m2
-      new_var[:] = new_var[:] * Dict_new_var['rho'][:,0] * 2500000.0
+      new_var[:] = new_var[:] * Dict_new_var['rho'][:,0] * Lv
       new_var.units = 'W m-2'
 
     if(var == 'INST_PREC')or(var == 'prl'):
@@ -194,7 +196,7 @@ def convert_000(input_file, output_file):
       return
 
   # add variable dimensions 
-  new_var = create_var("zfull", levf, ("levf",), data=levf[:])
+  create_var("zfull", levf, ("levf",), data=levf[:])
   
   Dict_new_var = {}
   
@@ -217,23 +219,58 @@ def convert_000(input_file, output_file):
   list_var_tot += ['thl2', 'rt2', 'th2', 'rv2']
   for var_tot in list_var_tot:
     try:
-      old_var = Dict_new_var[var_tot+"_res"]
-      dat_tot = Dict_new_var[var_tot+"_res"][:,:]+Dict_new_var[var_tot+"_sbg"][:,:]
+      res = var_tot+"_res"
+      sbg = var_tot+"_sbg"
+      if   res in Dict_new_var.keys() and not sbg in Dict_new_var.keys():
+        # only res in file, create sbg = 0 and tot = res
+        old_var = Dict_new_var[res]
+        dat_tot = Dict_new_var[res][:,:]
+        create_var(sbg, old_var, vardims2D, data=dat_tot*0)
+      elif sbg in Dict_new_var.keys() and not res in Dict_new_var.keys():
+        # only sbg in file, create res = 0 and tot = sbg
+        old_var = Dict_new_var[sbg]
+        dat_tot = Dict_new_var[sbg][:,:]
+        create_var(res, old_var, vardims2D, data=dat_tot*0)
+      else:
+        # both sbg and res in file, tot = sbg+res
+        old_var = Dict_new_var[res]
+        dat_tot = Dict_new_var[res][:,:]+Dict_new_var[sbg][:,:]
       create_var(var_tot, old_var, vardims2D, data=dat_tot)
     except (KeyError, IndexError):
       continue
 
-  try:
-    dat = Dict_new_var['rv'][:,:] / (1+Dict_new_var['rt'][:,:])
-    new_var = create_var("qv", Dict_new_var['rv'], vardims2D, data=dat)
-  except KeyError:
-    print("warning: Missing key variable for computation of specific humidity")
+  for specie in ["v","i","l","r","g","sn"]:
+    try:
+      dat = Dict_new_var['r%s'%specie][:,:] / (1+Dict_new_var['rt'][:,:])
+      create_var("q%s"%specie, Dict_new_var['r%s'%specie], vardims2D, data=dat)
+    except KeyError:
+      print("warning: Missing key variable for computation of q%s. Will be set to zero."%specie)
+      if specie!="v":
+        rv = Dict_new_var['rv']
+        create_var("r%s"%specie, rv, vardims2D, data=rv[:,:]*0)
+        create_var("q%s"%specie, rv, vardims2D, data=rv[:,:]*0)
       
   try:
     dat = Dict_new_var['theta'][:,:] * (Dict_new_var['pfull'][:,:] / 100000.0)**0.286
-    new_var = create_var("temp", Dict_new_var['theta'], vardims2D, data=dat)
+    create_var("temp", Dict_new_var['theta'], vardims2D, data=dat)
   except KeyError:
     print("warning: Missing key variable for computation of temperature")
+
+  try:
+    dat = Dict_new_var["prl"][:]
+    create_var("pr", Dict_new_var["prl"], vardims1D, data=dat)
+  except KeyError:
+    print("warning: Missing precipitation flux variable at surface. Will be set to zero.")
+    create_var("pr", Dict_new_var["ustar"], vardims1D, data=np.zeros(len(varTime)), units=dephy_outvars["pr"]["units"])
+    create_var("prl", Dict_new_var["ustar"], vardims1D, data=np.zeros(len(varTime)), units=dephy_outvars["prl"]["units"])
+
+  try:
+    thv = Dict_new_var["thetav"]
+    units = dephy_outvars["b_up"]["units"]
+    dat = (Dict_new_var["thetav_up"][:,:]-thv[:,:])*g/thv[:,:]
+    create_var("b_up", thv, vardims2D, data=dat, units=units)
+  except KeyError:
+    print("warning: Missing key variable for computation of buoyancy in convective updrafts")
 
   # each list includes terms from both LIMA and ICE3, the program will
   # automatically sum over variables that are present in the file
@@ -248,9 +285,11 @@ def convert_000(input_file, output_file):
         new_var = create_var(new_varname, Dict_new_var['tn%s_adv'%vv], buddims2D, data=dat)
         Dict_new_var[new_varname] = new_var
       dat = np.sum(np.array([Dict_new_var["tn%s_micro_%s"%(vv, uu)][:,:] for uu in ["warm", "cold"]]), axis=0)
-      new_var = create_var("tn%s_micro"%(vv), Dict_new_var['tn%s_micro_warm'%vv], buddims2D, data=dat)
+      create_var("tn%s_micro"%(vv), Dict_new_var['tn%s_micro_warm'%vv], buddims2D, data=dat)
     except:
-      print("warning: Missing key variable for computation of microphysics budgets for var %s"%vv)
+      print("warning: Missing key variable for computation of microphysics budgets for var %s. Will be set to zero."%vv)
+      old_var = Dict_new_var['tn%s_adv'%vv]
+      create_var("tn%s_micro"%(vv), old_var, buddims2D, data=old_var[:,:]*0)
       
   dataOut.case = output_file
   dataOut.version = "Created on " + str(datetime.now())
