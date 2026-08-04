@@ -121,7 +121,11 @@ def convert_000(input_file, output_file):
       for cs,nam in zip(list_cs_name, list_cs_longname):
         if cs in new_var_name:
           cart_name = new_var_name.split("_"+cs)[0]
-          longname = nam+lnm(cart_name)
+          try:
+            longname = nam+lnm(cart_name)
+          except:
+            print("error in get_longname: cannot get long name for variable %s"%new_var_name)
+            exit(1)
     try: longname
     except NameError : print(new_var_name); raise
     return longname
